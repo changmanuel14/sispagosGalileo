@@ -1,10 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, make_response
 import pymysql
 from datetime import date
-import pdfkit
-
-#path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
-#config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+import pdfkit as pdfkit
 
 app = Flask(__name__)
 
@@ -45,14 +42,14 @@ def confirmacionopt(carnet, nombre, aro, lente, exavis):
 						idexamen = datos[0][0]
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
 						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0))
-					if aro != 0:
+					if float(aro) > 0:
 						consulta = 'select idcodigos from codigos where cod = "OPTARO"'
 						cursor.execute(consulta)
 						datos = cursor.fetchall()
 						idaro = datos[0][0]
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
 						cursor.execute(consulta, (idaro, nombre, carnet, aro, date.today(), "Aro - Optica",0))
-					if lente != 0:
+					if float(lente) > 0:
 						consulta = 'select idcodigos from codigos where cod = "OPTLEN"'
 						cursor.execute(consulta)
 						datos = cursor.fetchall()
@@ -560,11 +557,21 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 	meses=datames.split(',')
 	for i in range(len(meses)):
 		if 'LBCQ' in pcod or 'TLCQ' in pcod or 'MGGQ' in pcod:
-			meses[i] = 'Mes: ' + str(meses[i].split("'")[1])
+			try:
+				meses[i] = 'Mes: ' + str(meses[i].split("'")[1])
+			except:
+				meses[i] = 'Mes: ' + str(meses[i])
 		elif 'TOPTQ' in pcod or ('TRADQ' in pcod and 'Pre' in pcod):
-			meses[i] = 'Módulo ' + str(meses[i].split("'")[1])
+			try:
+				meses[i] = 'Módulo ' + str(meses[i].split("'")[1])
+			except:
+				meses[i] = 'Módulo: ' + str(meses[i])
 		else:
-			meses[i] = str(meses[i].split("'")[1])
+			try:
+				meses[i] = str(meses[i].split("'")[1])
+			except:
+				meses[i] = meses[i]
+			
 	if request.method == "POST":
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
@@ -1156,5 +1163,4 @@ def pagos():
     return render_template('pagos.html', title="Pagos")
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run(host='0.0.0.0')
+	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
