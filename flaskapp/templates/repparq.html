@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <div id="close-sidebar">
+          <i class="fas fa-times"></i>
+        </div>
+      </div>
+      <!-- sidebar-header  -->
+      
+      <div class="sidebar-menu">
+        <ul>
+          <li class="header-menu">
+            <span>Opciones</span>
+          </li>
+          <br>
+          <li  >
+            <a href="/repdiario">
+                <span>Corte Diario</span>
+            </a>
+        </li>
+        <li  >
+          <a href="/repgen">
+              <span>Listado General</span>
+          </a>
+      </li>
+          <li >
+            <a href="/repi">
+              <span>Inscripciones</span>
+            </a>
+          </li>
+          <li >
+            <a href="/repme">
+              <span>Mes Extra</span>
+            </a>
+          </li>
+          <li >
+              <a href="/repini">
+                  <span>Internet Inscripciones</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/repir">
+                  <span>Internet Reinscripciones</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/repu">
+                  <span>Uniformes</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/repp">
+                  <span>Practica</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/repm">
+                  <span>Manuales</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/reppag">
+                  <span>Pagos</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/repgrad">
+                  <span>Graduacion</span>
+              </a>
+          </li>
+          <li >
+            <a href="/repextra">
+              <span>Pagos Extra</span>
+            </a>
+          </li>
+          <li >
+            <a href="/repparq">
+              <span>Parqueo</span>
+            </a>
+          </li>
+      <!-- sidebar-menu  -->
+    </div>
+    <!-- sidebar-content  -->
+  </nav>
+  <!-- sidebar-wrapper  -->
+  <main class="page-content">
+    <div class="container">
+        <h2>Parqueo</h2>
+        <hr>
+        <input type="date" id="myInput2" name="fecha" onchange="myFunction2()" class="inputtext3">&nbsp;&nbsp;&nbsp;&nbsp;   
+        <br>     
+              <table id="myTable">
+            <tr>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Total</th>
+            </tr>
+            {% for i in data %}
+            <tr>
+                <td>{{i[0]}}</td>
+                <td>{{i[1]}}</td>
+                <td>Q. {{i[2]}}</td>
+            </tr>
+            {% endfor %}
+           
+        </table>
+    </form>
+    </main>
+    <!-- page-content" -->
+  </div>
+  <!-- page-wrapper -->
+{% endblock %}

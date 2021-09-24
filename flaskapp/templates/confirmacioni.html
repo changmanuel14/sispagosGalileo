@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <div id="close-sidebar">
+          <i class="fas fa-times"></i>
+        </div>
+      </div>
+      <!-- sidebar-header  -->
+      
+      <div class="sidebar-menu">
+        <ul>
+          <li class="header-menu">
+            <span>Opciones</span>
+          </li>
+          <br>
+          <li >
+            <a href="/i">
+              <span>Inscripciones</span>
+            </a>
+          </li>
+          <li  >
+              <a href="/u">
+                  <span>Uniformes</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/p">
+                  <span>Practica</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/m">
+                  <span>Manuales</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/pag">
+                  <span>Pagos</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/grad">
+                  <span>Graduacion</span>
+              </a>
+          </li>
+          <li  >
+            <a href="/extra">
+                <span>Pagos Extra</span>
+            </a>
+        </li>
+        <li  >
+          <a href="/parqueo">
+              <span>Parqueo</span>
+          </a>
+      </li>
+      <!-- sidebar-menu  -->
+    </div>
+    <!-- sidebar-content  -->
+  </nav>
+  <!-- sidebar-wrapper  -->
+  <main class="page-content" id="main">
+    <div class="container">
+      <h2>¿Está seguro de continuar?</h2>
+      <h5>Descripción: {{data[0][0]}}</h5>
+      {% if rinsc != 0 %}
+      <h5>Inscripción: Aplica</h5>
+      {% else %}
+      <h5>Inscripción: No Aplica</h5>
+      {% endif %}
+      {% if rint != 0 %}
+      <h5>Internet Inscripción: Aplica</h5>
+      {% else %}
+      <h5>Internet Inscripción: No Aplica</h5>
+      {% endif %}
+      {% if rrein != 0 %}
+      <h5>Internet reinscripción: Aplica</h5>
+      {% else %}
+      <h5>Internet reinscripción: No Aplica</h5>
+      {% endif %}
+      <h5>Carnet: {{carnet}}</h5>
+      <h5>Nombre: {{nombre}}</h5>
+      <h5>Mes Extra: Q {{mesextra}}</h5>
+      <form action="" method="POST">
+        <center><button onclick="submit" class="button">Aceptar</button>   <a class="regresar" href="{{ url_for('i') }}">Regresar</a></center>
+      </form>
+    </main>
+    <!-- page-content" -->
+</div>
+  <!-- page-wrapper -->
+{% endblock %}

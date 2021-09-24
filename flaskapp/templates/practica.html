@@ -1,0 +1,182 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <div id="close-sidebar">
+          <i class="fas fa-times"></i>
+        </div>
+      </div>
+      <!-- sidebar-header  -->
+      
+      <div class="sidebar-menu">
+        <ul>
+          <li class="header-menu">
+            <span>Opciones</span>
+          </li>
+          <br>
+          <li >
+            <a href="/i">
+              <span>Inscripciones</span>
+            </a>
+          </li>
+          <li  >
+              <a href="/u">
+                  <span>Uniformes</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/p">
+                  <span>Practica</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/m">
+                  <span>Manuales</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/pag">
+                  <span>Pagos</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/grad">
+                  <span>Graduacion</span>
+              </a>
+          </li>
+          <li  >
+            <a href="/extra">
+                <span>Pagos Extra</span>
+            </a>
+        </li>
+        <li  >
+          <a href="/parqueo">
+              <span>Parqueo</span>
+          </a>
+      </li>
+      <!-- sidebar-menu  -->
+    
+    <!-- sidebar-content  -->
+  </nav>
+  <!-- sidebar-wrapper  -->
+  <main class="page-content" id="main">
+    <div class="container">
+      <center><h1>Prácticas</h1></center>
+      <hr>
+      <form action="" method="POST">
+        <center> <label for="carrera" style="color: black;"> <strong><h4>Seleccione la carrera:</h4></strong></label>
+
+          <select name="carrera" id="carrera" class="inputtext" onchange="cambio()" required>
+            <option value="">Seleccione carrera</option>
+            {% for i in carreras %}
+            <option value="{{i[0]}},{{i[2]}}">{{i[2]}}</option>
+            {% endfor %}
+          </select><input type="number" class="inputtext5" id="cant" name="cant" value="1" readonly></center>
+        <center>
+          <input type="number" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"><br>
+          <br>
+          <div id="myDiv">
+            <input type="text" id="mes1" name="mes1" class="inputtext1" required placeholder="  Descripción">
+          </div>
+    </center>
+        <br>
+        <center><button onclick="submit" class="button">Aceptar</button>  <button type="button" class="button" onclick="agregar()">Agregar Campo</button>  <button type="button" class="button" onclick="eliminar('')">Eliminar Campo</button></center>
+        <br>
+        <hr>
+      </form>
+	</div>
+    </main>
+    <!-- page-content" -->
+</div>
+<datalist id="meses">
+  {% for i in meses %}
+  <option value="{{i}}">
+  {% endfor %}
+</datalist>
+<datalist id="modulos">
+  {% for i in numeros %}
+  <option value="{{i}}">
+  {% endfor %}
+</datalist>
+<datalist id="pracenf">
+  <option value="1) Práctica Hospitalaria"></option>
+  <option value="2) Práctica Enfermería Preventiva"></option>
+  <option value="3) Práctica Médico Quirúrgica"></option>
+  <option value="4) Práctica Enfermería Niños y Adolescentes"></option>
+  <option value="5) Práctica Materno Infantil"></option>
+  <option value="6) Práctica Administrativa"></option>
+</datalist>
+<script type="text/javascript">
+  function eliminar() {
+    var num = parseInt(document.getElementById('cant').value)
+    if (num > 1){
+      var input = document.getElementById('mes' + String(num))
+      var div = document.getElementById('myDiv')
+      var brs = div.getElementsByTagName('br')
+      var largo = brs.length
+      input.remove()
+      brs[largo-1].remove()
+      document.getElementById('cant').value = num - 1
+    }
+  }
+  function agregar() {
+    var div = document.getElementById('myDiv')
+    var input = document.createElement('input')
+    var num = parseInt(document.getElementById('cant').value) + 1
+    document.getElementById('cant').value = num
+    input.type = 'text'
+    input.id = 'mes' + String(num)
+    input.name = 'mes' + String(num)
+    input.className = 'inputtext1'
+    var br = document.createElement('br')
+    div.appendChild(br)
+    div.appendChild(input)
+    cambio();
+  }
+  function cambio() {
+    var select = document.getElementById('carrera')
+    var aux = select.value
+    var aux = aux.split(',')[1]
+    var num = document.getElementById('cant').value
+    for(var i = 1; i<=parseInt(num); i++){
+      var aux1 = 'mes' + String(i)
+      var desc = document.getElementById(aux1)
+      if(aux.includes('LBCQ') || aux.includes('MGGQ') || aux.includes('TLCQ')) {
+        desc.placeholder = 'Mes'
+        desc.value = ''
+        desc.setAttribute('list', 'meses')
+      }else if(aux.includes('LENQ')){
+        desc.value = ''
+        desc.placeholder = 'Tipo de Práctica'
+        desc.setAttribute('list', 'pracenf')
+      }else if(aux.includes('THDQ') || (aux.includes('TRADQ') && !(aux.includes('Prepractica')))){
+        desc.placeholder = 'Descripción'
+        desc.setAttribute('list', '')
+        if(aux.includes('THDQ')) desc.value = 'Pago de Práctica THDQ'
+        else desc.value = 'Pago de Práctica TRADQ'
+      }else if(aux.includes('TOPTQ') || aux.includes('TRADQ')){
+        desc.value = ''
+        desc.placeholder = 'Módulo'
+        desc.setAttribute('list', 'modulos')
+      }else if(aux.includes('TUEVQ')){
+        desc.value = ''
+        desc.setAttribute('list', '')
+        desc.placeholder = 'Monto'
+      }else {
+        desc.value = ''
+        desc.setAttribute('list', '')
+        desc.placeholder = 'Descripción'
+      }
+    }
+    
+  }
+
+</script>
+  <!-- page-wrapper -->
+{% endblock %}

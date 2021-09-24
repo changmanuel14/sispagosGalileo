@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <div id="close-sidebar">
+          <i class="fas fa-times"></i>
+        </div>
+      </div>
+      <!-- sidebar-header  -->
+      
+      <div class="sidebar-menu">
+        <ul>
+          <li class="header-menu">
+            <span>Opciones</span>
+          </li>
+          <br>
+          <li >
+            <a href="/i">
+              <span>Inscripciones</span>
+            </a>
+          </li>
+          <li  >
+              <a href="/u">
+                  <span>Uniformes</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/p">
+                  <span>Practica</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/m">
+                  <span>Manuales</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/pag">
+                  <span>Pagos</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/grad">
+                  <span>Graduacion</span>
+              </a>
+          </li>
+          <li  >
+            <a href="/extra">
+                <span>Pagos Extra</span>
+            </a>
+        </li>
+        <li  >
+          <a href="/parqueo">
+              <span>Parqueo</span>
+          </a>
+      </li>
+      <!-- sidebar-menu  -->
+    
+    <!-- sidebar-content  -->
+  </nav>
+  <!-- sidebar-wrapper  -->
+  <main class="page-content" id="main">
+    <div class="container">
+      <center><h1>Graduación</h1></center>
+      <hr>
+      <form action="" method="POST">
+        <center> <label for="carrera" style="color: black;"> <strong><h4>Seleccione el tipo de Graduación:</h4></strong></label>
+
+          <select name="tipo" id="tipo" class="inputtext" required>
+            <option value="">Seleccione tipo</option>
+            <option value="1">Técnicos</option>
+            <option value="2">Licenciaturas/Maestrías</option>
+          </select></center><br>
+        <center>
+          <input type="number" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"><br>
+      </center>
+        <br>
+        <center><button onclick="submit" class="button">Aceptar</button></center>
+        <br>
+        <hr>
+
+
+      </form>
+	</div>
+    </main>
+    <!-- page-content" -->
+</div>
+  <!-- page-wrapper -->
+{% endblock %}

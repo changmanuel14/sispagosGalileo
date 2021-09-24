@@ -1,0 +1,244 @@
+body {
+  background: #ffffff;
+  color: #ffffff;
+  margin-top: 5rem;
+}
+
+.button {
+  background-color: #5BC0DE;
+  border: none;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 12px;
+}
+
+.regresar {
+  background-color: #5BC0DE;
+  border: none;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 12px;
+}
+
+.button1 {
+  background-color: white;
+  border: 1px solid #dddddd;
+  color: black;
+  padding: 15px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 18.667px;
+  border-radius: 1px;
+  width: 90%;
+}
+
+.iconos {
+  float: right;
+  font-size: 25px;
+  color: #33778b;
+}
+
+table, th, td {
+  border: 1px solid black;
+  color: #000000;
+  border-collapse: collapse;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  border: 1px solid #dddddd;
+}
+
+td, th {
+  font-size: 16px;
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+.tablacuadre td, th {
+  font-size: 16px;
+  border: 0px solid #dddddd;
+  text-align: left;
+  padding: 0px;
+}
+
+th {
+  text-align: center;
+  border: 1px solid #dddddd;
+}
+
+table {
+  border-spacing: 2px;
+}
+
+.tablacuadre {
+  border-spacing: 0px;
+  background-color: white;
+  border: 0px solid #dddddd;
+}
+
+tr:nth-child(even) {
+  background-color: #dff6ff;
+}
+
+.tablacuadre tr:nth-child(even) {
+  background-color: white;
+}
+
+.inputtyperecibo {
+  width: 100%;
+}
+
+.derecha {
+  float: right;
+}
+
+
+.inputtext {
+  height:37px;
+  font-size:14pt;
+  width: 30%;
+  border-radius: 12px
+}
+.inputtext1 {
+  height:37px;
+  font-size:14pt;
+  width: 50%;
+  border-radius: 12px;
+}
+.inputtext2 {
+  height:37px;
+  font-size:14pt;
+  width: 10%;
+  border-radius: 12px
+}
+
+.inputtext3 {
+  height:37px;
+  font-size:12pt;
+  width: 30%;
+  border-radius: 12px;
+  margin: 5px;
+}
+
+.inputtextcuadre {
+  height:37px;
+  font-size:12pt;
+  width: 100%;
+}
+
+.inputtext4 {
+  height:37px;
+  font-size:12pt;
+  width: 70%;
+  border-radius: 12px;
+  margin: 5px;
+}
+
+.inputtext5 {
+  height:37px;
+  font-size:14pt;
+  width: 5%;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.mitad {
+  float: left;
+  font-size:12pt;
+  width: 40%;
+}
+
+.mitad1 {
+  float: right;
+  font-size:12pt;
+  width: 40%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #000000;
+}
+
+.bg-steel {
+  background-color: #5BC0DE;
+}
+
+.site-header .navbar-nav .nav-link{
+  font-size:14pt;
+  color: #ffffff;
+}
+
+.site-header .navbar-nav .nav-link:hover{
+  color: #31708F;
+  font-size:14pt;
+}
+
+.site-header .navbar-nav .nav-link.active {
+  font-weight: 500;
+}
+
+.content-section {
+  background: #ffffff;
+  padding: 10px 20px;
+  border: 1px solid #dddddd;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+.article-title {
+  color: #444444;
+}
+
+a.article-title:hover {
+  color: #428bca;
+  text-decoration: none;
+}
+
+.article-content {
+  white-space: pre-line;
+}
+
+.article-img {
+  height: 65px;
+  width: 65px;
+  margin-right: 16px;
+}
+
+.article-metadata {
+  padding-bottom: 1px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #e3e3e3
+}
+
+.article-metadata a:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+.article-svg {
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.account-img {
+  height: 125px;
+  width: 125px;
+  margin-right: 20px;
+  margin-bottom: 16px;
+}
+
+.account-heading {
+  font-size: 2.5rem;
+}

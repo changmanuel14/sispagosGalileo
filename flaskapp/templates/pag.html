@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <div id="close-sidebar">
+          <i class="fas fa-times"></i>
+        </div>
+      </div>
+      <!-- sidebar-header  -->
+      
+      <div class="sidebar-menu">
+        <ul>
+          <li class="header-menu">
+            <span>Opciones</span>
+          </li>
+          <br>
+          <li >
+            <a href="/i">
+              <span>Inscripciones</span>
+            </a>
+          </li>
+          <li  >
+              <a href="/u">
+                  <span>Uniformes</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/p">
+                  <span>Practica</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/m">
+                  <span>Manuales</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/pag">
+                  <span>Pagos</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/grad">
+                  <span>Graduacion</span>
+              </a>
+          </li>
+          <li  >
+            <a href="/extra">
+                <span>Pagos Extra</span>
+            </a>
+        </li>
+        <li  >
+          <a href="/parqueo">
+              <span>Parqueo</span>
+          </a>
+      </li>
+      <!-- sidebar-menu  -->
+    
+    <!-- sidebar-content  -->
+  </nav>
+  <!-- sidebar-wrapper  -->
+  <main class="page-content" id="main">
+    <div class="container">
+      <center><h1>Pagos</h1></center>
+      <hr>
+      <form action="" method="POST">
+        <center> <label for="carrera" style="color: black;"> <strong><h4>Seleccione el pago:</h4></strong></label>
+
+          <select name="carrera" id="carrera" class="inputtext" onchange="cambio()" required>
+            <option value="">Seleccione pago</option>
+            {% for i in carreras %}
+            <option value="{{i[0]}},{{i[2]}},{{i[3]}}">{{i[2]}}</option>
+            {% endfor %}
+          </select></center><br>
+        <center>
+          <input type="number" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"><br><br>
+          <div style="display: none;" id="camposextra">
+            <input type="number" id="total" name="total" class="inputtext" placeholder="  Total">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="descripcion" name="descripcion" class="inputtext1" placeholder="  Descripción"><br>
+          </div>
+      </center>
+        <br>
+        <center><button onclick="submit" class="button">Aceptar</button></center>
+        <br>
+        <hr>
+      </form>
+	</div>
+    </main>
+    <!-- page-content" -->
+</div>
+<script type="text/javascript">
+  function cambio() {
+    var valores = document.getElementById('carrera').value
+    var data = valores.split(',')
+    if(data[1] == 'Pagos'){
+      document.getElementById('camposextra').style.display = 'block'
+    }else {
+      document.getElementById('camposextra').style.display = 'none'
+    }
+  }
+</script>
+  <!-- page-wrapper -->
+{% endblock %}
