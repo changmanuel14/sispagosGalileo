@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <div id="close-sidebar">
+          <i class="fas fa-times"></i>
+        </div>
+      </div>
+      <!-- sidebar-header  -->
+      
+      <div class="sidebar-menu">
+        <ul>
+          <li class="header-menu">
+            <span>Opciones</span>
+          </li>
+          <br>
+          <li >
+            <a href="/i">
+              <span>Inscripciones</span>
+            </a>
+          </li>
+          <li  >
+              <a href="/u">
+                  <span>Uniformes</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/p">
+                  <span>Practica</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/m">
+                  <span>Manuales</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/pag">
+                  <span>Pagos</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/grad">
+                  <span>Graduacion</span>
+              </a>
+          </li>
+          <li  >
+            <a href="/extra">
+                <span>Pagos Extra</span>
+            </a>
+        </li>
+        <li  >
+          <a href="/parqueo">
+              <span>Parqueo</span>
+          </a>
+      </li>
+      <!-- sidebar-menu  -->
+    </div>
+    <!-- sidebar-content  -->
+  </nav>
+  <!-- sidebar-wrapper  -->
+  <main class="page-content" id="main">
+    <div class="container">
+      <center><h1>Servicio de Óptica</h1></center>
+      <hr>
+      <form action="" method="POST">
+        <center>
+        <input type="number" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"><br>
+      </center>
+        <br>
+        <table>
+          <tr>
+            <th>Examen de la Vista</th>
+            <td>
+              <input type="checkbox" id="exavis" name="exavis" value="1" onclick="calctotal()">
+              <label for="exavis">Q </label>
+              <label for="exavis" id="exavisl">50.00</label>
+            </td>
+          </tr>
+          <tr>
+            <th>Aro</th>
+            <td><input type="number" step="0.01" id="aro" name="aro" class="inputtext3" onchange="calctotal()"></td>
+          </tr>
+          <tr>
+            <th>Lente</th>
+            <td><input type="number" step="0.01" id="lente" name="lente" class="inputtext3" onchange="calctotal()"></td>
+          </tr>
+          <tr>
+            <th><h3>Total</h3></th>
+            <td>
+              <input type="text" id="total" name="total" class="inputtext3" readonly>
+            </td>
+          </tr> 
+        </table>
+        <center><button onclick="submit" class="button">Aceptar</button></center>
+        <br>
+        <hr>
+      </form>
+  </div>
+    </main>
+    <!-- page-content" -->
+</div>
+<script type="text/javascript">
+  function calctotal(){
+    var examenvista = document.getElementById('exavis')
+    var aro = document.getElementById('aro').value
+    var lente = document.getElementById('lente').value
+    var tot = document.getElementById('total')
+    var total = 0
+    var aux = 0
+    if (examenvista.checked == true){
+      total = total + 50
+    }
+    if (aro.length == 0){
+      total = total + 0
+    }else {
+      total = total + parseFloat(aro)
+    }
+    if (lente.length == 0){
+      total = total + 0
+    }else {
+      total = total + parseFloat(lente)
+    }
+    tot.value = 'Q ' + total.toFixed(2)
+  }
+</script>
+{% endblock %}

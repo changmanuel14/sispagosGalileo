@@ -13,6 +13,60 @@ app = Flask(__name__)
 def home():
     return render_template('inicio.html', title="Inicio")
 
+@app.route('/optica', methods=['GET', 'POST'])
+def optica():
+	if request.method == 'POST':
+		carnet = request.form["carnet"]
+		nombre = request.form["nombre"]
+		aro = request.form["aro"]
+		lente = request.form["lente"]
+		try:
+			exavis = request.form["exavis"]
+		except:
+			exavis = 0
+		if len(aro) < 1:
+			aro = 0
+		if len(lente) < 1:
+			lente = 0
+		return redirect(url_for('confirmacionopt', carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis))
+	return render_template('optica.html', title="Óptica")
+
+@app.route('/confirmacionopt/<carnet>&<nombre>&<aro>&<lente>&<exavis>', methods=['GET', 'POST'])
+def confirmacionopt(carnet, nombre, aro, lente, exavis):
+	if request.method == "POST":
+		try:
+			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+			try:
+				with conexion.cursor() as cursor:
+					if exavis != 0:
+						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
+						cursor.execute(consulta)
+						datos = cursor.fetchall()
+						idexamen = datos[0][0]
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0))
+					if aro != 0:
+						consulta = 'select idcodigos from codigos where cod = "OPTARO"'
+						cursor.execute(consulta)
+						datos = cursor.fetchall()
+						idaro = datos[0][0]
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (idaro, nombre, carnet, aro, date.today(), "Aro - Optica",0))
+					if lente != 0:
+						consulta = 'select idcodigos from codigos where cod = "OPTLEN"'
+						cursor.execute(consulta)
+						datos = cursor.fetchall()
+						idlente = datos[0][0]
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (idlente, nombre, carnet, lente, date.today(), "Lente - Optica",0))
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('optica'))
+	return render_template('confirmacionopt.html', title="Confirmación Óptica", carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis)
+
 @app.route('/i', methods=['GET', 'POST'])
 def i():
 	try:
@@ -45,17 +99,22 @@ def i():
 			rrein = request.form["rrein"]
 		except:
 			rrein = 0
-		return redirect(url_for('confirmacioni', carrera = datacarrera, carnet = datacarnet, nombre = datanombre, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra))
+		try:
+			exavis = request.form["exavis"]
+		except:
+			exavis = 0
+		return redirect(url_for('confirmacioni', carrera = datacarrera, carnet = datacarnet, nombre = datanombre, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra, exavis=exavis))
 	return render_template('inscripciones.html', title="Inscripciones", carreras=carreras)
 
-@app.route('/confirmacioni/<carrera>&<carnet>&<nombre>&<rinsc>&<rint>&<rrein>&<mesextra>', methods=['GET', 'POST'])
-def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra):
+@app.route('/confirmacioni/<carrera>&<carnet>&<nombre>&<rinsc>&<rint>&<rrein>&<mesextra>&<exavis>', methods=['GET', 'POST'])
+def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis):
 	carrera = str(carrera)
 	carnet = int(carnet)
 	nombre = str(nombre)
 	rinsc = int(rinsc)
 	rint = int(rint)
 	rrein = int(rrein)
+	exavis = int(exavis)
 	mesextra = int(mesextra)
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
@@ -89,6 +148,13 @@ def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra):
 						idcodigo = datos[0][0]
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
 						cursor.execute(consulta, (idcodigo, nombre, carnet, mesextra, date.today(), "Mensualidad Extra" +str(data[0][3]),0))
+					if exavis != 0:
+						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
+						cursor.execute(consulta)
+						datos = cursor.fetchall()
+						idexamen = datos[0][0]
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0))
 				conexion.commit()
 			finally:
 				conexion.close()

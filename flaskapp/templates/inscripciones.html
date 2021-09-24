@@ -108,6 +108,14 @@
             </td>
           </tr>
           <tr>
+            <th>Examen de la Vista</th>
+            <td>
+              <input type="checkbox" id="exavis" name="exavis" value="1"  onclick="calctotal()">
+              <label for="exavis">Q </label>
+              <label for="exavis" id="exavisl">50.00</label>
+            </td>
+          </tr>
+          <tr>
             <th>Mensualidad Extra</th>
             <td>
               <input type="number" step="0.01" id="mesextra" name="mesextra" class="inputtext3" onchange="calctotal()">
@@ -136,6 +144,7 @@
     var insc1 = document.getElementById('rinsc')
     var int1 = document.getElementById('rint')
     var rint1 = document.getElementById('rrein')
+    var exavis = document.getElementById('exavis')
     var mese = document.getElementById('mesextra').value
     var tot = document.getElementById('total')
     var total = 0
@@ -156,6 +165,10 @@
       aux = rint.innerHTML
       console.log(aux)
       aux = parseFloat(aux)
+      total = total + aux
+    }
+    if (exavis.checked == true){
+      aux = 50
       total = total + aux
     }
     if (mese.length == 0){
