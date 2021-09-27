@@ -46,6 +46,17 @@
 					    </li>
                     </div>
     <!-- Navbar Right Side -->
+                    {% if logeado == 0 %}
+                    <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/login">Iniciar sesión</a>
+                    </div>
+                    {% endif %}
+                    {% if logeado == 1 %}
+                    <div class="navbar-nav">
+                    <a class="nav-item nav-link">Bienvenido {{session['nombreuser1']}} {{session['apellidouser1']}}</a>
+                    <a class="nav-item nav-link" href="/logout">Cerrar sesión</a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </nav>

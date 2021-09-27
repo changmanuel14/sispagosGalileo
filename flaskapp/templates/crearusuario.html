@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block content %}
+    <center><h1>Nuevo usuario</h1>
+        <hr>
+        <form action="" method="POST">
+    <input type="text" id="nombre" name="nombre" class="inputtext1" placeholder="  Nombre" onblur="creariniciales()"><br>
+    <input type="text" id="apellido" name="apellido" class="inputtext1" placeholder="  Apellido" onblur="creariniciales()"><br>
+    <input type="text" id="user" name="user" class="inputtext1" placeholder="  User"><br>
+    <input type="text" id="iniciales" name="iniciales" class="inputtext1" placeholder="  Iniciales"><br>
+    <input type="password" id="pwd" name="pwd" class="inputtext1" placeholder="  Contraseña"><br>
+    <input type="password" id="pwd1" name="pwd1" class="inputtext1" placeholder="  Confirme contraseña" onchange="verificarpwd()"><br>
+    <p id="mensajecontra" style="color: red;">{{mensaje}}</p>
+    <center><button onclick="submit" class="button">Aceptar</button></center>
+</form>
+</center>
+
+<script type="text/javascript">
+    function verificarpwd(){
+        var mensaje = document.getElementById('mensajecontra')
+        var pwd = document.getElementById('pwd').value
+        var pwd1 = document.getElementById('pwd1').value
+        console.log('1: ' + pwd)
+        console.log('2: ' + pwd1)
+        if(pwd != pwd1) {
+            mensaje.innerHTML = 'Las contraseñas no coinciden'
+        }else {
+            mensaje.innerHTML = ''
+        }
+    }
+    function creariniciales(){
+        var nombre = document.getElementById('nombre')
+        var apellido = document.getElementById('apellido')
+        var inicial = document.getElementById('iniciales')
+        var nombres = nombre.value.split(' ')
+        var apellidos = apellido.value.split(' ')
+        var iniciales = ''
+        if (nombre.value.length > 0){
+            for (var i = 0; i<nombres.length; i++){
+                console.log(nombres[i][0])
+                iniciales = iniciales + nombres[i][0]
+            }
+        }
+        if (apellido.value.length > 0){
+            for (var i = 0; i<apellidos.length; i++){
+                console.log(apellidos[i][0])
+                iniciales = iniciales + apellidos[i][0]
+            }
+        }
+        inicial.value = iniciales
+    }
+</script>
+
+    
+{% endblock %}

@@ -1,17 +1,98 @@
-from flask import Flask, render_template, request, url_for, redirect, make_response
+from flask import Flask, render_template, request, url_for, redirect, make_response, session
 import pymysql
 from datetime import date
 import pdfkit as pdfkit
 
 app = Flask(__name__)
+app.secret_key = 'd589d3d0d15d764ed0a98ff5a37af547'
 
 @app.route('/')
 @app.route('/home')
 def home():
-    return render_template('inicio.html', title="Inicio")
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	return render_template('inicio.html', title="Inicio", logeado=logeado)
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado != 0:
+		return redirect(url_for('home'))
+	if request.method == 'POST':
+		user = request.form["user"]
+		pwd = request.form["pwd"]
+		try:
+			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+			try:
+				with conexion.cursor() as cursor:
+					consulta = "SELECT iduser, nombre, apellido FROM user WHERE user = %s and pwd = md5(%s)"
+					cursor.execute(consulta, (user, pwd))
+					data = cursor.fetchall()
+					if len(data) == 0:
+						return render_template('login.html', title='Iniciar sesión', logeado=logeado, mensaje="Datos inválidos, intente nuevamente")
+					else:
+						session['logeadocaja'] = 1
+						session['idusercaja'] = data[0][0]
+						session['nombreusercaja'] = data[0][1]
+						session['apellidousercaja'] = data[0][2]
+						session['usercaja'] = user
+						return redirect(url_for('home'))
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+	return render_template('login.html', title='Iniciar sesión', logeado=logeado, mensaje="")
+
+@app.route("/logout")
+def logout():
+	session['logeadocaja'] = 0
+	session['nombreusercaja'] = ""
+	session['apellidousercaja'] = ""
+	session['usercaja'] = ""
+	session['idusercaja'] = ""
+	return redirect(url_for('home'))
+
+@app.route("/crearusuario", methods=['GET', 'POST'])
+def crearusuario():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	mensaje = ''
+	if request.method == 'POST':
+		nombre = request.form["nombre"]
+		apellido = request.form["apellido"]
+		user = request.form["user"]
+		pwd = request.form["pwd"]
+		iniciales = request.form["iniciales"]
+		try:
+			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+			try:
+				with conexion.cursor() as cursor:
+					consulta = "INSERT INTO user(nombre, apellido, user, pwd, iniciales) values (%s, %s, %s, MD5(%s), %s);"
+					cursor.execute(consulta, (nombre, apellido, user, pwd, iniciales))
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('home'))
+	return render_template('crearusuario.html', title='Nuevo Usuario', logeado=logeado, mensaje=mensaje)
 
 @app.route('/optica', methods=['GET', 'POST'])
 def optica():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
+	print(logeado)
 	if request.method == 'POST':
 		carnet = request.form["carnet"]
 		nombre = request.form["nombre"]
@@ -26,10 +107,16 @@ def optica():
 		if len(lente) < 1:
 			lente = 0
 		return redirect(url_for('confirmacionopt', carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis))
-	return render_template('optica.html', title="Óptica")
+	return render_template('optica.html', title="Óptica", logeado=logeado)
 
 @app.route('/confirmacionopt/<carnet>&<nombre>&<aro>&<lente>&<exavis>', methods=['GET', 'POST'])
 def confirmacionopt(carnet, nombre, aro, lente, exavis):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	if request.method == "POST":
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
@@ -40,32 +127,38 @@ def confirmacionopt(carnet, nombre, aro, lente, exavis):
 						cursor.execute(consulta)
 						datos = cursor.fetchall()
 						idexamen = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0))
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0, session['idusercaja']))
 					if float(aro) > 0:
 						consulta = 'select idcodigos from codigos where cod = "OPTARO"'
 						cursor.execute(consulta)
 						datos = cursor.fetchall()
 						idaro = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idaro, nombre, carnet, aro, date.today(), "Aro - Optica",0))
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (idaro, nombre, carnet, aro, date.today(), "Aro - Optica",0, session['idusercaja']))
 					if float(lente) > 0:
 						consulta = 'select idcodigos from codigos where cod = "OPTLEN"'
 						cursor.execute(consulta)
 						datos = cursor.fetchall()
 						idlente = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idlente, nombre, carnet, lente, date.today(), "Lente - Optica",0))
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
+						cursor.execute(consulta, (idlente, nombre, carnet, lente, date.today(), "Lente - Optica",0, session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('optica'))
-	return render_template('confirmacionopt.html', title="Confirmación Óptica", carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis)
+	return render_template('confirmacionopt.html', title="Confirmación Óptica", carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis, logeado=logeado)
 
 @app.route('/i', methods=['GET', 'POST'])
 def i():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -101,10 +194,16 @@ def i():
 		except:
 			exavis = 0
 		return redirect(url_for('confirmacioni', carrera = datacarrera, carnet = datacarnet, nombre = datanombre, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra, exavis=exavis))
-	return render_template('inscripciones.html', title="Inscripciones", carreras=carreras)
+	return render_template('inscripciones.html', title="Inscripciones", carreras=carreras, logeado=logeado)
 
 @app.route('/confirmacioni/<carrera>&<carnet>&<nombre>&<rinsc>&<rint>&<rrein>&<mesextra>&<exavis>', methods=['GET', 'POST'])
 def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	carrera = str(carrera)
 	carnet = int(carnet)
 	nombre = str(nombre)
@@ -130,38 +229,44 @@ def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis)
 			try:
 				with conexion.cursor() as cursor:
 					if rinsc != 0:
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (1, nombre, carnet, data[0][1], date.today(), data[0][0],0))
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (1, nombre, carnet, data[0][1], date.today(), data[0][0],0, session['idusercaja']))
 					if rint != 0:
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (2, nombre, carnet, data[0][2], date.today(), "Internet " +str(data[0][3]), 0))
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
+						cursor.execute(consulta, (2, nombre, carnet, data[0][2], date.today(), "Internet " +str(data[0][3]), 0, session['idusercaja']))
 					if rrein != 0:
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (3, nombre, carnet, 100, date.today(), "Internet Reinscripcion" +str(data[0][3]),0))
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (3, nombre, carnet, 100, date.today(), "Internet Reinscripcion" +str(data[0][3]),0, session['idusercaja']))
 					if mesextra != 0:
 						consulta = 'select idcodigos from codigos where cod = "MENE"'
 						cursor.execute(consulta)
 						datos = cursor.fetchall()
 						idcodigo = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idcodigo, nombre, carnet, mesextra, date.today(), "Mensualidad Extra" +str(data[0][3]),0))
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
+						cursor.execute(consulta, (idcodigo, nombre, carnet, mesextra, date.today(), "Mensualidad Extra" +str(data[0][3]),0, session['idusercaja']))
 					if exavis != 0:
 						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
 						cursor.execute(consulta)
 						datos = cursor.fetchall()
 						idexamen = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0))
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0, session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('i'))
-	return render_template('confirmacioni.html', title="Confirmación", carrera = carrera, carnet = carnet, nombre = nombre, data=data, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra)
+	return render_template('confirmacioni.html', title="Confirmación", carrera = carrera, carnet = carnet, nombre = nombre, data=data, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra, logeado=logeado)
 
 @app.route('/repi', methods=['GET', 'POST'])
 def repi():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -185,10 +290,16 @@ def repi():
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	return render_template('repi.html', title="Reporte inscripciones", data = data, suma=suma, carreras=carreras)
+	return render_template('repi.html', title="Reporte inscripciones", data = data, suma=suma, carreras=carreras, logeado=logeado)
 
 @app.route('/ini', methods=['GET', 'POST'])
 def ini():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -207,10 +318,16 @@ def ini():
 		datanombre = request.form["nombre"]
 		datacarrera = request.form["carrera"]
 		return redirect(url_for('confirmacionini', carrera = datacarrera, carnet = datacarnet, nombre = datanombre))
-	return render_template('internetins.html', title="Internet Inscripciones",  carreras=carreras)
+	return render_template('internetins.html', title="Internet Inscripciones",  carreras=carreras, logeado=logeado)
 
 @app.route('/confirmacionini/<carrera>&<carnet>&<nombre>', methods=['GET', 'POST'])
 def confirmacionini(carrera, carnet, nombre):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	carrera = str(carrera)
 	carnet = int(carnet)
 	nombre = str(nombre)
@@ -223,18 +340,24 @@ def confirmacionini(carrera, carnet, nombre):
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
 					print(precios1[0])
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0))
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s.%s);"
+					cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('ini'))
-	return render_template('confirmacionini.html', title="Confirmación", carrera = carrera, carnet = carnet, nombre = nombre)
+	return render_template('confirmacionini.html', title="Confirmación", carrera = carrera, carnet = carnet, nombre = nombre, logeado=logeado)
 
 @app.route('/repini', methods=['GET', 'POST'])
 def repini():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -259,10 +382,16 @@ def repini():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	return render_template('repini.html', title="Reporte internet", data = data, suma=suma, carreras=carreras)
+	return render_template('repini.html', title="Reporte internet", data = data, suma=suma, carreras=carreras, logeado=logeado)
 
 @app.route('/ir', methods=['GET', 'POST'])
 def ir():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -281,10 +410,16 @@ def ir():
 		datanombre = request.form["nombre"]
 		datacarrera = request.form["carrera"]
 		return redirect(url_for('confirmacionir', carrera = datacarrera, carnet = datacarnet, nombre = datanombre))
-	return render_template('internetreins.html', title="Internet Reinscripciones",  carreras=carreras)
+	return render_template('internetreins.html', title="Internet Reinscripciones",  carreras=carreras, logeado=logeado)
 
 @app.route('/confirmacionir/<carrera>&<carnet>&<nombre>', methods=['GET', 'POST'])
 def confirmacionir(carrera, carnet, nombre):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	carrera = str(carrera)
 	carnet = int(carnet)
 	nombre = str(nombre)
@@ -297,18 +432,24 @@ def confirmacionir(carrera, carnet, nombre):
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
 					print(precios1[0])
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0))
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+					cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('ir'))
-	return render_template('confirmacionini.html', title="Confirmación", carrera = carrera, carnet = carnet, nombre = nombre)
+	return render_template('confirmacionini.html', title="Confirmación", carrera = carrera, carnet = carnet, nombre = nombre, logeado=logeado)
 
 @app.route('/repir', methods=['GET', 'POST'])
 def repir():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -333,10 +474,16 @@ def repir():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	return render_template('repir.html', title="Reporte internet reingreso", data = data, suma=suma, carreras=carreras)
+	return render_template('repir.html', title="Reporte internet reingreso", data = data, suma=suma, carreras=carreras, logeado=logeado)
 
 @app.route('/extra', methods=['GET', 'POST'])
 def extra():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -357,10 +504,16 @@ def extra():
 		extraid = data[0]
 		extracod = data[1]
 		return redirect(url_for('confirmacionextra', carnet = datacarnet, nombre = datanombre, idp = extraid, cod = extracod))
-	return render_template('extra.html', title="Pagos extra", data = data)
+	return render_template('extra.html', title="Pagos extra", data = data, logeado=logeado)
 
 @app.route('/confirmacionextra/<carnet>&<nombre>&<idp>&<cod>', methods=['GET', 'POST'])
 def confirmacionextra(carnet, nombre, idp, cod):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	idp = int(idp)
 	carnet = int(carnet)
 	nombre = str(nombre)
@@ -373,18 +526,24 @@ def confirmacionextra(carnet, nombre, idp, cod):
 					consulta1 = 'SELECT precio FROM codigos WHERE idcodigos = "' + str(idp) + '"'
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (idp, nombre, carnet, precios1[0][0], date.today(), "",0))
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+					cursor.execute(consulta, (idp, nombre, carnet, precios1[0][0], date.today(), "",0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('extra'))
-	return render_template('confirmacionextra.html', title="Confirmación", carnet = carnet, nombre = nombre, idp = idp, cod = cod)
+	return render_template('confirmacionextra.html', title="Confirmación", carnet = carnet, nombre = nombre, idp = idp, cod = cod, logeado=logeado)
 
 @app.route('/repextra', methods=['GET', 'POST'])
 def repextra():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -403,10 +562,16 @@ def repextra():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	return render_template('repextra.html', title="Reporte Pagos Extra", data = data, suma=suma)
+	return render_template('repextra.html', title="Reporte Pagos Extra", data = data, suma=suma, logeado=logeado)
 
 @app.route('/u', methods=['GET', 'POST'])
 def u():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -430,10 +595,16 @@ def u():
 		datatotal = request.form["total"]
 		datatalla = request.form["talla"]
 		return redirect(url_for('confirmacionu', uid = uid, carnet = datacarnet, nombre = datanombre, total = datatotal, talla= datatalla, ucod = ucod))
-	return render_template('uniformes.html', title="Uniformes",  carreras=carreras)
+	return render_template('uniformes.html', title="Uniformes",  carreras=carreras, logeado=logeado)
 
 @app.route('/confirmacionu/<uid>&<carnet>&<nombre>&<total>&<talla>&<ucod>', methods=['GET', 'POST'])
 def confirmacionu(uid, carnet, nombre, total, talla, ucod):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	uid = int(uid)
 	carnet = int(carnet)
 	nombre = str(nombre)
@@ -445,18 +616,24 @@ def confirmacionu(uid, carnet, nombre, total, talla, ucod):
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (uid, nombre, carnet, total, date.today(), "Talla: "+talla,0))
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+					cursor.execute(consulta, (uid, nombre, carnet, total, date.today(), "Talla: "+talla,0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('u'))
-	return render_template('confirmacionu.html', title="Confirmación", uid = uid, carnet = carnet, nombre = nombre, total = total, talla= talla, ucod = ucod)
+	return render_template('confirmacionu.html', title="Confirmación", uid = uid, carnet = carnet, nombre = nombre, total = total, talla= talla, ucod = ucod, logeado=logeado)
 
 @app.route('/repu', methods=['GET', 'POST'])
 def repu():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -509,10 +686,16 @@ def repu():
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 
-	return render_template('repu.html', title="Reporte Uniformes", data = data, suma=suma, carreras=carreras)
+	return render_template('repu.html', title="Reporte Uniformes", data = data, suma=suma, carreras=carreras, logeado=logeado)
 
 @app.route('/p', methods=['GET', 'POST'])
 def p():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	numeros = []
 	for i in range(25):
 		numeros.append(i+1)
@@ -546,10 +729,16 @@ def p():
 			if(len(aux) > 0):
 				datames.append(aux)
 		return redirect(url_for('confirmacionp', carnet = datacarnet, nombre = datanombre, datames= datames, pid = pid, pcod = pcod, cantidad=cantidad))
-	return render_template('practica.html', title="Practica",  carreras=carreras, numeros=numeros, meses=meses)
+	return render_template('practica.html', title="Practica",  carreras=carreras, numeros=numeros, meses=meses, logeado=logeado)
 
 @app.route('/confirmacionp/<carnet>&<nombre>&<datames>&<pid>&<pcod>&<cantidad>', methods=['GET', 'POST'])
 def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	carnet = int(carnet)
 	cantidad = int(cantidad)
 	nombre = str(nombre)
@@ -583,21 +772,27 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 					print(precios1[0])
 					for i in range(cantidad):
 						if 'TUEVQ' in pcod:
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, meses[i], date.today(), 'Practica TUEVQ',0))
+							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+							cursor.execute(consulta, (precios1[0][0], nombre, carnet, meses[i], date.today(), 'Practica TUEVQ',0,session['idusercaja']))
 						else:
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), meses[i],0))
+							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), meses[i],0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('p'))
-	return render_template('confirmacionp.html', title="Confirmación", carnet = carnet, nombre = nombre, meses = meses, pid = pid, pcod = pcod, cantidad=cantidad)
+	return render_template('confirmacionp.html', title="Confirmación", carnet = carnet, nombre = nombre, meses = meses, pid = pid, pcod = pcod, cantidad=cantidad, logeado=logeado)
 
 @app.route('/repp', methods=['GET', 'POST'])
 def repp():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -648,10 +843,16 @@ def repp():
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-	return render_template('repp.html', title="Reporte Prácticas", data = data, suma=suma, carreras=carreras)
+	return render_template('repp.html', title="Reporte Prácticas", data = data, suma=suma, carreras=carreras, logeado=logeado)
 
 @app.route('/mextra', methods=['GET', 'POST'])
 def mextra():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -671,10 +872,16 @@ def mextra():
 		datatotal = request.form["total"]
 		datacarrera = request.form["carrera"]
 		return redirect(url_for('confirmacionme', total = datatotal, carnet = datacarnet, nombre = datanombre, carrera = datacarrera))
-	return render_template('mextra.html', title="Mes extra", carreras=carreras)
+	return render_template('mextra.html', title="Mes extra", carreras=carreras, logeado=logeado)
 
 @app.route('/confirmacionme/<total>&<carnet>&<nombre>&<carrera>', methods=['GET', 'POST'])
 def confirmacionme(total, carnet, nombre, carrera):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	total = float(total)
 	carnet = int(carnet)
 	nombre = str(nombre)
@@ -688,18 +895,24 @@ def confirmacionme(total, carnet, nombre, carrera):
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
 					print(precios1[0])
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (precios1[0][0], nombre, carnet, total, date.today(), carrera, 0))
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+					cursor.execute(consulta, (precios1[0][0], nombre, carnet, total, date.today(), carrera, 0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('mextra'))
-	return render_template('confirmacionme.html', title="Confirmación", total = total, carnet = carnet, nombre = nombre, carrera = carrera)
+	return render_template('confirmacionme.html', title="Confirmación", total = total, carnet = carnet, nombre = nombre, carrera = carrera, logeado=logeado)
 
 @app.route('/repme', methods=['GET', 'POST'])
 def repme():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -720,17 +933,29 @@ def repme():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	return render_template('repme.html', title="Reporte Meses Extra", data = data, suma=suma, carreras=carreras)
+	return render_template('repme.html', title="Reporte Meses Extra", data = data, suma=suma, carreras=carreras, logeado=logeado)
 
 @app.route('/parqueo', methods=['GET', 'POST'])
 def parqueo():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	if request.method == 'POST':
 		datacantidad = request.form["cantidad"]
 		return redirect(url_for('confirmacionparqueo', cantidad = datacantidad))
-	return render_template('parqueo.html', title="Parqueo")
+	return render_template('parqueo.html', title="Parqueo", logeado=logeado)
 
 @app.route('/confirmacionparqueo/<cantidad>', methods=['GET', 'POST'])
 def confirmacionparqueo(cantidad):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	cantidad = int(cantidad)
 	total = cantidad * 10
 	if request.method == "POST":
@@ -738,18 +963,24 @@ def confirmacionparqueo(cantidad):
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (65, 'parqueo', 0, total, date.today(), "Cantidad parqueo: " +str(cantidad), 0))
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+					cursor.execute(consulta, (65, 'parqueo', 0, total, date.today(), "Cantidad parqueo: " +str(cantidad), 0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('parqueo'))
-	return render_template('confirmacionparqueo.html', title="Confirmación", cantidad = cantidad, total = total)
+	return render_template('confirmacionparqueo.html', title="Confirmación", cantidad = cantidad, total = total, logeado=logeado)
 
 @app.route('/repparq', methods=['GET', 'POST'])
 def repparq():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -766,10 +997,16 @@ def repparq():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	return render_template('repparq.html', title="Reporte Parqueo", data = data, suma=suma)
+	return render_template('repparq.html', title="Reporte Parqueo", data = data, suma=suma, logeado=logeado)
 
 @app.route('/m', methods=['GET', 'POST'])
 def m():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -799,10 +1036,16 @@ def m():
 			if(len(aux) > 0):
 				datacurso.append(aux)
 		return redirect(url_for('confirmacionm', carnet = datacarnet, nombre = datanombre, curso= datacurso, mid = mid, mcod = mcod))
-	return render_template('manuales.html', title="Manuales",  carreras=carreras)
+	return render_template('manuales.html', title="Manuales",  carreras=carreras, logeado=logeado)
 
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
 def confirmacionm(carnet, nombre, curso, mid, mcod):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	carnet = int(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
@@ -821,18 +1064,24 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
 					for i in range(cantidad):
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "Curso: "+cursos[i], 0))
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('m'))
-	return render_template('confirmacionm.html', title="Confirmación", carnet = carnet, nombre = nombre, cursos = cursos, mid = mid, mcod = mcod, cantidad=cantidad)
+	return render_template('confirmacionm.html', title="Confirmación", carnet = carnet, nombre = nombre, cursos = cursos, mid = mid, mcod = mcod, cantidad=cantidad, logeado=logeado)
 
 @app.route('/repm', methods=['GET', 'POST'])
 def repm():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -884,10 +1133,16 @@ def repm():
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-	return render_template('repm.html', title="Reporte Manuales", data = data, suma=suma, carreras=carreras)
+	return render_template('repm.html', title="Reporte Manuales", data = data, suma=suma, carreras=carreras, logeado=logeado)
 
 @app.route('/pag', methods=['GET', 'POST'])
 def pag():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -915,10 +1170,16 @@ def pag():
 		pcod = data[1]
 		ptotal = data[2]
 		return redirect(url_for('confirmacionpag', carnet = datacarnet, nombre = datanombre, total = datatotal, descripcion= datadescripcion, pid = pid, pcod = pcod, ptotal = ptotal))
-	return render_template('pag.html', title="Pagos", carreras = carreras)
+	return render_template('pag.html', title="Pagos", carreras = carreras, logeado=logeado)
 
 @app.route('/confirmacionpag/<carnet>&<nombre>&<total>&<descripcion>&<pid>&<pcod>&<ptotal>', methods=['GET', 'POST'])
 def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	carnet = int(carnet)
 	nombre = str(nombre)
 	total = float(total)
@@ -934,18 +1195,24 @@ def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion, 0))
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+					cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion, 0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('pag'))
-	return render_template('confirmacionpag.html', title="Confirmación", carnet = carnet, nombre = nombre, total=total, descripcion=descripcion, pid = pid, pcod = pcod,ptotal = ptotal)
+	return render_template('confirmacionpag.html', title="Confirmación", carnet = carnet, nombre = nombre, total=total, descripcion=descripcion, pid = pid, pcod = pcod,ptotal = ptotal, logeado=logeado)
 
 @app.route('/reppag', methods=['GET', 'POST'])
 def reppag():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -962,19 +1229,31 @@ def reppag():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	return render_template('reppag.html', title="Reporte Pagos", data = data, suma=suma)
+	return render_template('reppag.html', title="Reporte Pagos", data = data, suma=suma, logeado=logeado)
 
 @app.route('/grad', methods=['GET', 'POST'])
 def grad():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	if request.method == 'POST':
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
 		datatipo = request.form["tipo"]
 		return redirect(url_for('confirmaciongrad', tipo = datatipo, carnet = datacarnet, nombre = datanombre))
-	return render_template('graduacion.html', title="Graduación")
+	return render_template('graduacion.html', title="Graduación", logeado=logeado)
 
 @app.route('/confirmaciongrad/<tipo>&<carnet>&<nombre>', methods=['GET', 'POST'])
 def confirmaciongrad(tipo, carnet, nombre):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	tipo = int(tipo)
 	carnet = int(carnet)
 	nombre = str(nombre)
@@ -993,18 +1272,24 @@ def confirmaciongrad(tipo, carnet, nombre):
 						cursor.execute(consulta1)
 						precios1 = cursor.fetchall()
 						print(precios1[0])
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo) VALUES (%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0))
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+					cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('grad'))
-	return render_template('confirmaciongrad.html', title="Confirmación", nombre = nombre, carnet = carnet, tipo = tipo)
+	return render_template('confirmaciongrad.html', title="Confirmación", nombre = nombre, carnet = carnet, tipo = tipo, logeado=logeado)
 
 @app.route('/repgrad', methods=['GET', 'POST'])
 def repgrad():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -1023,10 +1308,16 @@ def repgrad():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	return render_template('repgrad.html', title="Reporte Graduación", data = data, suma=suma)
+	return render_template('repgrad.html', title="Reporte Graduación", data = data, suma=suma, logeado=logeado)
 
 @app.route('/reportes')
 def reportes():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -1069,10 +1360,16 @@ def reportes():
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	return render_template('reportes.html', title="Reportes", sumas = sumas, sumtotal=sumtotal)
+	return render_template('reportes.html', title="Reportes", sumas = sumas, sumtotal=sumtotal, logeado=logeado)
 
 @app.route('/repdiario', methods=['GET', 'POST'])
 def repdiario():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -1111,10 +1408,16 @@ def repdiario():
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('repdiario'))
-	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma)
+	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado)
 
 @app.route('/repdiariopdf', methods=['GET', 'POST'])
 def repdiariopdf():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -1144,6 +1447,12 @@ def repdiariopdf():
 @app.route('/repgen')
 def repgen():
 	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
+	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
@@ -1156,11 +1465,17 @@ def repgen():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	return render_template('repgen.html', title="Reporte general", data = data)
+	return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado)
 
 @app.route('/pagos')
 def pagos():
-    return render_template('pagos.html', title="Pagos")
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('home'))
+	return render_template('pagos.html', title="Pagos", logeado=logeado)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
