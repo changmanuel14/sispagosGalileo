@@ -104,7 +104,9 @@
                 <th>Concepto</th>
                 <th>Descripción</th>
                 <th>Total</th>
+                <th>Usuario</th>
                 <th>Recibo</th>
+                <th>Editar</th>
             </tr>
             {% for i in data %}
             <tr>
@@ -114,11 +116,13 @@
                 <td>{{i[3]}}</td>
                 <td>{{i[4]}}</td>
                 <td>Q. {{i[5]}}</td>
+                <td>{{i[7]}}</td>
                 <td><input type="number" class="inputtyperecibo" name="re{{i[6]}}"> </td>
+                <td><a href="/editarpago/{{i[6]}}" style="color: black;">Editar</a></td>
             </tr>
             {% endfor %}
         </table>
-        <center><button onclick="submit" class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}">Ver PDF</a></button></center>
+        <center><button onclick="submit" class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}" target="_blank">Ver PDF</a></button></center>
         <center><button onclick="submit" class="button">Registrar</button></center>
       </form>
     </main>

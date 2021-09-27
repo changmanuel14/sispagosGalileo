@@ -5,3 +5,4 @@ Sql/
 MyPDF.pdf
 pyvenv.cfg
 myvenv/
+flaskapp/uploads/

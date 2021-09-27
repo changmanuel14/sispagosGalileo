@@ -66,6 +66,11 @@ td, th {
   padding: 8px;
 }
 
+th {
+  text-align: center;
+  border: 1px solid #dddddd;
+}
+
 .tablacuadre td, th {
   font-size: 16px;
   border: 0px solid #dddddd;
@@ -73,10 +78,7 @@ td, th {
   padding: 0px;
 }
 
-th {
-  text-align: center;
-  border: 1px solid #dddddd;
-}
+
 
 table {
   border-spacing: 2px;

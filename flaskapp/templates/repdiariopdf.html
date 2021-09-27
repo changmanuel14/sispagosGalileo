@@ -39,12 +39,12 @@
         table {
             border-collapse: collapse;
             width: 100%;
-            border: 1px solid #dddddd;
+            border: 1px solid #000000;
         }
 
         td, th {
             font-size: 16px;
-            border: 1px solid #dddddd;
+            border: 1px solid #000000;
             text-align: left;
             padding: 8px;
         }
@@ -81,6 +81,7 @@
                                   <th>Concepto</th>
                                   <th>Descripción</th>
                                   <th>Total</th>
+                                  <th>Usuario</th>
                                   <th>Recibo</th>
                               </tr>
                               {% for i in data %}
@@ -90,24 +91,56 @@
                                   <td>{{i[2]}}</td>
                                   <td>{{i[3]}}</td>
                                   <td>{{i[4]}}</td>
-                                  <td>Q. {{i[5]}}</td>
+                                  <td>Q.{{i[5]}}</td>
+                                  <td>{{i[8]}}</td>
                                   <td>{{i[7]}}</td>
                               </tr>
                               {% endfor %}
                               <tr>
-                                  <th colspan="5">Total</th>
-                                  <td colspan="2">Q. {{suma}}</td>
+                                  <th colspan="5">Total Pagos</th>
+                                  <th colspan="3">Q.{{suma}}</th>
                               </tr>
+                              {% if contdev > 0 %}
                               <tr>
-                                <th colspan="5">Recibido Por</th>
-                                <td colspan="2"></td>
+                                  <th colspan="8">Devoluciones</th>
+                              </tr>
+                              {% for i in datadev %}
+                              <tr>
+                                <td>{{i[0]}}</td>
+                                <td>{{i[1]}}</td>
+                                <td>{{i[2]}}</td>
+                                <td>{{i[3]}}</td>
+                                <td>{{i[4]}}</td>
+                                <td>-Q.{{i[5]}}</td>
+                                <td>{{i[8]}}</td>
+                                <td>{{i[7]}}</td>
                             </tr>
+                              {% endfor %}
+                              {% endif %}
+                              <tr>
+                                <th colspan="5">Total Devoluciones</th>
+                                <th colspan="3">Q.{{sumadev}}</th>
+                            </tr>
+                            <tr>
+                                <th colspan="5">Total General</th>
+                                <th colspan="3">Q.{{suma - sumadev}}</th>
+                            </tr>
+                              
                           </table>
                           <br>
                           <br>
-                          <br>
-                          <br>
-                          <br>
+                          <table>
+                              <tr>
+                                  <th> <br><br><br></th>
+                                  <th><br><br><br></th>
+                                  <th><br><br><br></th>
+                              </tr>
+                              <tr>
+                                  <th>Hecho Por:</th>
+                                  <th>Revisado Por:</th>
+                                  <th>Recibido Por:</th>
+                              </tr>
+                          </table>
                       </main>
                       <!-- page-content" -->
                   </div>

@@ -106,12 +106,20 @@
                 <td>{{i[0]}}</td>
                 <td>{{i[1]}}</td>
                 <td>{{i[3]}}</td>
-                <td>Q. {{i[2]}}</td>
+                <td>Q.{{i[2]}}</td>
             </tr>
             {% endfor %}
             <tr>
-              <td colspan="3" style="text-align: center;">Suma</td>
-              <td id="totalpagos">{{sumtotal}}</td>
+              <th colspan="3" style="text-align: center;">Suma</th>
+              <td>Q.{{sumtotal}}</td>
+          </tr>
+          <tr>
+            <th colspan="3" style="text-align: center;">Devoluciones</th>
+            <td>Q.{{totaldev}}</td>
+          </tr>
+          <tr>
+            <th colspan="3" style="text-align: center;">Total</th>
+            <td id="totalpagos">Q.{{totaltotal}}</td>
           </tr>
         </table><br><br>
 
@@ -172,7 +180,7 @@
               <td id="tagdif" style="float: right;"></td>
             </tr>
           </table>
-          <center><button onclick="submit" class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}">Ver PDF - Reporte Diario</a></button></center>
+          <center><button onclick="submit" class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}" target="_blank">Ver PDF - Reporte Diario</a></button></center>
         </div>
         
     </main>
@@ -209,7 +217,9 @@
       if (cant200.length == 0) {
         cant200 = 0;
       }else cant200 = parseInt(cant200);
-      sumapagos = parseFloat(document.getElementById("totalpagos").innerHTML);
+      sumapagos = document.getElementById("totalpagos").innerHTML;
+      sumapagos = sumapagos.split('.')[1] + '.' + sumapagos.split('.')[2]
+      sumapagos = parseFloat(sumapagos)
       facturas = document.getElementById("facturas").value;
       if (facturas.length == 0) {
         facturas = 0;

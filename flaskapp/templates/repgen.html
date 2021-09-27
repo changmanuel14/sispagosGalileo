@@ -110,6 +110,7 @@
                 <th>Descripción</th>
                 <th>Recibo</th>
                 <th>Total</th>
+                <th colspan="2">Devolución</th>
             </tr>
             {% for i in data %}
             <tr>
@@ -120,6 +121,14 @@
                 <td>{{i[4]}}</td>
                 <td>{{i[5]}}</td>
                 <td>Q. {{i[6]}}</td>
+                {% if i[8] == 0 %}
+                <td>No</td>
+                <td><a href="/devolucion/{{i[7]}}" style="color: black;">Devolver</a></td>
+                {% else %}
+                <td>Si</td>
+                <td><a href="/verdev/{{i[7]}}" target="_blank" style="color: black;">Ver Devolución</a></td>
+                {% endif %}
+
             </tr>
             {% endfor %}
         </table>
