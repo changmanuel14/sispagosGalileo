@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, url_for, redirect, make_response, session
 import pymysql
-from datetime import date
+from datetime import date, datetime
 import os
 import pdfkit as pdfkit
 
@@ -1561,6 +1561,8 @@ def repdiariopdf():
 		logeado = 0
 	if logeado == 0:
 		return redirect(url_for('login'))
+	today = date.today()
+	d1 = today.strftime("%d/%m/%Y")
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -1585,7 +1587,7 @@ def repdiariopdf():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 	
-	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev)
+	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1)
 	options = {'enable-local-file-access': None}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
