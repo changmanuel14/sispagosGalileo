@@ -84,7 +84,7 @@
               <tr>
                 <th>Nombre</th>
                 <td>
-                    <input type="text" id="nombre" name="nombre" class="inputtext4" placeholder="  Nombre" value="{{datapago[1]}}">
+                    <input type="text" id="nombre" name="nombre" class="inputtext4" placeholder="  Nombre" value="{{datapago[1]}}" onblur="mayusculas()">
                 </td>
             </tr>
             <tr>
@@ -130,6 +130,11 @@
     <!-- page-content" -->
 </div>
 <script type="text/javascript">
+    function mayusculas(){
+        var nombre = document.getElementById('nombre').value
+        nombre = nombre.toUpperCase()
+        document.getElementById('nombre').value = nombre
+    }
     function cambiarfechaob(){
         var fechatext = document.getElementById('fecha')
         var data = fechatext.value
