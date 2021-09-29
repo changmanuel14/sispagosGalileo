@@ -146,8 +146,8 @@ def editarpago(idpago):
 		return redirect(url_for('repdiario'))
 	return render_template('editarpago.html', title='Editar Pago', logeado=logeado, datapago=datapago, codigos=codigos)
 
-@app.route('/')
-@app.route('/home')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/home', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	try:
