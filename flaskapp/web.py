@@ -1295,25 +1295,29 @@ def pag():
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
+	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	if request.method == 'POST':
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
 		datatotal = request.form["total"]
 		datadescripcion = request.form["descripcion"]
 		datacarrera = request.form["carrera"]
+		datames = request.form["mes"]
 		if len(datadescripcion) < 1:
 			datadescripcion = 0
 		if len(datatotal) < 1:
 			datatotal = 0
+		if len(datames) < 1:
+			datames = 0
 		data = datacarrera.split(',')
 		pid = data[0]
 		pcod = data[1]
 		ptotal = data[2]
-		return redirect(url_for('confirmacionpag', carnet = datacarnet, nombre = datanombre, total = datatotal, descripcion= datadescripcion, pid = pid, pcod = pcod, ptotal = ptotal))
-	return render_template('pag.html', title="Pagos", carreras = carreras, logeado=logeado)
+		return redirect(url_for('confirmacionpag', carnet = datacarnet, nombre = datanombre, total = datatotal, descripcion= datadescripcion, pid = pid, pcod = pcod, ptotal = ptotal, datames=datames))
+	return render_template('pag.html', title="Pagos", carreras = carreras, logeado=logeado, meses=meses)
 
-@app.route('/confirmacionpag/<carnet>&<nombre>&<total>&<descripcion>&<pid>&<pcod>&<ptotal>', methods=['GET', 'POST'])
-def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
+@app.route('/confirmacionpag/<carnet>&<nombre>&<total>&<descripcion>&<pid>&<pcod>&<ptotal>&<datames>', methods=['GET', 'POST'])
+def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal, datames):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -1327,6 +1331,7 @@ def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
 	pid = str(pid)
 	pcod = str(pcod)
 	ptotal = str(ptotal)
+	datames = str(datames)
 	if pcod != 'Pagos' and pcod != 'Curso Dirigido':
 		total = float(ptotal)
 		descripcion = pcod
@@ -1335,8 +1340,12 @@ def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion, 0,session['idusercaja']))
+					if datames == '0':
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion, 0,session['idusercaja']))
+					else:
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion + ' ' + datames, 0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
@@ -1634,7 +1643,8 @@ def pagos():
 		logeado = 0
 	if logeado == 0:
 		return redirect(url_for('login'))
-	return render_template('pagos.html', title="Pagos", logeado=logeado)
+	
+	return render_template('pagos.html', title="Pagos", logeado=logeado, meses=meses)
 
 
 @app.route('/imprimir/<idpagos>')
