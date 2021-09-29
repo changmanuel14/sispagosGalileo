@@ -84,7 +84,7 @@
           </select><input type="number" class="inputtext5" id="cant" name="cant" value="1" readonly></center>
         <center>
           <input type="number" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"><br>
+          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br>
           <br>
           <div id="myDiv">
             <input type="text" id="mes1" name="mes1" class="inputtext1" required placeholder="  Descripción">
@@ -117,6 +117,13 @@
   <option value="5) Práctica Materno Infantil"></option>
   <option value="6) Práctica Administrativa"></option>
 </datalist>
+<script type="text/javascript">
+  function mayusculas(){
+        var nombre = document.getElementById('nombre').value
+        nombre = nombre.toUpperCase()
+        document.getElementById('nombre').value = nombre
+    }
+</script>
 <script type="text/javascript">
   function eliminar() {
     var num = parseInt(document.getElementById('cant').value)

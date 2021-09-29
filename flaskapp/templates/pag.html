@@ -84,10 +84,13 @@
           </select></center><br>
         <center>
           <input type="number" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"><br><br>
+          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br><br>
           <div style="display: none;" id="camposextra">
             <input type="number" id="total" name="total" class="inputtext" placeholder="  Total">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="descripcion" name="descripcion" class="inputtext1" placeholder="  Descripción"><br>
+          </div>
+          <div style="display: none;" id="camposextra1">
+            <input type="text" id="mes" name="mes" class="inputtext1" placeholder="  Mes" list="meses"><br>
           </div>
       </center>
         <br>
@@ -99,14 +102,31 @@
     </main>
     <!-- page-content" -->
 </div>
+<datalist id="meses">
+  {% for i in meses %}
+  <option value="{{i}}">
+  {% endfor %}
+</datalist>
+<script type="text/javascript">
+  function mayusculas(){
+        var nombre = document.getElementById('nombre').value
+        nombre = nombre.toUpperCase()
+        document.getElementById('nombre').value = nombre
+    }
+</script>
 <script type="text/javascript">
   function cambio() {
     var valores = document.getElementById('carrera').value
     var data = valores.split(',')
     if(data[1] == 'Pagos'){
       document.getElementById('camposextra').style.display = 'block'
+      document.getElementById('camposextra1').style.display = 'none'
+    }else if (data[1] == 'Mensualidad Ingles') {
+      document.getElementById('camposextra').style.display = 'none'
+      document.getElementById('camposextra1').style.display = 'block'
     }else {
       document.getElementById('camposextra').style.display = 'none'
+      document.getElementById('camposextra1').style.display = 'none'
     }
   }
 </script>

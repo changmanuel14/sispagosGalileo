@@ -76,7 +76,7 @@
       <form action="" method="POST">
         <center>
         <input type="number" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"><br>
+        <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br>
       </center>
         <br>
         <table>
@@ -111,6 +111,13 @@
     </main>
     <!-- page-content" -->
 </div>
+<script type="text/javascript">
+  function mayusculas(){
+        var nombre = document.getElementById('nombre').value
+        nombre = nombre.toUpperCase()
+        document.getElementById('nombre').value = nombre
+    }
+</script>
 <script type="text/javascript">
   function calctotal(){
     var examenvista = document.getElementById('exavis')

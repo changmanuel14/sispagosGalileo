@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, url_for, redirect, make_respo
 import pymysql
 from datetime import date, datetime
 import os
+import webbrowser
 import pdfkit as pdfkit
 
 
@@ -903,7 +904,6 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 					consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE idcodigos = "' + str(pid) + '"'
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
-					print(precios1[0])
 					for i in range(cantidad):
 						if 'TUEVQ' in pcod:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
@@ -911,7 +911,7 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 						else:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), meses[i],0,session['idusercaja']))
-				conexion.commit()
+						conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
@@ -1197,15 +1197,21 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 					consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE idcodigos = "' + mid + '"'
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
+					idpagos = []
 					for i in range(cantidad):
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 						cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
-				conexion.commit()
+						conexion.commit()
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						idpago = cursor.fetchone()
+						idpago = idpago[0]
+						idpagos.append(idpago)
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		return redirect(url_for('m'))
+		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacionm.html', title="Confirmación", carnet = carnet, nombre = nombre, cursos = cursos, mid = mid, mcod = mcod, cantidad=cantidad, logeado=logeado)
 
 @app.route('/repm', methods=['GET', 'POST'])
@@ -1289,25 +1295,29 @@ def pag():
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
+	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	if request.method == 'POST':
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
 		datatotal = request.form["total"]
 		datadescripcion = request.form["descripcion"]
 		datacarrera = request.form["carrera"]
+		datames = request.form["mes"]
 		if len(datadescripcion) < 1:
 			datadescripcion = 0
 		if len(datatotal) < 1:
 			datatotal = 0
+		if len(datames) < 1:
+			datames = 0
 		data = datacarrera.split(',')
 		pid = data[0]
 		pcod = data[1]
 		ptotal = data[2]
-		return redirect(url_for('confirmacionpag', carnet = datacarnet, nombre = datanombre, total = datatotal, descripcion= datadescripcion, pid = pid, pcod = pcod, ptotal = ptotal))
-	return render_template('pag.html', title="Pagos", carreras = carreras, logeado=logeado)
+		return redirect(url_for('confirmacionpag', carnet = datacarnet, nombre = datanombre, total = datatotal, descripcion= datadescripcion, pid = pid, pcod = pcod, ptotal = ptotal, datames=datames))
+	return render_template('pag.html', title="Pagos", carreras = carreras, logeado=logeado, meses=meses)
 
-@app.route('/confirmacionpag/<carnet>&<nombre>&<total>&<descripcion>&<pid>&<pcod>&<ptotal>', methods=['GET', 'POST'])
-def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
+@app.route('/confirmacionpag/<carnet>&<nombre>&<total>&<descripcion>&<pid>&<pcod>&<ptotal>&<datames>', methods=['GET', 'POST'])
+def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal, datames):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -1321,6 +1331,7 @@ def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
 	pid = str(pid)
 	pcod = str(pcod)
 	ptotal = str(ptotal)
+	datames = str(datames)
 	if pcod != 'Pagos' and pcod != 'Curso Dirigido':
 		total = float(ptotal)
 		descripcion = pcod
@@ -1329,8 +1340,12 @@ def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion, 0,session['idusercaja']))
+					if datames == '0':
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion, 0,session['idusercaja']))
+					else:
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion + ' ' + datames, 0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
@@ -1628,7 +1643,59 @@ def pagos():
 		logeado = 0
 	if logeado == 0:
 		return redirect(url_for('login'))
-	return render_template('pagos.html', title="Pagos", logeado=logeado)
+	
+	return render_template('pagos.html', title="Pagos", logeado=logeado, meses=meses)
+
+
+@app.route('/imprimir/<idpagos>')
+def imprimir(idpagos):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	array = idpagos.split(',')
+	newarray = []
+	numpagos = len(array)
+	for i in range(numpagos):
+		varaux = ''
+		for j in array[i]:
+			if j.isdigit():
+				varaux = varaux + str(j)
+		newarray.append(varaux)
+
+	today = date.today()
+	datagen = []
+	suma = 0
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				for i in range(numpagos):
+					consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.total, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE p.idpagos = '+str(newarray[i])+';'
+					cursor.execute(consulta)
+				# Con fetchall traemos todas las filas
+					data = cursor.fetchone()
+					suma = suma + float(data[5])
+					datagen.append(data)
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	
+	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma)
+	options = {'enable-local-file-access': None, 'page-size': 'A9', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '0', 'margin-top': '0', 'margin-bottom': '5', 'encoding': 'utf-8'}
+	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+	response = make_response(pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
+	print(response)
+	webbrowser.open("http://galileoserver:5000/pagos")
+	return response
+
+
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)

@@ -84,7 +84,7 @@
           </select></center><br>
         <center>
           <input type="number" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"><br><br>
+          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br><br>
           <input type="number" id="total" name="total" class="inputtext" required placeholder="  Total">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <input type="text" id="talla" name="talla" class="inputtext1" required placeholder="  Talla"><br>
       </center>
@@ -97,5 +97,12 @@
     </main>
     <!-- page-content" -->
 </div>
+<script type="text/javascript">
+  function mayusculas(){
+        var nombre = document.getElementById('nombre').value
+        nombre = nombre.toUpperCase()
+        document.getElementById('nombre').value = nombre
+    }
+</script>
   <!-- page-wrapper -->
 {% endblock %}
