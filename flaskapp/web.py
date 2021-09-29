@@ -1644,8 +1644,7 @@ def pagos():
 	if logeado == 0:
 		return redirect(url_for('login'))
 	
-	return render_template('pagos.html', title="Pagos", logeado=logeado, meses=meses)
-
+	return render_template('pagos.html', title="Pagos", logeado=logeado)
 
 @app.route('/imprimir/<idpagos>')
 def imprimir(idpagos):
