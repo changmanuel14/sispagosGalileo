@@ -1565,6 +1565,7 @@ def repdiario():
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
+		webbrowser.open("http://galileoserver:5000/repdiariopdf")
 		return redirect(url_for('repdiario'))
 	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev)
 
