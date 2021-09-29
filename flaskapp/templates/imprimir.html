@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+    <title>Ticket de Pago</title>
+    <style>
+        th, td {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body style="border:-5; margin: -5;">
+    <h1>Ticket de Pago</h1>
+    <h2>Fecha: {{datagen[0][2]}}</h2>
+    <h2>Nombre: {{datagen[0][0]}}</h2>
+    <h2>Carnet: {{datagen[0][1]}}</h2>
+    
+    <table>
+        <tr>
+            <th>Concepto</th>
+            <th>Descripcion</th>
+            <th>Total</th>
+        </tr>
+        {% for i in datagen %}
+        <tr>
+            <td style="text-align: center; font-size: 22px;">{{i[3]}}</td>
+            <td style="text-align: center; font-size: 22px;">{{i[4]}}</td>
+            <td style="text-align: center; font-size: 22px;">Q.{{i[5]}}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th style="text-align: left; font-size: 22px;" colspan="2">Total: </th>
+            <th style="text-align: center; font-size: 22px;">{{suma}}</th>
+        </tr>
+    </table>
+    <br>
+    <br>
+    <h4>NOTA: PARA RECIBIR SU MANUAL DEBE PRESENTAR ESTE TICKET - NO LO PIERDA</h4>
+    <br><br>
+    <center><h6>.....................................................</h6></center>
+</body>
