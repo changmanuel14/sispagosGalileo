@@ -125,42 +125,43 @@
 
         </div>
         <div class="mitad1">
+          <form action="" method="POST">
           <table class="tablacuadre">
             <tr>
               <td>Q 1</td>
-              <td><input type="number" step="0.01" id="Q1" class="inputtextcuadre" min="0"   onchange="cuadre()"></td>
+              <td><input type="number" step="0.01" id="Q1" name="Q1" class="inputtextcuadre" min="0" value="{{efectivo[0]}}"  onchange="cuadre()"></td>
             </tr>
             <tr>
               <td>Q 5</td>
-              <td><input type="number" id="Q5" class="inputtextcuadre"  min="0" onchange="cuadre()"></td>
+              <td><input type="number" id="Q5" name="Q5" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[1]}}"></td>
             </tr>
             <tr>
               <td>Q 10</td>
-              <td><input type="number" id="Q10" class="inputtextcuadre"  min="0" onchange="cuadre()"></td>
+              <td><input type="number" id="Q10" name="Q10" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[2]}}"></td>
             </tr>
             <tr>
               <td>Q 20</td>
-              <td><input type="number" id="Q20" class="inputtextcuadre" min="0" onchange="cuadre()"></td>
+              <td><input type="number" id="Q20" name="Q20" class="inputtextcuadre" min="0" onchange="cuadre()" value="{{efectivo[3]}}"></td>
             </tr>
             <tr>
               <td>Q 50</td>
-              <td><input type="number" id="Q50" class="inputtextcuadre"  min="0" onchange="cuadre()"></td>
+              <td><input type="number" id="Q50" name="Q50" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[4]}}"></td>
             </tr>
             <tr>
               <td>Q 100</td>
-              <td><input type="number" id="Q100" class="inputtextcuadre"  min="0" onchange="cuadre()"></td>
+              <td><input type="number" id="Q100" name="Q100" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[5]}}"></td>
             </tr>
             <tr>
               <td>Q 200</td>
-              <td><input type="number" id="Q200" class="inputtextcuadre"  min="0" onchange="cuadre()"></td>
+              <td><input type="number" id="Q200" name="Q200" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[6]}}"></td>
             </tr>
             <tr>
               <td>Facturas</td>
-              <td><input type="number" id="facturas" class="inputtextcuadre"  min="0" onchange="cuadre()"></td>
+              <td><input type="number" id="facturas" name="facturas" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[7]}}"></td>
             </tr>
             <tr>
               <td>Vales</td>
-              <td><input type="number" id="vales" class="inputtextcuadre" min="0" onchange="cuadre()"></td>
+              <td><input type="number" id="vales" name="vales" class="inputtextcuadre" min="0" onchange="cuadre()" value="{{efectivo[8]}}"></td>
             </tr>
           </table><br>
           <table class="tablacuadre">
@@ -180,13 +181,17 @@
               <td id="tagdif" style="float: right;"></td>
             </tr>
           </table>
-          <center><button onclick="submit" class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}" target="_blank">Ver PDF - Reporte Diario</a></button></center>
+          <center><button onclick="submit" class="button">Guardar datos</button>  <button class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}" target="_blank">Ver PDF - Reporte Diario</a></button></center>
+        </form>
         </div>
         
     </main>
     <!-- page-content" -->
   </div>
   <script>
+    window.onload = function(){
+      cuadre()
+    }
     function cuadre() {
       var cant1, cant5, cant10, cant20, cant50, cant100, cant200, dif, sumadinero, sumapagos, efectivo, facturas, vales, extras;
       cant1 = document.getElementById("Q1").value;
