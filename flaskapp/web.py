@@ -1742,7 +1742,7 @@ def imprimir(idpagos):
 		print("Ocurrió un error al conectar: ", e)
 	
 	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma)
-	options = {'enable-local-file-access': None, 'page-size': 'A9', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '0', 'margin-top': '0', 'margin-bottom': '5', 'encoding': 'utf-8'}
+	options = {'enable-local-file-access': None, 'page-size': 'A8', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '0', 'margin-top': '0', 'margin-bottom': '5', 'encoding': 'utf-8', 'zoom': '0.8'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
 	response = make_response(pdf)
