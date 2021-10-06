@@ -1188,7 +1188,10 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 	cursos=curso.split(',')
 	cantidad = len(cursos)
 	for i in range(cantidad):
-		cursos[i] = str(cursos[i].split("'")[1])
+		try:
+			cursos[i] = str(cursos[i].split("'")[1])
+		except:
+			cursos[i] = cursos[i]
 	if request.method == "POST":
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
