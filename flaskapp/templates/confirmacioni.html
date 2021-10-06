@@ -75,23 +75,18 @@
       <h5>Descripción: {{data[0][0]}}</h5>
       {% if rinsc != 0 %}
       <h5>Inscripción: Aplica</h5>
-      {% else %}
-      <h5>Inscripción: No Aplica</h5>
       {% endif %}
       {% if rint != 0 %}
       <h5>Internet Inscripción: Aplica</h5>
-      {% else %}
-      <h5>Internet Inscripción: No Aplica</h5>
       {% endif %}
       {% if rrein != 0 %}
       <h5>Internet reinscripción: Aplica</h5>
-      {% else %}
-      <h5>Internet reinscripción: No Aplica</h5>
       {% endif %}
       {% if exavis != 0 %}
       <h5>Examen de la Vista: Aplica</h5>
-      {% else %}
-      <h5>Examen de la Vista: No Aplica</h5>
+      {% endif %}
+      {% if prope != 0 %}
+      <h5>Propedeutico: Aplica</h5>
       {% endif %}
       <h5>Carnet: {{carnet}}</h5>
       <h5>Nombre: {{nombre}}</h5>

@@ -84,7 +84,7 @@
         </select></center><br>
         <center>
         <input type="number" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"><br>
+        <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br>
       </center>
         <br>
         <table>
@@ -127,6 +127,14 @@
             </td>
           </tr>
           <tr>
+            <th>Propedeutico</th>
+            <td>
+              <input type="checkbox" id="prope" name="prope" value="1"  onclick="calctotal()">
+              <label for="prope">Q </label>
+              <label for="prope" id="propel">1000.00</label>
+            </td>
+          </tr>
+          <tr>
             <th><h3>Total</h3></th>
             <td>
               <input type="text" id="total" name="total" class="inputtext3" readonly>
@@ -157,6 +165,7 @@
     var int1 = document.getElementById('rint')
     var rint1 = document.getElementById('rrein')
     var exavis = document.getElementById('exavis')
+    var prope = document.getElementById('prope')
     var mese = document.getElementById('mesextra').value
     var tot = document.getElementById('total')
     var total = 0
@@ -175,7 +184,6 @@
     }
     if (rint1.checked == true){
       aux = rint.innerHTML
-      console.log(aux)
       aux = parseFloat(aux)
       total = total + aux
     }
@@ -183,12 +191,15 @@
       aux = 50
       total = total + aux
     }
+    if (prope.checked == true){
+      aux = 1000
+      total = total + aux
+    }
     if (mese.length == 0){
       total = total + 0
     }else {
       total = total + parseFloat(mese)
     }
-    console.log(total)
     tot.value = 'Q ' + total.toFixed(2)
 
   }
