@@ -96,6 +96,7 @@
         <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
         <form action="" method="POST">
           <input type="number" class="inputtext1" name="regen" required placeholder="  Boleta General">
+          <br><br>
         <table class="sortable">
             <tr>
                 <th>Nombre</th>
@@ -106,7 +107,7 @@
                 <th>Total</th>
                 <th>Usuario</th>
                 <th>Recibo</th>
-                <th>Editar</th>
+                <th colspan="2">Opciones</th>
             </tr>
             {% for i in data %}
             <tr>
@@ -119,11 +120,12 @@
                 <td>{{i[7]}}</td>
                 <td><input type="number" class="inputtyperecibo" name="re{{i[6]}}"> </td>
                 <td><a href="/editarpago/{{i[6]}}" style="color: black;">Editar</a></td>
+                <td><a href="/imprimir/{{i[6]}}" style="color: black;">Imprimir</a></td>
             </tr>
             {% endfor %}
         </table>
-        <center><button onclick="submit" class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}" target="_blank">Ver PDF</a></button></center>
-        <center><button onclick="submit" class="button">Registrar</button></center>
+        <br>
+        <center><button onclick="submit" class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}" target="_blank">Ver PDF</a></button>  <button onclick="submit" class="button">Registrar</button></center>
       </form>
     </main>
     <!-- page-content" -->
