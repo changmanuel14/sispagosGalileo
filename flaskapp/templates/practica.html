@@ -161,10 +161,8 @@
       var desc = document.getElementById(aux1)
       if(aux.includes('LBCQ') || aux.includes('MGGQ') || aux.includes('TLCQ')) {
         desc.placeholder = 'Mes'
-        desc.value = ''
         desc.setAttribute('list', 'meses')
       }else if(aux.includes('LENQ')){
-        desc.value = ''
         desc.placeholder = 'Tipo de Práctica'
         desc.setAttribute('list', 'pracenf')
       }else if(aux.includes('THDQ') || (aux.includes('TRADQ') && !(aux.includes('Prepractica')))){
@@ -173,15 +171,12 @@
         if(aux.includes('THDQ')) desc.value = 'Pago de Práctica THDQ'
         else desc.value = 'Pago de Práctica TRADQ'
       }else if(aux.includes('TOPTQ') || aux.includes('TRADQ')){
-        desc.value = ''
         desc.placeholder = 'Módulo'
         desc.setAttribute('list', 'modulos')
       }else if(aux.includes('TUEVQ')){
-        desc.value = ''
         desc.setAttribute('list', '')
         desc.placeholder = 'Monto'
       }else {
-        desc.value = ''
         desc.setAttribute('list', '')
         desc.placeholder = 'Descripción'
       }
