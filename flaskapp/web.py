@@ -257,7 +257,7 @@ def confirmacionopt(carnet, nombre, aro, lente, exavis):
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
-					if exavis != 0:
+					if exavis != 0 or exavis != '0':
 						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
 						cursor.execute(consulta)
 						datos = cursor.fetchall()
@@ -1754,8 +1754,6 @@ def imprimir(idpagos):
 	print(response)
 	webbrowser.open("http://galileoserver:5000/pagos")
 	return response
-
-
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
