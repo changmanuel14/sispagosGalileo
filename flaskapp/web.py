@@ -899,7 +899,7 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 				meses[i] = 'Mes: ' + str(meses[i])
 		elif 'TOPTQ' in pcod or ('TRADQ' in pcod and 'Pre' in pcod):
 			try:
-				meses[i] = 'Módulo ' + str(meses[i].split("'")[1])
+				meses[i] = 'Módulo: ' + str(meses[i].split("'")[1])
 			except:
 				meses[i] = 'Módulo: ' + str(meses[i])
 		else:
@@ -1608,12 +1608,14 @@ def repdiario():
 			try:
 				with conexion.cursor() as cursor:
 					regen = request.form["regen"]
-					if regen == '0':
+					if regen == '0' or len(regen) < 1:
 						for i in data:
 							aux = "re"+str(i[6])
 							varaux = request.form[aux]
-							consulta = 'UPDATE pagos SET recibo = '+str(varaux)+' WHERE idpagos = '+str(i[6])+';'
-							cursor.execute(consulta)
+							if len(varaux) > 0:
+								consulta = 'UPDATE pagos SET recibo = '+str(varaux)+' WHERE idpagos = '+str(i[6])+';'
+								print(consulta)
+								cursor.execute(consulta)
 					else:
 						for i in data:
 							consulta = 'UPDATE pagos SET recibo = '+str(regen)+' WHERE idpagos = '+str(i[6])+';'
@@ -1625,7 +1627,7 @@ def repdiario():
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		webbrowser.open("http://galileoserver:5000/repdiariopdf")
+		#webbrowser.open("http://galileoserver:5000/repdiariopdf")
 		return redirect(url_for('repdiario'))
 	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev)
 
@@ -1752,7 +1754,7 @@ def imprimir(idpagos):
 	response.headers['Content-Type'] = 'application/pdf'
 	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
 	print(response)
-	webbrowser.open("http://galileoserver:5000/pagos")
+	#webbrowser.open("http://galileoserver:5000/pagos")
 	return response
 
 if __name__ == '__main__':
