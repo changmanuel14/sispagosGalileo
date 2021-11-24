@@ -81,7 +81,7 @@ def devolucion(idpago):
 	return render_template('devolucion.html', title='Devolución de Pago', logeado=logeado, datapago=datapago)
 
 @app.route("/eliminarpago/<idpago>", methods=['GET', 'POST'])
-def editarpago(idpago):
+def eliminarpago(idpago):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -92,20 +92,21 @@ def editarpago(idpago):
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'SELECT recibo from  pagos where idpagos = ' + str(idpago) + ';'
+				consulta = 'SELECT recibo from pagos where idpagos = ' + str(idpago) + ';'
 				cursor.execute(consulta)
 				recibo = cursor.fetchone()
 				recibo = recibo[0]
-				if recibo != '0' and recibo != 0:
-					data = '1'
-				else:
-					consulta = 'DELETE from  pagos where idpagos = ' + str(idpago) + ';'
-					data = 0
+				print(recibo)
+				if recibo == '0' or recibo == 0:
+					print('eliminacion')
+					consulta = 'DELETE from pagos where idpagos = ' + str(idpago) + ';'
+					cursor.execute(consulta)
+					conexion.commit()
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	return redirect(url_for('repdiario', data=data))
+	return redirect(url_for('repdiario'))
 
 @app.route("/editarpago/<idpago>", methods=['GET', 'POST'])
 def editarpago(idpago):
@@ -1602,8 +1603,8 @@ def reportes():
 		return redirect(url_for('reportes'))
 	return render_template('reportes.html', title="Reportes", sumas = sumas, sumtotal=sumtotal, logeado=logeado, datadev=datadev, totaldev=totaldev, totaltotal=totaltotal, efectivo=efectivo)
 
-@app.route('/repdiario/<data>', methods=['GET', 'POST'])
-def repdiario(data):
+@app.route('/repdiario', methods=['GET', 'POST'])
+def repdiario():
 	try:
 		logeado = session['logeadocaja']
 	except:

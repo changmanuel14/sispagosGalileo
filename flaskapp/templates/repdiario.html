@@ -108,7 +108,7 @@
                 <th>Total</th>
                 <th>Usuario</th>
                 <th>Recibo</th>
-                <th colspan="2">Opciones</th>
+                <th colspan="3">Opciones</th>
             </tr>
             {% for i in data %}
             <tr>
@@ -121,6 +121,7 @@
                 <td>{{i[7]}}</td>
                 <td><input type="number" class="inputtyperecibo" name="re{{i[6]}}"> </td>
                 <td><a href="/editarpago/{{i[6]}}" style="color: black;">Editar</a></td>
+                <td><a href="/eliminarpago/{{i[6]}}" style="color: black;">Eliminar</a></td>
                 <td><a href="/imprimir/{{i[6]}}" style="color: black;" target=”_blank”>Imprimir</a></td>
             </tr>
             {% endfor %}
