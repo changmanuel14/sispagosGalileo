@@ -101,7 +101,12 @@
         <br>
         <input type="text" id="myInput4" onkeyup="myFunction5()" placeholder="  Descripción" class="inputtext3">    
         <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-        <table class="sortable" id="myTable">
+        <br>
+        <button id="botonabajo" onclick="bajarnum()" class="botred"> < </button>
+        <input type="number" id="numpagina" step="1" onchange="calcmostrar()" class="botred" value="1" style="text-align: right;">
+        <button id="botonarriba" onclick="subirnum()" class="botred"> > </button>
+        <br>
+        <table class="sorttable" id="myTable" data-page-length="25">
             <tr>
                 <th>Nombre</th>
                 <th>Carnet</th>
@@ -134,6 +139,16 @@
         </table>
     </main>
     <script>
+        function calcmostrar() {
+          var input, filter, table, tr, td, i, txtValue, numpag;
+          input = document.getElementById("myInput");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("myTable");
+          tr = table.getElementsByTagName("tr");
+          numpag = document.getElementById("numpagina").value;
+
+          
+        }
         function myFunction() {
           // Declare variables
           var input, filter, table, tr, td, i, txtValue;

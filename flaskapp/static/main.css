@@ -78,7 +78,11 @@ th {
   padding: 0px;
 }
 
-
+.botred {
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+}
 
 table {
   border-spacing: 2px;

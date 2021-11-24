@@ -80,6 +80,33 @@ def devolucion(idpago):
 		return redirect(url_for('repgen'))
 	return render_template('devolucion.html', title='Devolución de Pago', logeado=logeado, datapago=datapago)
 
+@app.route("/eliminarpago/<idpago>", methods=['GET', 'POST'])
+def editarpago(idpago):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT recibo from  pagos where idpagos = ' + str(idpago) + ';'
+				cursor.execute(consulta)
+				recibo = cursor.fetchone()
+				recibo = recibo[0]
+				if recibo != '0' and recibo != 0:
+					data = '1'
+				else:
+					consulta = 'DELETE from  pagos where idpagos = ' + str(idpago) + ';'
+					data = 0
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return redirect(url_for('repdiario', data=data))
+
 @app.route("/editarpago/<idpago>", methods=['GET', 'POST'])
 def editarpago(idpago):
 	try:
@@ -1575,8 +1602,8 @@ def reportes():
 		return redirect(url_for('reportes'))
 	return render_template('reportes.html', title="Reportes", sumas = sumas, sumtotal=sumtotal, logeado=logeado, datadev=datadev, totaldev=totaldev, totaltotal=totaltotal, efectivo=efectivo)
 
-@app.route('/repdiario', methods=['GET', 'POST'])
-def repdiario():
+@app.route('/repdiario/<data>', methods=['GET', 'POST'])
+def repdiario(data):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -1601,7 +1628,10 @@ def repdiario():
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-
+	if data == 1 or data == '1':
+		mensaje = "No se pudo eliminar el elemento seleccionado"
+	else:
+		mensaje = ""
 	if request.method == 'POST':
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
@@ -1627,7 +1657,7 @@ def repdiario():
 			print("Ocurrió un error al conectar: ", e)
 		webbrowser.open("http://galileoserver:5000/repdiariopdf")
 		return redirect(url_for('repdiario'))
-	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev)
+	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev, mensaje=mensaje)
 
 @app.route('/repdiariopdf', methods=['GET', 'POST'])
 def repdiariopdf():
@@ -1689,12 +1719,13 @@ def repgen():
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
 				data = cursor.fetchall()
+				conteo = len(data)
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado)
+	return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo)
 
 @app.route('/pagos')
 def pagos():
