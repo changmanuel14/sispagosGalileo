@@ -165,12 +165,13 @@
       }else if(aux.includes('LENQ')){
         desc.placeholder = 'Tipo de Práctica'
         desc.setAttribute('list', 'pracenf')
-      }else if(aux.includes('THDQ') || (aux.includes('TRADQ') && !(aux.includes('Prepractica')))){
+      }else if(aux.includes('THDQ') || (aux.includes('TRADQ') && !(aux.includes('Prepractica'))) || aux.includes('Optometria')  && aux.includes('EPS')){
         desc.placeholder = 'Descripción'
         desc.setAttribute('list', '')
         if(aux.includes('THDQ')) desc.value = 'Pago de Práctica THDQ'
+        else if (aux.includes('Optometria')) desc.value = 'Pago de EPS TOPTQ'
         else desc.value = 'Pago de Práctica TRADQ'
-      }else if(aux.includes('TOPTQ') || aux.includes('TRADQ')){
+      }else if(aux.includes('TOPTQ') && !(aux.includes('EPS')) || aux.includes('TRADQ')){
         desc.placeholder = 'Módulo'
         desc.setAttribute('list', 'modulos')
       }else if(aux.includes('TUEVQ')){

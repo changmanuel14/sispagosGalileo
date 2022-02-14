@@ -1524,6 +1524,7 @@ def reportes():
 				sumtotal = 0
 				for i in data:
 					sumtotal = sumtotal + i[3]
+				sumtotal = round(sumtotal, 2)
 				sumas = []
 				suma = 0
 				cod = ""
@@ -1555,6 +1556,7 @@ def reportes():
 				totaldev = 0
 				for i in datadev:
 					totaldev = totaldev + float(i[3])
+				totaldev = round(totaldev, 2)
 				totaltotal = sumtotal - totaldev
 
 		finally:
