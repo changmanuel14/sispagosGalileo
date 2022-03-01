@@ -1,0 +1,404 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+    <i class="fas fa-bars"></i>
+  </a>
+  <nav id="sidebar" class="sidebar-wrapper">
+    <div class="sidebar-content">
+      <div class="sidebar-brand">
+        <div id="close-sidebar">
+          <i class="fas fa-times"></i>
+        </div>
+      </div>
+      <!-- sidebar-header  -->
+      
+      <div class="sidebar-menu">
+        <ul>
+          <li class="header-menu">
+            <span>Opciones</span>
+          </li>
+          <br>
+          <li >
+            <a href="/i">
+              <span>Inscripciones</span>
+            </a>
+          </li>
+          <li  >
+              <a href="/u">
+                  <span>Uniformes</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/p">
+                  <span>Practica</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/m">
+                  <span>Manuales</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/pag">
+                  <span>Pagos</span>
+              </a>
+          </li>
+          <li  >
+              <a href="/grad">
+                  <span>Graduacion</span>
+              </a>
+          </li>
+          <li  >
+            <a href="/extra">
+                <span>Pagos Extra</span>
+            </a>
+        </li>
+        <li  >
+          <a href="/parqueo">
+              <span>Parqueo</span>
+          </a>
+      </li>
+      <li  >
+        <a href="/optica">
+            <span>Óptica</span>
+        </a>
+    </li>
+    <li  >
+      <a href="/laboratorio">
+          <span>Laboratorio</span>
+      </a>
+  </li>
+      <!-- sidebar-menu  -->
+    
+    <!-- sidebar-content  -->
+  </nav>
+  <!-- sidebar-wrapper  -->
+  <main class="page-content" id="main">
+    <div class="container">
+      <center><h1>Laboratorio</h1></center>
+      <hr>
+      <form action="" method="POST">
+        <center><select name="empresa" id="empresa" class="inputtext" onchange="aplicardescuento()">
+          <option value="0">Seleccione una empresa</option>
+          {% for i in empresas %}
+          <option value="{{i[1]}}">{{i[0]}}</option>
+          {% endfor %}
+        </select></center><br>
+        <center>
+        <input type="number" id="carnet" name="carnet" class="inputtext" placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br>
+      </center>
+      <br>
+      <h2 id="h1total">Total: Q 0.00</h2>
+      <br>
+      <div class="container1">
+        <div class="item1" style="background-color: #dff6ff">
+          <h3>{{tipoexamen[0][0]}}</h3>
+          <table class="tablacuadre">
+          {% for i in examenes %}
+          {% if i[1] == tipoexamen[0][1] %}
+          <tr>
+            <td style="width: 80%;">
+              <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+              <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+            </td>
+            <td>
+              <label for="exa{{i[3]}}">Q </label>
+              <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+        <h3>{{tipoexamen[1][0]}}</h3>
+        <table class="tablacuadre">
+        {% for i in examenes %}
+        {% if i[1] == tipoexamen[1][1] %}
+        <tr>
+          <td style="width: 80%;">
+            <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+            <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+          </td>
+          <td>
+            <label for="exa{{i[3]}}">Q </label>
+            <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+      <h3>{{tipoexamen[2][0]}} xd</h3>
+      <table class="tablacuadre">
+      {% for i in examenes %}
+      {% if i[1] == tipoexamen[2][1] %}
+      <tr>
+        <td style="width: 80%;">
+          <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}"  style="width: 5%;" onclick="calctotal()">
+          <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+        </td>
+        <td>
+          <label for="exa{{i[3]}}">Q </label>
+          <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </table>
+    <h3>{{tipoexamen[8][0]}}</h3>
+    <table class="tablacuadre">
+    {% for i in examenes %}
+    {% if i[1] == tipoexamen[8][1] %}
+    <tr>
+      <td style="width: 80%;">
+        <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+        <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+      </td>
+      <td>
+        <label for="exa{{i[3]}}">Q </label>
+        <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </table>
+        </div>
+        <div class="item1">
+          <h3>{{tipoexamen[5][0]}}</h3>
+          <table class="tablacuadre">
+          {% for i in examenes %}
+          {% if i[1] == tipoexamen[5][1] %}
+          <tr>
+            <td style="width: 80%;">
+              <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+              <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+            </td>
+            <td>
+              <label for="exa{{i[3]}}">Q </label>
+              <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+        <h3>{{tipoexamen[6][0]}}</h3>
+        <table class="tablacuadre">
+        {% for i in examenes %}
+        {% if i[1] == tipoexamen[6][1] %}
+        <tr>
+          <td style="width: 80%;">
+            <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+            <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+          </td>
+          <td>
+            <label for="exa{{i[3]}}">Q </label>
+            <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+      <h3>{{tipoexamen[7][0]}}</h3>
+      <table class="tablacuadre">
+      {% for i in examenes %}
+      {% if i[1] == tipoexamen[7][1] %}
+      <tr>
+        <td style="width: 80%;">
+          <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+          <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+        </td>
+        <td>
+          <label for="exa{{i[3]}}">Q </label>
+          <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </table>
+    <h3>{{tipoexamen[4][0]}}</h3>
+    <table class="tablacuadre">
+    {% for i in examenes %}
+    {% if i[1] == tipoexamen[4][1] %}
+    <tr>
+      <td style="width: 80%;">
+        <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+        <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+      </td>
+      <td>
+        <label for="exa{{i[3]}}">Q </label>
+        <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </table>
+        </div>
+        <div class="item1" style="background-color: #dff6ff">
+          <h3>{{tipoexamen[10][0]}}</h3>
+          <table class="tablacuadre">
+          {% for i in examenes %}
+          {% if i[1] == tipoexamen[10][1] %}
+          <tr>
+            <td style="width: 80%;">
+              <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+              <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+            </td>
+            <td>
+              <label for="exa{{i[3]}}">Q </label>
+              <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+        <h3>{{tipoexamen[11][0]}}</h3>
+        <table class="tablacuadre">
+        {% for i in examenes %}
+        {% if i[1] == tipoexamen[11][1] %}
+        <tr>
+          <td style="width: 80%;">
+            <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+            <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+          </td>
+          <td>
+            <label for="exa{{i[3]}}">Q </label>
+            <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+      <h3>{{tipoexamen[12][0]}}</h3>
+      <table class="tablacuadre">
+      {% for i in examenes %}
+      {% if i[1] == tipoexamen[12][1] %}
+      <tr>
+        <td style="width: 80%;">
+          <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+          <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+        </td>
+        <td>
+          <label for="exa{{i[3]}}">Q </label>
+          <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+        </td>
+      </tr>
+      {% endif %}
+      {% endfor %}
+    </table>
+    <h3>{{tipoexamen[13][0]}}</h3>
+    <table class="tablacuadre">
+    {% for i in examenes %}
+    {% if i[1] == tipoexamen[13][1] %}
+    <tr>
+      <td style="width: 80%;">
+        <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+        <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+      </td>
+      <td>
+        <label for="exa{{i[3]}}">Q </label>
+        <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+      </td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+  </table>
+  <h3>{{tipoexamen[14][0]}}</h3>
+  <table class="tablacuadre">
+  {% for i in examenes %}
+  {% if i[1] == tipoexamen[14][1] %}
+  <tr>
+    <td style="width: 80%;">
+      <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+      <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+    </td>
+    <td>
+      <label for="exa{{i[3]}}">Q </label>
+      <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+    </td>
+  </tr>
+  {% endif %}
+  {% endfor %}
+</table>
+<h3>{{tipoexamen[3][0]}}</h3>
+<table class="tablacuadre">
+{% for i in examenes %}
+{% if i[1] == tipoexamen[3][1] %}
+<tr>
+  <td style="width: 80%;">
+    <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+    <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+  </td>
+  <td>
+    <label for="exa{{i[3]}}">Q </label>
+    <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+  </td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+<h3>{{tipoexamen[9][0]}}</h3>
+<table class="tablacuadre">
+{% for i in examenes %}
+{% if i[1] == tipoexamen[9][1] %}
+<tr>
+  <td style="width: 80%;">
+    <input type="checkbox" id="exa{{i[3]}}" name="exa{{i[3]}}" value="{{i[2]}}" style="width: 5%;" onclick="calctotal()">
+    <label for="exa{{i[3]}}" style="width: 85%;">{{i[0]}}  </label> 
+  </td>
+  <td>
+    <label for="exa{{i[3]}}">Q </label>
+    <label for="exa{{i[3]}}" id="exa{{i[3]}}l"><strong>{{i[2]}}</strong></label>
+  </td>
+</tr>
+{% endif %}
+{% endfor %}
+</table>
+        </div>
+      </div>
+        <br>
+        <center><button onclick="submit" class="button">Aceptar</button></center>
+        <br>
+        <hr>
+      </form>
+	</div>
+    </main>
+    <!-- page-content" -->
+</div>
+<script type="text/javascript">
+  function mayusculas(){
+        var nombre = document.getElementById('nombre').value
+        nombre = nombre.toUpperCase()
+        document.getElementById('nombre').value = nombre
+    }
+  function aplicardescuento(){
+    var arreglo = {{ examenes|tojson }};
+    var conteo = Object.keys(arreglo).length;
+    var descuento = document.getElementById('empresa').value;
+
+    for (var i = 0; i<conteo; i++){
+      var aux = 'exa' + String(arreglo[i][3]) + 'l'
+      var aux1 = 'exa' + String(arreglo[i][3])
+      if (arreglo[i][2] != '-'){
+        var total = parseFloat(arreglo[i][2]) - (parseFloat(arreglo[i][2])*parseFloat(descuento))/100;
+        document.getElementById(aux).innerHTML = "<strong>" + String(total) + "</strong>"
+        document.getElementById(aux1).value = total
+      } 
+    }
+    calctotal()
+  }
+  function calctotal(){
+    var arreglo = {{ examenes|tojson }};
+    var conteo = Object.keys(arreglo).length;
+    var total = 0
+    for (var i = 0; i<conteo; i++){
+      var aux1 = 'exa' + String(arreglo[i][3]) + 'l'
+      var aux = 'exa' + String(arreglo[i][3])
+      if (document.getElementById(aux).checked == true){
+        total = total + parseFloat(document.getElementById(aux).value)
+      }
+    }
+    document.getElementById('h1total').innerHTML = 'Total: Q ' + String(total.toFixed(2))
+  }
+</script>
+  <!-- page-wrapper -->
+{% endblock %}

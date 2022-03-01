@@ -59,7 +59,7 @@ table {
   border: 1px solid #dddddd;
 }
 
-td, th {
+td {
   font-size: 16px;
   border: 1px solid #dddddd;
   text-align: left;
@@ -69,6 +69,7 @@ td, th {
 th {
   text-align: center;
   border: 1px solid #dddddd;
+  font-size: 16px;
 }
 
 .tablacuadre td, th {
@@ -90,7 +91,6 @@ table {
 
 .tablacuadre {
   border-spacing: 0px;
-  background-color: white;
   border: 0px solid #dddddd;
 }
 
@@ -99,7 +99,7 @@ tr:nth-child(even) {
 }
 
 .tablacuadre tr:nth-child(even) {
-  background-color: white;
+  background-color: transparent;
 }
 
 .inputtyperecibo {
@@ -108,6 +108,15 @@ tr:nth-child(even) {
 
 .derecha {
   float: right;
+}
+
+.container1 {
+  width: 100%;
+  display: flex;
+}
+
+.item1 {
+  width: 100%;
 }
 
 

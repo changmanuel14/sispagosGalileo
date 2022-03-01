@@ -77,21 +77,17 @@
   <main class="page-content" id="main">
     <div class="container">
       <h2>¿Está seguro de continuar?</h2>
-      <h5>Id: {{mid}}</h5>
       <h5>Carnet: {{carnet}}</h5>
       <h5>Nombre: {{nombre}}</h5>
-      <h5>Pago: {{mcod}}</h5>
-      <h5>Descripción: {{cursos[0]}}
+      <h5>Pago: Examenes de Laboratorio</h5>
+      <h5>Descripción: </h5>
       {% for i in range(cantidad) %}
-      {% if i == 0 %}
-
-      {% else %}
-      , {{cursos[i]}}
-      {% endif %}
+        <h6>{{dataaux[i][2]}} - {{dataaux[i][1]}} Q {{dataaux[i][3]}}</h6>
       {% endfor %}
-      .
+      <h5>Total: Q {{total}}</h5>
+      
       <form action="" method="POST">
-        <center><button onclick="submit" class="button">Aceptar</button>   <a class="regresar" href="{{ url_for('m') }}">Regresar</a></center>
+        <center><button onclick="submit" class="button">Aceptar</button>   <a class="regresar" href="{{ url_for('laboratorio') }}">Regresar</a></center>
       </form>
     </main>
     <!-- page-content" -->

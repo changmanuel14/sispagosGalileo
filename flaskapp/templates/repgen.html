@@ -93,19 +93,18 @@
     <div class="container">
         <h2>Reporte general</h2>
         <hr>
-        <input type="date" id="myInput2" name="fecha" onchange="myFunction2()" class="inputtext3">&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="text" id="myInput3" onkeyup="myFunction3()" placeholder="  Concepto" class="inputtext3">    
+        <form action="" method="POST">
+        <input type="date" id="fecha" name="fecha" class="inputtext3" value="{{datafecha}}">&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" id="concepto" name="concepto" placeholder="  Concepto" class="inputtext3" value="{{dataconcepto}}">    
         <br>
-        <input type="text" id="carnet" onkeyup="myFunction4()" placeholder="  Carnet" class="inputtext3">   &nbsp;&nbsp;&nbsp;
-        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="  Nombre" class="inputtext3">  
+        <input type="text" id="carnet" name="carnet" placeholder="  Carnet" class="inputtext3" value="{{datacarnet}}">   &nbsp;&nbsp;&nbsp;
+        <input type="text" id="nombre" name="nombre" placeholder="  Nombre" class="inputtext3" value="{{datanombre}}">  
         <br>
-        <input type="text" id="myInput4" onkeyup="myFunction5()" placeholder="  Descripción" class="inputtext3">    
+        <input type="text" id="descripcion" name="descripcion" placeholder="  Descripción" class="inputtext3" value="{{datadescripcion}}">    
         <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
         <br>
-        <button id="botonabajo" onclick="bajarnum()" class="botred"> < </button>
-        <input type="number" id="numpagina" step="1" onchange="calcmostrar()" class="botred" value="1" style="text-align: right;">
-        <button id="botonarriba" onclick="subirnum()" class="botred"> > </button>
-        <br>
+        <center><button onclick="submit" class="button">Buscar</button>
+      </form>
         <table class="sorttable" id="myTable" data-page-length="25">
             <tr>
                 <th>Nombre</th>
