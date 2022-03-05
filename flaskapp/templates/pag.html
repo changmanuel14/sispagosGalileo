@@ -132,12 +132,12 @@
     if(data[1] == 'Pagos'){
       document.getElementById('camposextra').style.display = 'block'
       document.getElementById('camposextra1').style.display = 'none'
-    }else if (data[1] == 'Mensualidad Ingles') {
+    }else if (data[1] == 'Mensualidad Ingles Trimestral' || data[1] == 'Mensualidad Ingles Semestral') {
       document.getElementById('camposextra').style.display = 'none'
       document.getElementById('camposextra1').style.display = 'block'
       document.getElementById('mes').placeholder = '  Mes'
       document.getElementById('mes').setAttribute('list', 'meses')
-    }else if (data[1] == 'Inscripcion Ingles') {
+    }else if (data[1] == 'Inscripcion Ingles Trimestral' || data[1] == 'Inscripcion Ingles Semestral') {
       document.getElementById('camposextra').style.display = 'none'
       document.getElementById('camposextra1').style.display = 'block'
       document.getElementById('mes').placeholder = '  Ciclo'
