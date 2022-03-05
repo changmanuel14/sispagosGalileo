@@ -90,7 +90,14 @@
         <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br>
       </center>
       <br>
-      <h2 id="h1total">Total: Q 0.00</h2>
+      <div style="width: 45%; position: relative;">
+        <h2 id="h1total">Total: Q 0.00</h2>
+      </div>
+      <div style="width: 45%; position: relative;" class="derecha">
+        <button onclick="submit" class="button">Aceptar</button>
+      </div>
+      
+      
       <br>
       <div class="container1">
         <div class="item1" style="background-color: #dff6ff">
@@ -128,7 +135,7 @@
         {% endif %}
         {% endfor %}
       </table>
-      <h3>{{tipoexamen[2][0]}} xd</h3>
+      <h3>{{tipoexamen[2][0]}}</h3>
       <table class="tablacuadre">
       {% for i in examenes %}
       {% if i[1] == tipoexamen[2][1] %}
@@ -355,8 +362,6 @@
 </table>
         </div>
       </div>
-        <br>
-        <center><button onclick="submit" class="button">Aceptar</button></center>
         <br>
         <hr>
       </form>
