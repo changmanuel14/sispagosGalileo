@@ -94,13 +94,14 @@
         <h2>Reporte general</h2>
         <hr>
         <form action="" method="POST">
-        <input type="date" id="fecha" name="fecha" class="inputtext3" value="{{datafecha}}">&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="text" id="concepto" name="concepto" placeholder="  Concepto" class="inputtext3" value="{{dataconcepto}}">    
-        <br>
+        <input type="date" id="fechaini" name="fechaini" class="inputtext3" value="{{datafechaini}}">&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="date" id="fechafin" name="fechafin" class="inputtext3" value="{{datafechafin}}"><br>
+        
         <input type="text" id="carnet" name="carnet" placeholder="  Carnet" class="inputtext3" value="{{datacarnet}}">   &nbsp;&nbsp;&nbsp;
         <input type="text" id="nombre" name="nombre" placeholder="  Nombre" class="inputtext3" value="{{datanombre}}">  
         <br>
-        <input type="text" id="descripcion" name="descripcion" placeholder="  Descripción" class="inputtext3" value="{{datadescripcion}}">    
+        <input type="text" id="descripcion" name="descripcion" placeholder="  Descripción" class="inputtext3" value="{{datadescripcion}}">&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" id="concepto" name="concepto" placeholder="  Concepto" class="inputtext3" value="{{dataconcepto}}">    
         <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
         <br>
         <center><button onclick="submit" class="button">Buscar</button>

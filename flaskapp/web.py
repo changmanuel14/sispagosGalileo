@@ -1847,13 +1847,15 @@ def repgen():
 	conteo = 0
 	datacarnet = ""
 	dataconcepto = ""
-	datafecha = ""
+	datafechaini = ""
+	datafechafin = ""
 	datanombre = ""
 	datadescripcion = ""
 	if request.method == "POST":
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
-		datafecha = request.form["fecha"]
+		datafechaini = request.form["fechaini"]
+		datafechafin = request.form["fechafin"]
 		dataconcepto = request.form["concepto"]
 		datadescripcion = request.form["descripcion"]
 		try:
@@ -1863,10 +1865,13 @@ def repgen():
 					consulta = 'SELECT p.nombre, p.carnet, p.fecha, c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos '
 					consulta = consulta + 'where p.nombre like "%' + str(datanombre) + '%"'
 					consulta = consulta + ' and p.carnet like "%' + str(datacarnet) + '%"'
-					consulta = consulta + ' and p.fecha like "%' + str(datafecha) + '%"'
+					if len(datafechaini) != 0:
+						consulta = consulta + ' and p.fecha >= "' + str(datafechaini) + '"'
+					if len(datafechafin) != 0:
+						consulta = consulta + ' and p.fecha <= "' + str(datafechafin) + '"'
 					consulta = consulta + ' and c.concepto like "%' + str(dataconcepto) + '%"'
 					consulta = consulta + ' and p.extra like "%' + str(datadescripcion) + '%"'
-					consulta = consulta + 'order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
+					consulta = consulta + ' order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
 					print(consulta)
 					cursor.execute(consulta)
 				# Con fetchall traemos todas las filas
@@ -1876,8 +1881,8 @@ def repgen():
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafecha = datafecha, dataconcepto = dataconcepto, datadescripcion = datadescripcion)
-	return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafecha = datafecha, dataconcepto = dataconcepto, datadescripcion = datadescripcion)
+		return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion)
+	return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion)
 
 @app.route('/pagos')
 def pagos():
