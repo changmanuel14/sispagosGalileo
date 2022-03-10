@@ -110,20 +110,14 @@ def laboratorio():
 		if len(carnet) < 1:
 			carnet = 0
 		nombre = request.form["nombre"]
-		print(carnet)
-		print(nombre)
-		cont = 0
+		cantidad = request.form["cant"]
 		dataexamenes = ""
-		for i in examenes:
-			aux = 'exa' + str(i[3])
-			dataexamen = ""
-			try:
-				precio = request.form[aux]
-				cont = cont + 1
-				dataexamen = dataexamen + str(i[3]) + ',' + str(precio) + ';'
-				dataexamenes = dataexamenes + dataexamen
-			except:
-				cont = cont
+		for i in range(int(cantidad)):
+			aux = 'examen' + str(i)
+			idexamen = request.form[aux]
+			aux1 = 'precio' + str(i)
+			precio = request.form[aux1]
+			dataexamenes = dataexamenes + str(idexamen) + ',' + str(precio) + ';'
 		return redirect(url_for('confirmacionlab', nombre=nombre, carnet=carnet, dataexamenes=dataexamenes))
 	return render_template('laboratorio.html', title='Laboratorio', logeado=logeado, examenes=examenes, empresas=empresas, tipoexamen=tipoexamen)
 
@@ -137,28 +131,19 @@ def confirmacionlab(nombre, carnet, dataexamenes):
 		return redirect(url_for('login'))
 	nombre = str(nombre)
 	carnet = int(carnet)
-	dataaux = []
 	examenes = []
-	examen = []
-	var = ""
-	for i in dataexamenes:
-		if i == ',':
-			examen.append(var)
-			var = ""
-			print("1: ", i)
-		elif i == ';':
-			examen.append(var)
-			examenes.append(examen)
-			examen = []
-			var = ""
-			print("2: ", i)
-		else:
-			var = var + str(i)
-			print("3: ", i)
-	print("Examenes: ", examenes)
+	arreglo = dataexamenes.split(";")
+	for i in arreglo:
+		examen = []
+		exaaux = i.split(",")
+		for i in exaaux:
+			examen.append(i)
+		examenes.append(examen)
+	examenes.pop()
 	cantidad = len(examenes)
-	print("Cantidad: ", cantidad)
 	total = 0
+	dataaux = []
+	print("Examenes: ", examenes)
 	for i in examenes:
 		datae = []
 		total = total + float(i[1])
@@ -167,14 +152,12 @@ def confirmacionlab(nombre, carnet, dataexamenes):
 			try:
 				with conexion.cursor() as cursor:
 					consulta = 'SELECT e.nombre, t.nombre from exameneslab e inner join tipoexamen t on e.idtipoexamen = t.idtipoexamen where e.idexameneslab = ' + str(i[0]) +';'
-					print("Consulta: ", consulta)
 					cursor.execute(consulta)
 					queryinfo = cursor.fetchone()
 					datae.append(i[0])
 					datae.append(queryinfo[0])
 					datae.append(queryinfo[1])
 					datae.append(i[1])
-					print(datae)
 					dataaux.append(datae)
 			finally:
 				conexion.close()

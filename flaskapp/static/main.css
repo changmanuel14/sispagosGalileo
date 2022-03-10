@@ -117,6 +117,7 @@ tr:nth-child(even) {
 
 .item1 {
   width: 100%;
+  padding-left: 5px;
 }
 
 
@@ -167,6 +168,13 @@ tr:nth-child(even) {
   width: 5%;
   border-radius: 12px;
   text-align: center;
+}
+
+.inputtext6 {
+  height:37px;
+  font-size:14pt;
+  width: 100%;
+  border-radius: 12px;
 }
 
 .mitad {
