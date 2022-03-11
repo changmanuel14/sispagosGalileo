@@ -88,11 +88,12 @@ def laboratorio():
 		logeado = 0
 	if logeado == 0:
 		return redirect(url_for('login'))
+	fechaact = datetime.today().strftime('%Y-%m-%d')
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'SELECT nombre, idtipoexamen, precio, idexameneslab from exameneslab order by idtipoexamen;'
+				consulta = 'SELECT nombre, idtipoexamen, precio, idexameneslab from exameneslab where DATE(fechaactivo) = "0000-00-00" or DATE(fechaactivo) > "'+ str(fechaact) + '" order by idtipoexamen;'
 				cursor.execute(consulta)
 				examenes = cursor.fetchall()
 				consulta = 'SELECT nombre, descuento from empresa order by nombre asc;'
