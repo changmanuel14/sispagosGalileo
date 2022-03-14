@@ -131,7 +131,7 @@ def confirmacionlab(nombre, carnet, dataexamenes):
 	if logeado == 0:
 		return redirect(url_for('login'))
 	nombre = str(nombre)
-	carnet = int(carnet)
+	carnet = str(carnet)
 	examenes = []
 	arreglo = dataexamenes.split(";")
 	for i in arreglo:
@@ -483,7 +483,7 @@ def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis,
 	if logeado == 0:
 		return redirect(url_for('login'))
 	carrera = str(carrera)
-	carnet = int(carnet)
+	carnet = str(carnet)
 	nombre = str(nombre)
 	rinsc = int(rinsc)
 	rint = int(rint)
@@ -615,7 +615,7 @@ def confirmacionini(carrera, carnet, nombre):
 	if logeado == 0:
 		return redirect(url_for('login'))
 	carrera = str(carrera)
-	carnet = int(carnet)
+	carnet = str(carnet)
 	nombre = str(nombre)
 	if request.method == "POST":
 		try:
@@ -707,7 +707,7 @@ def confirmacionir(carrera, carnet, nombre):
 	if logeado == 0:
 		return redirect(url_for('login'))
 	carrera = str(carrera)
-	carnet = int(carnet)
+	carnet = str(carnet)
 	nombre = str(nombre)
 	if request.method == "POST":
 		try:
@@ -801,7 +801,7 @@ def confirmacionextra(carnet, nombre, idp, cod):
 	if logeado == 0:
 		return redirect(url_for('login'))
 	idp = int(idp)
-	carnet = int(carnet)
+	carnet = str(carnet)
 	nombre = str(nombre)
 	cod = str(cod)
 	if request.method == "POST":
@@ -892,7 +892,7 @@ def confirmacionu(uid, carnet, nombre, total, talla, ucod):
 	if logeado == 0:
 		return redirect(url_for('login'))
 	uid = int(uid)
-	carnet = int(carnet)
+	carnet = str(carnet)
 	nombre = str(nombre)
 	total = float(total)
 	talla = str(talla)
@@ -1025,7 +1025,7 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 		logeado = 0
 	if logeado == 0:
 		return redirect(url_for('login'))
-	carnet = int(carnet)
+	carnet = str(carnet)
 	cantidad = int(cantidad)
 	nombre = str(nombre)
 	pid = int(pid)
@@ -1168,7 +1168,7 @@ def confirmacionme(total, carnet, nombre, carrera):
 	if logeado == 0:
 		return redirect(url_for('login'))
 	total = float(total)
-	carnet = int(carnet)
+	carnet = str(carnet)
 	nombre = str(nombre)
 	carrera = str(carrera)
 	if request.method == "POST":
@@ -1331,7 +1331,7 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 		logeado = 0
 	if logeado == 0:
 		return redirect(url_for('login'))
-	carnet = int(carnet)
+	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
 	mcod = str(mcod)
@@ -1478,7 +1478,7 @@ def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal, datam
 		logeado = 0
 	if logeado == 0:
 		return redirect(url_for('login'))
-	carnet = int(carnet)
+	carnet = str(carnet)
 	nombre = str(nombre)
 	total = float(total)
 	descripcion = str(descripcion)
@@ -1558,7 +1558,7 @@ def confirmaciongrad(tipo, carnet, nombre):
 	if logeado == 0:
 		return redirect(url_for('login'))
 	tipo = int(tipo)
-	carnet = int(carnet)
+	carnet = str(carnet)
 	nombre = str(nombre)
 	if request.method == "POST":
 		try:
@@ -1896,8 +1896,6 @@ def imprimir(idpagos):
 			if j.isdigit():
 				varaux = varaux + str(j)
 		newarray.append(varaux)
-
-	today = date.today()
 	datagen = []
 	suma = 0
 	try:
