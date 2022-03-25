@@ -81,23 +81,22 @@
     <main class="page-content" id="main">
         <div class="container">
             <center>
-                <h1>Academia</h1>
+                <h1>Ingles</h1>
             </center>
 
             <hr>
             <form action="" method="POST">
-                <center> <label for="carrera" style="color: black;"> <strong>
-                            <h4>Seleccione la carrera:</h4>
+                <center> <label for="plan" style="color: black;"> <strong>
+                            <h4>Seleccione el plan de estudios:</h4>
                         </strong></label>
-                    <select name="carrera" id="carrera" class="inputtext" required>
-                        <option value="">Seleccione carrera</option>
-                        {% for i in carreras %}
-                        <option value="{{i[2]}}">{{i[0]}}</option>
-                        {% endfor %}
+                    <select name="plan" id="plan" class="inputtext" onchange="precio()" required>
+                        <option value="">Seleccione plan</option>
+                        <option value="1">Trimestral</option>
+                        <option value="2">Semestral</option>
                     </select><input type="number" class="inputtext5" id="cant" name="cant" value="0" readonly><br>
                 </center>
                 <center>
-                    <input type="text" id="carnet" name="carnet" class="inputtext" required
+                    <input type="text" id="carnet" name="carnet" class="inputtext"
                         placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br>
                     <br>
@@ -105,16 +104,17 @@
                         <tr>
                             <th>Inscripción</th>
                             <td>
-                                <input type="checkbox" id="insc" name="insc" value="1">
-                                <label for="insc">Q 250.00</label>
+                                <input type="checkbox" id="insc" name="insc" value="1" onchange="check()">
+                                <label for="insc" id="linsc">Q 0.00</label>
+                                <input type="number" id="ciclo" name="ciclo" class="inputtext"
+                        placeholder="  Ciclo" required disabled>
                             </td>
                         </tr>
                         <tr>
                             <th>Mensualidades</th>
                             <td>
                                 <div id="myDiv">
-                                    <input type="text" id="mes0" name="mes0" class="inputtext1" required
-                                        placeholder="  Mes" list="meses">
+                                    <input type="text" id="mes0" name="mes0" class="inputtext1" placeholder="  Mes" list="meses">
                                 </div>
                             </td>
                         </tr>
@@ -137,6 +137,27 @@
     <!-- page-content" -->
 </div>
 <script type="text/javascript">
+    function check() {
+        var check = document.getElementById('insc')
+        var ciclo = document.getElementById('ciclo')
+        if(check.checked){
+            ciclo.disabled = false
+        }else{
+            ciclo.disabled = true
+        }
+    }
+    function precio() {
+        var select = document.getElementById('plan')
+        var label = document.getElementById('linsc')
+        var arreglo = {{ cuotas | tojson }};
+        if(parseInt(select.value) == 1){
+            label.innerHTML = "Q " + String(arreglo[1][1]).fixed(2)+".00"
+        }else if(parseInt(select.value) == 2){
+            label.innerHTML = "Q " + String(arreglo[0][1]).fixed(2)+".00"
+        }else {
+            label.innerHTML = "Q 0.00"
+        }
+    }
     function mayusculas() {
         var nombre = document.getElementById('nombre').value
         nombre = nombre.toUpperCase()

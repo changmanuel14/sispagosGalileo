@@ -188,6 +188,131 @@ def confirmacionaca(nombre, carnet, datameses, carrera, insc):
 		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacionaca.html', title='Confirmación Academia', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datacarrera=datacarrera, insc=insc, meses=meses)
 
+@app.route("/ingles", methods=['GET', 'POST'])
+def ingles():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT idcodigos, precio from codigos where cod like "INGLES%" order by cod asc'
+				cursor.execute(consulta)
+				cuotas = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		carnet = request.form["carnet"]
+		if len(carnet) < 1:
+			carnet = 0
+		nombre = request.form["nombre"]
+		try:
+			ciclo = request.form["ciclo"]
+		except:
+			ciclo = 0
+		cantidad = int(request.form["cant"]) + 1
+		plan = request.form["plan"]
+		try:
+			insc = request.form["insc"]
+		except:
+			insc = 0
+		datameses = ""
+		for i in range(cantidad):
+			aux = 'mes' + str(i)
+			mes = request.form[aux]
+			if len(mes) > 0:
+				if i > 0:
+					datameses = datameses + ',' + str(mes)
+				else:
+					datameses = datameses + str(mes)
+		if len(datameses) < 1:
+			datameses = 'None'
+		return redirect(url_for('confirmacioningles', nombre=nombre, carnet=carnet, plan = plan, insc=insc, datameses=datameses, ciclo=ciclo))
+	return render_template('ingles.html', title='Academia', logeado=logeado, meses=meses, cuotas=cuotas)
+
+@app.route("/confirmacioningles/<nombre>&<carnet>&<plan>&<insc>&<datameses>&<ciclo>", methods=['GET', 'POST'])
+def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	nombre = str(nombre)
+	carnet = str(carnet)
+	plan = int(plan)
+	insc = int(insc)
+	cantidad = 0
+	if datameses != 'None':
+		meses = datameses.split(",")
+		cantidad = len(meses)
+	else:
+		meses = ""
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				if plan == 1:
+					consulta = 'SELECT idcodigos, precio from codigos where cod = "INGLEST"'
+					cursor.execute(consulta)
+					datainsc = cursor.fetchone()
+					consulta = 'SELECT idcodigos, precio from codigos where cod = "MEINGLEST"'
+					cursor.execute(consulta)
+					datamen = cursor.fetchone()
+				else:
+					consulta = 'SELECT idcodigos, precio from codigos where cod = "INGLESS"'
+					cursor.execute(consulta)
+					datainsc = cursor.fetchone()
+					consulta = 'SELECT idcodigos, precio from codigos where cod = "MEINGLESS"'
+					cursor.execute(consulta)
+					datamen = cursor.fetchone()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	total = 0
+	if insc == 1:
+		total = total + float(datainsc[1])
+	total = total + (cantidad * float(datamen[1]))
+	if request.method == 'POST':
+		try:
+			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+			try:
+				with conexion.cursor() as cursor:
+					idpagos = []
+					if insc == 1:
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
+						cursor.execute(consulta, (datainsc[0], nombre, carnet,datainsc[1], date.today(), 'Ciclo: ' + str(ciclo) ,0, session['idusercaja']))
+						conexion.commit()
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						idpago = cursor.fetchone()
+						idpago = idpago[0]
+						idpagos.append(idpago)
+					for i in range(cantidad):
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
+						cursor.execute(consulta, (datamen[0], nombre, carnet, datamen[1], date.today(), 'Mes: ' + meses[i] ,0, session['idusercaja']))
+						conexion.commit()
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						idpago = cursor.fetchone()
+						idpago = idpago[0]
+						idpagos.append(idpago)
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('imprimir', idpagos=idpagos))
+	return render_template('confirmacioningles.html', title='Confirmación Ingles', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datainsc=datainsc, datamen=datamen, insc=insc, meses=meses, ciclo=ciclo)
+
+
 @app.route("/laboratorio", methods=['GET', 'POST'])
 def laboratorio():
 	try:
