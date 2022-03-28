@@ -120,7 +120,7 @@
           <th colspan="2">Entregado</th>
         </tr>
         {% for i in data %}
-        {% if i[6] == '0' %}
+        {% if i[6] == 0 %}
         <tr style="background-color: lightgoldenrodyellow;">
           {% else %}
         <tr>
@@ -131,7 +131,7 @@
           <td>{{i[3]}}</td>
           <td>{{i[4]}}</td>
           <td>Q. {{i[5]}}</td>
-          {% if i[6] == '0' %}
+          {% if i[6] == 0 %}
           <td>No</td>
           <td><a href="/entregarm/{{i[8]}}">Entregar</a></td>
           {% else %}
