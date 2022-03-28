@@ -312,7 +312,6 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
 		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacioningles.html', title='Confirmación Ingles', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datainsc=datainsc, datamen=datamen, insc=insc, meses=meses, ciclo=ciclo)
 
-
 @app.route("/laboratorio", methods=['GET', 'POST'])
 def laboratorio():
 	try:
@@ -1619,7 +1618,7 @@ def repm():
 				consulta = '''select p.nombre, p.carnet, p.fecha, c.codigo, p.extra, p.total from pagos p 
 				inner join codigos d on p.idcod = d.idcodigos
 				inner join carreras c on d.idcarrera = c.idcarreras
-				where d.cod LIKE 'M%' and d.cod != 'MENE'
+				where d.concepto LIKE '%Manual%'
 				order by p.fecha asc, c.codigo desc'''
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
