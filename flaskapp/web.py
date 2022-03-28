@@ -1615,11 +1615,11 @@ def repm():
  
 			# Con fetchall traemos todas las filas
 				carreras = cursor.fetchall()
-				consulta = '''select p.nombre, p.carnet, p.fecha, c.codigo, p.extra, p.total from pagos p 
+				consulta = '''select p.nombre, p.carnet, p.fecha, c.codigo, p.extra, p.total, p.extra1, p.fechaextra1, p.idpagos from pagos p 
 				inner join codigos d on p.idcod = d.idcodigos
 				inner join carreras c on d.idcarrera = c.idcarreras
 				where d.concepto LIKE '%Manual%'
-				order by p.fecha asc, c.codigo desc'''
+				order by p.fecha desc, p.nombre asc'''
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
 				data = cursor.fetchall()
@@ -1659,6 +1659,28 @@ def repm():
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 	return render_template('repm.html', title="Reporte Manuales", data = data, suma=suma, carreras=carreras, logeado=logeado)
+
+@app.route('/entregarm/<idpago>', methods=['GET', 'POST'])
+def entregarm(idpago):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	try:
+		#date.today()
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				consulta = "update pagos set extra1 = 1, fechaextra1 = %s where idpagos = %s;"
+				cursor.execute(consulta, (date.today(), idpago))
+			conexion.commit()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return redirect(url_for('repm'))
 
 @app.route('/pag', methods=['GET', 'POST'])
 def pag():
