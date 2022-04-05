@@ -1644,9 +1644,12 @@ def repm():
 					consulta = '''select p.nombre, p.carnet, p.fecha, c.codigo, p.extra, p.total from pagos p 
 					inner join codigos d on p.idcod = d.idcodigos
 					inner join carreras c on d.idcarrera = c.idcarreras
-					where d.cod LIKE 'M%' and d.cod != 'MENE' and p.fecha >= "'''
-					consulta = consulta + str(defecha) + '" and p.fecha <= "' + str(afecha)
-					consulta = consulta + '" order by p.fecha asc, c.codigo desc'
+					where d.concepto LIKE '%Manual%'''
+					if len(defecha) > 0:
+						consulta = consulta + ' and DATE(p.fecha) >= DATE("' + str(defecha) + '") '
+					if len(afecha) > 0:
+						consulta = consulta + ' and DATE(p.fecha) <= DATE("' + str(afecha) + '") '
+					consulta = consulta + ' order by p.fecha asc, c.codigo desc'
 					print(consulta)
 					cursor.execute(consulta)
 				# Con fetchall traemos todas las filas

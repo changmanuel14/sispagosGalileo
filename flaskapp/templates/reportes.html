@@ -157,11 +157,11 @@
             </tr>
             <tr>
               <td>Facturas</td>
-              <td><input type="number"  step="0.01" id="facturas" name="facturas" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[7]}}"></td>
+              <td><input type="text"  id="facturas" name="facturas" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[7]}}"></td>
             </tr>
             <tr>
               <td>Vales</td>
-              <td><input type="number"  step="0.01" id="vales" name="vales" class="inputtextcuadre" min="0" onchange="cuadre()" value="{{efectivo[8]}}"></td>
+              <td><input type="text"  id="vales" name="vales" class="inputtextcuadre" min="0" onchange="cuadre()" value="{{efectivo[8]}}"></td>
             </tr>
           </table><br>
           <table class="tablacuadre">
@@ -228,11 +228,35 @@
       facturas = document.getElementById("facturas").value;
       if (facturas.length == 0) {
         facturas = 0;
-      }else facturas = parseFloat(facturas);
+      }else {
+        let facaux = facturas
+        if(facaux.includes('+')){
+          let arreglo = facaux.split('+')
+          let total = 0
+          for(var a = 0;a<arreglo.length;a++){
+            total = total + parseFloat(arreglo[a])
+          }
+          facturas = total
+        }else {
+          facturas = parseFloat(facturas);
+        }
+      }
       vales = document.getElementById("vales").value;
       if (vales.length == 0) {
         vales = 0;
-      }else vales = parseFloat(vales);
+      }else {
+        let valaux = vales
+        if(valaux.includes('+')){
+          let arreglo = valaux.split('+')
+          let total = 0
+          for(var a = 0;a<arreglo.length;a++){
+            total = total + parseFloat(arreglo[a])
+          }
+          vales = total
+        }else {
+          vales = parseFloat(vales);
+        }
+      }
       efectivo = cant1 + (cant5 * 5) + (cant10 * 10) + (cant20 * 20) + (cant50 * 50) + (cant100 * 100) + (cant200 * 200);
       extras = facturas + vales;
       dif = efectivo + extras - sumapagos;
