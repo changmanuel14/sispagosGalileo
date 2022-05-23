@@ -56,22 +56,22 @@ def devolucion(idpago):
 		print("Ocurrió un error al conectar: ", e)
 	if request.method == 'POST':
 		file = request.files['file']
-		filename = 'dev' + str(idpago) + '.'
+		nombrearc = 'dev' + str(idpago) + '.'
 		if '.png' in file.filename:
-			filename = filename + 'png'
+			nombrearc = nombrearc + 'png'
 		elif '.pdf' in file.filename:
-			filename = filename + 'pdf'
+			nombrearc = nombrearc + 'pdf'
 		elif '.jpg' in file.filename:
-			filename = filename + 'jpg'
+			nombrearc = nombrearc + 'jpg'
 		elif '.jpeg' in file.filename:
-			filename = filename + 'jpeg'
-		file.save(os.path.join("flaskapp\\static\\uploads", filename))
+			nombrearc = nombrearc + 'jpeg'
+		file.save(os.path.join("flaskapp\\static\\uploads", nombrearc))
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
 					consulta = 'UPDATE pagos set devuelto = 1, urldevuelto = %s, fechadevuelto=%s, user=%s where idpagos = %s;'
-					cursor.execute(consulta, (filename, date.today(), session['idusercaja'], idpago))
+					cursor.execute(consulta, (nombrearc, date.today(), session['idusercaja'], idpago))
 				conexion.commit()
 			finally:
 				conexion.close()
