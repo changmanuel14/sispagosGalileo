@@ -149,15 +149,22 @@
     var arreglo = {{ examenes|tojson }};
     var conteo = Object.keys(arreglo).length;
     var descuento = document.getElementById('empresa').value;
+    var cantidad = document.getElementById('cant').value;
 
-    for (var i = 0; i<conteo; i++){
-      var aux = 'exa' + String(arreglo[i][3]) + 'l'
-      var aux1 = 'exa' + String(arreglo[i][3])
-      if (arreglo[i][2] != '-'){
-        var total = parseFloat(arreglo[i][2]) - (parseFloat(arreglo[i][2])*parseFloat(descuento))/100;
-        document.getElementById(aux).innerHTML = "<strong>" + String(total) + "</strong>"
-        document.getElementById(aux1).value = total
-      } 
+
+    for (var i = 0; i<cantidad; i++){
+      var aux = 'precio' + String(i)
+      var aux1 = 'examen' + String(i)
+      var precioin = document.getElementById(aux)
+      var examen = document.getElementById(aux1)
+      for (var j = 0; j<conteo; j++){
+        if (parseInt(arreglo[j][3]) == parseInt(examen.value)){
+          var precio = arreglo[j][2]
+        }
+      }
+      var newprecio = precio - ((precio * descuento)/100)
+      newprecio = Math.ceil(newprecio)
+      precioin.value = newprecio;
     }
     calctotal()
   }
