@@ -2013,12 +2013,12 @@ def repdiario():
 							aux = "re"+str(i[6])
 							varaux = str(request.form[aux])
 							if len(varaux) > 0:
-								consulta = 'UPDATE pagos SET recibo = '+str(varaux)+' WHERE idpagos = '+str(i[6])+';'
+								consulta = 'UPDATE pagos SET recibo = "'+str(varaux)+'" WHERE idpagos = '+str(i[6])+';'
 								print(consulta)
 								cursor.execute(consulta)
 					else:
 						for i in data:
-							consulta = 'UPDATE pagos SET recibo = '+str(regen)+' WHERE idpagos = '+str(i[6])+';'
+							consulta = 'UPDATE pagos SET recibo = "'+str(regen)+'" WHERE idpagos = '+str(i[6])+';'
 							cursor.execute(consulta)
 					consulta = "UPDATE efectivo set billete1=0, billete5=0, billete10=0, billete20=0, billete50=0, billete100=0, billete200=0, facturas=0, vales=0 where idefectivo = 1;"
 					cursor.execute(consulta)
