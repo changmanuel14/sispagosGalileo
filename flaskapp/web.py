@@ -2011,7 +2011,7 @@ def repdiario():
 					if regen == '0' or len(regen) < 1:
 						for i in data:
 							aux = "re"+str(i[6])
-							varaux = request.form[aux]
+							varaux = str(request.form[aux])
 							if len(varaux) > 0:
 								consulta = 'UPDATE pagos SET recibo = '+str(varaux)+' WHERE idpagos = '+str(i[6])+';'
 								print(consulta)

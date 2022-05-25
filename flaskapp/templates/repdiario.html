@@ -96,7 +96,7 @@
         <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
         <p>{{mensaje}}</p>
         <form action="" method="POST">
-          <input type="number" class="inputtext1" name="regen" placeholder="  Boleta General">
+          <input type="text" class="inputtext1" name="regen" placeholder="  Boleta General">
           <br><br>
         <table class="sortable">
             <tr>
@@ -119,7 +119,7 @@
                 <td>{{i[4]}}</td>
                 <td>Q. {{i[5]}}</td>
                 <td>{{i[7]}}</td>
-                <td><input type="number" class="inputtyperecibo" name="re{{i[6]}}"> </td>
+                <td><input type="text" class="inputtyperecibo" name="re{{i[6]}}"> </td>
                 <td><a href="/editarpago/{{i[6]}}" style="color: black;">Editar</a></td>
                 <td><a href="/eliminarpago/{{i[6]}}" style="color: black;">Eliminar</a></td>
                 <td><a href="/imprimir/{{i[6]}}" style="color: black;" target=”_blank”>Imprimir</a></td>
