@@ -1260,6 +1260,7 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 	cantidad = int(cantidad)
 	nombre = str(nombre)
 	pid = int(pid)
+	agregar = False
 	meses=datames.split(',')
 	for i in range(len(meses)):
 		if 'LBCQ' in pcod or 'TLCQ' in pcod or 'MGGQ' in pcod:
@@ -1283,7 +1284,7 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
-					consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE idcodigos = "' + str(pid) + '"'
+					consulta1 = 'SELECT idcodigos, precio, concepto FROM codigos WHERE idcodigos = "' + str(pid) + '"'
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
 					for i in range(cantidad):
@@ -1292,7 +1293,10 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, meses[i], date.today(), 'Practica TUEVQ',0,session['idusercaja']))
 						else:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), meses[i],0,session['idusercaja']))
+							precioasig = float(precios1[0][1])
+							if 'LENQ' in precios1[0][2] and ('4' in meses[i] or '5' in meses[i] or '6' in meses[i]):
+								precioasig = precioasig + 50
+							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
 						conexion.commit()
 			finally:
 				conexion.close()
