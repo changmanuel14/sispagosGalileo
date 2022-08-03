@@ -1294,7 +1294,7 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 						else:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 							precioasig = float(precios1[0][1])
-							if 'LENQ' in precios1[0][2] and ('4' in meses[i] or '5' in meses[i] or '6' in meses[i]):
+							if 'LENQ' in precios1[0][2] and ('1' in meses[i] or '2' in meses[i] or '3' in meses[i] or '4' in meses[i]):
 								precioasig = precioasig + 50
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
 						conexion.commit()
