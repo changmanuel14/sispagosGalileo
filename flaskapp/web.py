@@ -201,7 +201,7 @@ def ingles():
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'SELECT idcodigos, precio from codigos where cod like "INGLES%" order by cod asc'
+				consulta = 'SELECT idcodigos, precio from codigos where cod like "%MAINGLES%" order by cod asc'
 				cursor.execute(consulta)
 				cuotas = cursor.fetchall()
 		finally:
@@ -235,7 +235,7 @@ def ingles():
 		if len(datameses) < 1:
 			datameses = 'None'
 		return redirect(url_for('confirmacioningles', nombre=nombre, carnet=carnet, plan = plan, insc=insc, datameses=datameses, ciclo=ciclo))
-	return render_template('ingles.html', title='Academia', logeado=logeado, meses=meses, cuotas=cuotas)
+	return render_template('ingles.html', title='Ingles', logeado=logeado, meses=meses, cuotas=cuotas)
 
 @app.route("/confirmacioningles/<nombre>&<carnet>&<plan>&<insc>&<datameses>&<ciclo>", methods=['GET', 'POST'])
 def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
@@ -260,27 +260,29 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
 		try:
 			with conexion.cursor() as cursor:
 				if plan == 1:
-					consulta = 'SELECT idcodigos, precio from codigos where cod = "INGLEST"'
+					consulta = 'SELECT idcodigos, precio from codigos where cod like "%MAINGLES%"'
 					cursor.execute(consulta)
-					datainsc = cursor.fetchone()
-					consulta = 'SELECT idcodigos, precio from codigos where cod = "MEINGLEST"'
+					datainsc = cursor.fetchall()
+					consulta = 'SELECT idcodigos, precio from codigos where cod like "MEINGLEST%"'
 					cursor.execute(consulta)
-					datamen = cursor.fetchone()
+					datamen = cursor.fetchall()
 				else:
-					consulta = 'SELECT idcodigos, precio from codigos where cod = "INGLESS"'
+					consulta = 'SELECT idcodigos, precio from codigos where cod like "%MAINGLES%"'
 					cursor.execute(consulta)
-					datainsc = cursor.fetchone()
-					consulta = 'SELECT idcodigos, precio from codigos where cod = "MEINGLESS"'
+					datainsc = cursor.fetchall()
+					consulta = 'SELECT idcodigos, precio from codigos where cod like "MEINGLESS"'
 					cursor.execute(consulta)
-					datamen = cursor.fetchone()
+					datamen = cursor.fetchall()
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 	total = 0
 	if insc == 1:
-		total = total + float(datainsc[1])
-	total = total + (cantidad * float(datamen[1]))
+		total = total + float(datainsc[0][1]) + float(datainsc[1][1])
+	for i in datamen:
+		for j in range(cantidad):
+			total = total + float(i[1])
 	if request.method == 'POST':
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
@@ -289,7 +291,15 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
 					idpagos = []
 					if insc == 1:
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
-						cursor.execute(consulta, (datainsc[0], nombre, carnet,datainsc[1], date.today(), 'Ciclo: ' + str(ciclo) ,0, session['idusercaja']))
+						cursor.execute(consulta, (datainsc[0][0], nombre, carnet,datainsc[0][1], date.today(), 'Ciclo: ' + str(ciclo) ,0, session['idusercaja']))
+						conexion.commit()
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						idpago = cursor.fetchone()
+						idpago = idpago[0]
+						idpagos.append(idpago)
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
+						cursor.execute(consulta, (datainsc[1][0], nombre, carnet,datainsc[1][1], date.today(), 'Ciclo: ' + str(ciclo) ,0, session['idusercaja']))
 						conexion.commit()
 						consulta = "Select MAX(idpagos) from pagos;"
 						cursor.execute(consulta)
@@ -297,14 +307,15 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
 						idpago = idpago[0]
 						idpagos.append(idpago)
 					for i in range(cantidad):
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
-						cursor.execute(consulta, (datamen[0], nombre, carnet, datamen[1], date.today(), 'Mes: ' + meses[i] ,0, session['idusercaja']))
-						conexion.commit()
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						idpago = cursor.fetchone()
-						idpago = idpago[0]
-						idpagos.append(idpago)
+						for j in datamen:
+							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
+							cursor.execute(consulta, (j[0], nombre, carnet, j[1], date.today(), 'Mes: ' + meses[i] ,0, session['idusercaja']))
+							conexion.commit()
+							consulta = "Select MAX(idpagos) from pagos;"
+							cursor.execute(consulta)
+							idpago = cursor.fetchone()
+							idpago = idpago[0]
+							idpagos.append(idpago)
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
@@ -1888,39 +1899,13 @@ def reportes():
 				consulta = 'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales from efectivo where idefectivo = 1;'
 				cursor.execute(consulta)
 				efectivo = cursor.fetchone()
-				consulta = 'SELECT p.fecha, c.cod, c.concepto, p.total FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 order by c.cod asc, p.nombre asc;'
+				consulta = 'SELECT c.cod, c.concepto, count(p.total), sum(p.total) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
-				data = cursor.fetchall()
+				sumas = cursor.fetchall()
 				sumtotal = 0
-				for i in data:
-					sumtotal = sumtotal + i[3]
-				sumtotal = round(sumtotal, 2)
-				sumas = []
-				suma = 0
-				cod = ""
-				concep = ""
-				cont = 1
-				for i in data:
-					temp = i[1]
-					if temp != cod:
-						if cod == "":
-							suma = i[3]
-							cod = i[1]
-							concep = i[2]
-							cont = 1
-						else:
-							aux = [cod, concep, suma, cont]
-							sumas.append(aux)
-							suma = i[3]
-							cod = temp
-							concep = i[2]
-							cont = 1
-					else:
-						suma = suma + i[3]
-						cont = cont + 1
-				aux = [cod, concep, suma, cont]
-				sumas.append(aux)
+				for i in sumas:
+					sumtotal = sumtotal + float(i[3])
 				consulta = 'SELECT p.fechadevuelto, c.cod, c.concepto, p.total FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fechadevuelto = "'+str(date.today())+'" order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				datadev = cursor.fetchall()
@@ -2063,13 +2048,16 @@ def repdiariopdf():
 				sumadev = 0
 				for i in datadev:
 					sumadev = sumadev + float(i[5])
-
+				consulta = 'SELECT c.cod, c.concepto, count(p.total), sum(p.total), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
+				cursor.execute(consulta)
+				resumen = cursor.fetchall()
+				cantidadresumen = len(resumen)
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 	
-	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1)
+	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1, resumen = resumen, cantidadresumen = cantidadresumen)
 	options = {'enable-local-file-access': None}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)

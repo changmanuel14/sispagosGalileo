@@ -151,9 +151,11 @@
         var label = document.getElementById('linsc')
         var arreglo = {{ cuotas | tojson }};
         if(parseInt(select.value) == 1){
-            label.innerHTML = "Q " + String(arreglo[1][1]).fixed(2)+".00"
+			var total = parseFloat(arreglo[1][1]) + parseFloat(arreglo[0][1])
+            label.innerHTML = "Q " + String(total.toFixed(2))
         }else if(parseInt(select.value) == 2){
-            label.innerHTML = "Q " + String(arreglo[0][1]).fixed(2)+".00"
+            var total = parseFloat(arreglo[1][1]) + parseFloat(arreglo[0][1])
+            label.innerHTML = "Q " + String(total.toFixed(2))
         }else {
             label.innerHTML = "Q 0.00"
         }
