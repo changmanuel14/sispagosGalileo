@@ -2052,12 +2052,16 @@ def repdiariopdf():
 				cursor.execute(consulta)
 				resumen = cursor.fetchall()
 				cantidadresumen = len(resumen)
+				consulta = "SELECT sum(total), recibo from pagos where fecha = '" + str(date.today()) + "' group by recibo order by recibo"
+				cursor.execute(consulta)
+				totalrecibo = cursor.fetchall()
+				cantidadrecibo = len(totalrecibo)
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 	
-	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1, resumen = resumen, cantidadresumen = cantidadresumen)
+	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1, resumen = resumen, cantidadresumen = cantidadresumen, totalrecibo = totalrecibo, cantidadrecibo = cantidadrecibo)
 	options = {'enable-local-file-access': None}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
