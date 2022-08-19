@@ -95,7 +95,7 @@
           <option value="{{i[1]}}">{{i[0]}}</option>
           {% endfor %}
         </select>
-        <input type="number" class="inputtext5" id="cant" name="cant" value="1" readonly>
+        <input type="hidden" class="inputtext5" id="cant" name="cant" value="1" readonly>
       </center><br>
         <center>
         <input type="text" id="carnet" name="carnet" class="inputtext" placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -115,7 +115,7 @@
             </tr>
         </thead>
         <tbody id="container">
-            <tr>
+            <tr id="row0">
                 <td><select id="tipoexamen0" name="tipoexamen0" class="inputtext6" onchange="funcion(0)" required>
                   <option value="0">Seleccione una categoria</option>
                   {% for i in tipoexamen %}
@@ -129,7 +129,7 @@
             </tr>
         </tbody>
     </table><br>
-    <center><button type="button" class="button" onclick="agregar()"> Nueva fila</button>&nbsp;<button onclick="submit" class="button">Aceptar</button></center>
+    <center><button type="button" class="button" onclick="agregar()"> Nueva fila</button>&nbsp;<button type="button" class="button" onclick="eliminar()"> Eliminar fila</button>&nbsp;<button onclick="submit" class="button">Aceptar</button></center>
 
       
         <br>
@@ -220,6 +220,15 @@
     calctotal()
   }
 
+  function eliminar() {
+	var num = parseInt(document.getElementById('cant').value)
+	if (num > 0) {
+		var input = document.getElementById('row' + String(num - 1))
+		input.remove()
+		document.getElementById('cant').value = num - 1
+	}
+  }
+
   function agregar(){
     var arreglo = {{ tipoexamen|tojson }};
     var conteo = Object.keys(arreglo).length;
@@ -230,6 +239,8 @@
     var contenedor = document.getElementById('container')
     var tr = document.createElement('tr');
     tr.id = "row" + String(cantidad)
+	var auxant = 'tipoexamen' + String(cantidad-1)
+	var anttipoexamen = parseInt(document.getElementById(auxant).value)
     var td1 = document.createElement('td');
     var select1 = document.createElement('select');
     select1.id = "tipoexamen" + String(cantidad)
@@ -239,12 +250,18 @@
     var opt = document.createElement('option');
     opt.value = "";
     opt.innerHTML = "Seleccione una categoria";
+	if (anttipoexamen == 0){
+		opt.selected = true
+	}
     select1.appendChild(opt)
     for (var i = 0; i<conteo;i++){
       opt = document.createElement('option');
       opt.value = arreglo[i][1];
       opt.innerHTML = arreglo[i][0];
       select1.appendChild(opt)
+	  if( parseInt(opt.value) == anttipoexamen){
+		  opt.selected = true
+	  }
     }
     td1.appendChild(select1)
     tr.appendChild(td1)
