@@ -2048,7 +2048,7 @@ def repdiariopdf():
 				sumadev = 0
 				for i in datadev:
 					sumadev = sumadev + float(i[5])
-				consulta = 'SELECT c.cod, c.concepto, count(p.total), rouind(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
+				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				resumen = cursor.fetchall()
 				cantidadresumen = len(resumen)
