@@ -1896,9 +1896,18 @@ def reportes():
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales from efectivo where idefectivo = 1;'
+				consulta = 'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE();'
 				cursor.execute(consulta)
-				efectivo = cursor.fetchone()
+				efectivo = cursor.fetchall()
+				if len(efectivo) > 0:
+					efectivo = efectivo[0]
+				else:
+					consulta = 'INSERT INTO efectivo(billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, fecha) values (0,0,0,0,0,0,0,0,0,0,CURDATE());'
+					cursor.execute(consulta)
+					conexion.commit()
+					consulta = 'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE();'
+					cursor.execute(consulta)
+					efectivo = cursor.fetchone()
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
@@ -1929,6 +1938,7 @@ def reportes():
 		q200 = request.form['Q200']
 		facturas = request.form['facturas']
 		vales = request.form['vales']
+		tarjeta = request.form['tarjeta']
 		if len(q1) < 1:
 			q1 = 0
 		if len(q5) < 1:
@@ -1947,12 +1957,14 @@ def reportes():
 			facturas = 0
 		if len(vales) < 1:
 			vales = 0
+		if len(tarjeta) < 1:
+			tarjeta = 0
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
-					consulta = "UPDATE efectivo set billete1=%s, billete5=%s, billete10=%s, billete20=%s, billete50=%s, billete100=%s, billete200=%s, facturas=%s, vales=%s where idefectivo = 1;"
-					cursor.execute(consulta, (q1, q5, q10, q20, q50, q100, q200, facturas, vales))
+					consulta = "UPDATE efectivo set billete1=%s, billete5=%s, billete10=%s, billete20=%s, billete50=%s, billete100=%s, billete200=%s, facturas=%s, vales=%s, tarjeta=%s where idefectivo = %s;"
+					cursor.execute(consulta, (q1, q5, q10, q20, q50, q100, q200, facturas, vales, tarjeta, efectivo[10]))
 				conexion.commit()
 			finally:
 				conexion.close()
@@ -2056,12 +2068,18 @@ def repdiariopdf():
 				cursor.execute(consulta)
 				totalrecibo = cursor.fetchall()
 				cantidadrecibo = len(totalrecibo)
+				consulta = 'SELECT nombre, factura, recibo, total from transferencias where fecha = CURDATE() ORDER by nombre asc'
+				cursor.execute(consulta)
+				transferencias = cursor.fetchall()
+				consulta = 'SELECT ROUND(SUM(total),2) from transferencias where fecha = CURDATE()'
+				cursor.execute(consulta)
+				totaltransferencias = cursor.fetchone()
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 	
-	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1, resumen = resumen, cantidadresumen = cantidadresumen, totalrecibo = totalrecibo, cantidadrecibo = cantidadrecibo)
+	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1, resumen = resumen, cantidadresumen = cantidadresumen, totalrecibo = totalrecibo, cantidadrecibo = cantidadrecibo, transferencias = transferencias, totaltransferencias=totaltransferencias)
 	options = {'enable-local-file-access': None}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -2133,6 +2151,55 @@ def pagos():
 		return redirect(url_for('login'))
 	
 	return render_template('pagos.html', title="Pagos", logeado=logeado)
+
+@app.route('/transferencias', methods=['GET', 'POST'])
+def transferencias():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	if request.method == 'POST':
+		recibo = request.form["recibo"]
+		factura = request.form["factura"]
+		nombre = request.form["nombre"]
+		total = request.form["total"]
+		try:
+			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+			try:
+				with conexion.cursor() as cursor:
+					consulta1 = 'INSERT INTO transferencias(nombre, factura, recibo, total, fecha) values(%s,%s,%s,%s,CURDATE())'
+					cursor.execute(consulta1, (nombre, factura, recibo, total))
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('transferencias'))
+	return render_template('transferencias.html', title="Ingresar Transferencia", logeado=logeado)
+
+@app.route('/reptransferencias', methods=['GET', 'POST'])
+def reptransferencias():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				consulta1 = 'SELECT nombre, fecha, factura, recibo, total from transferencias ORDER by fecha desc, nombre asc'
+				cursor.execute(consulta1)
+				transferencias = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('reptransferencias.html', title="Transferencias", logeado=logeado, transferencias=transferencias)
 
 @app.route('/imprimir/<idpagos>')
 def imprimir(idpagos):

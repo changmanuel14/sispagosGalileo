@@ -163,6 +163,10 @@
               <td>Vales</td>
               <td><input type="text"  id="vales" name="vales" class="inputtextcuadre" min="0" onchange="cuadre()" value="{{efectivo[8]}}"></td>
             </tr>
+			<tr>
+				<td>Tarjeta</td>
+				<td><input type="text"  id="tarjeta" name="tarjeta" class="inputtextcuadre" min="0" onchange="cuadre()" value="{{efectivo[9]}}"></td>
+			  </tr>
           </table><br>
           <table class="tablacuadre">
             <tr>
@@ -193,7 +197,7 @@
       cuadre()
     }
     function cuadre() {
-      var cant1, cant5, cant10, cant20, cant50, cant100, cant200, dif, sumadinero, sumapagos, efectivo, facturas, vales, extras;
+      var cant1, cant5, cant10, cant20, cant50, cant100, cant200, dif, sumadinero, sumapagos, efectivo, facturas, vales, extras, tarjeta;
       cant1 = document.getElementById("Q1").value;
       if (cant1.length == 0) {
         cant1 = 0;
@@ -257,8 +261,24 @@
           vales = parseFloat(vales);
         }
       }
+	  tarjeta = document.getElementById("tarjeta").value;
+      if (tarjeta.length == 0) {
+        tarjeta = 0;
+      }else {
+        let taraux = tarjeta
+        if(taraux.includes('+')){
+          let arreglo = taraux.split('+')
+          let total = 0
+          for(var a = 0;a<arreglo.length;a++){
+            total = total + parseFloat(arreglo[a])
+          }
+          tarjeta = total
+        }else {
+			tarjeta = parseFloat(tarjeta);
+        }
+      }
       efectivo = cant1 + (cant5 * 5) + (cant10 * 10) + (cant20 * 20) + (cant50 * 50) + (cant100 * 100) + (cant200 * 200);
-      extras = facturas + vales;
+      extras = facturas + vales + tarjeta; 
       dif = efectivo + extras - sumapagos;
       document.getElementById("tagefectivo").innerHTML = efectivo.toFixed(2).toString();
       document.getElementById("tagextras").innerHTML = extras.toFixed(2).toString();
