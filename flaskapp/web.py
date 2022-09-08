@@ -1988,6 +1988,7 @@ def reportes():
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
+					print(facturas)
 					consulta = "UPDATE efectivo set billete1=%s, billete5=%s, billete10=%s, billete20=%s, billete50=%s, billete100=%s, billete200=%s, facturas=%s, vales=%s, tarjeta=%s where idefectivo = %s;"
 					cursor.execute(consulta, (q1, q5, q10, q20, q50, q100, q200, facturas, vales, tarjeta, efectivo[10]))
 				conexion.commit()
@@ -2102,6 +2103,14 @@ def repdiariopdf():
 				consulta = 'SELECT ROUND(billete1 + (billete5 * 5)  + (billete10 * 10) + (billete20 * 20) + (billete50 * 50) + (billete100 * 100) + (billete200 * 200), 2), facturas, vales, tarjeta from efectivo where fecha = CURDATE()'
 				cursor.execute(consulta)
 				efectivo = cursor.fetchone()
+				efectivo1 = []
+				for i in efectivo:
+					arreglo = str(i).split('+')
+					total = 0
+					for j in arreglo:
+						total = total + float(j)
+					efectivo1.append(total)
+				efectivo = efectivo1
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
