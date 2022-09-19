@@ -2126,6 +2126,74 @@ def repdiariopdf():
 	print(response)
 	return response
 
+@app.route('/repdiariopdffecha/<dia>&<mes>&<anio>', methods=['GET', 'POST'])
+def repdiariopdffecha(dia, mes, anio):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	fechareq = str(anio) + '-' + str(mes) + '-' + str(dia)
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, round(p.total,2), p.idpagos, p.recibo, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fecha = "'+fechareq+'" order by c.cod asc, p.nombre asc;'
+				cursor.execute(consulta)
+			# Con fetchall traemos todas las filas
+				data = cursor.fetchall()
+				suma = 0
+				for i in data:
+					suma = suma + float(i[5])
+				consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fechadevuelto,"%d/%m/%Y"), c.concepto, p.extra, round(p.total), p.idpagos, p.recibo, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fechadevuelto = "'+fechareq+'" order by c.cod asc, p.nombre asc;'
+				cursor.execute(consulta)
+				datadev = cursor.fetchall()
+				contdev = len(datadev)
+				sumadev = 0
+				for i in datadev:
+					sumadev = sumadev + float(i[5])
+				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+fechareq+'" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
+				cursor.execute(consulta)
+				resumen = cursor.fetchall()
+				cantidadresumen = len(resumen)
+				consulta = "SELECT round(sum(total),2), recibo from pagos where fecha = '" + fechareq + "' group by recibo order by recibo"
+				cursor.execute(consulta)
+				totalrecibo = cursor.fetchall()
+				cantidadrecibo = len(totalrecibo)
+				consulta = 'SELECT nombre, factura, recibo, total from transferencias where fecha = "' + fechareq + '" ORDER by nombre asc'
+				cursor.execute(consulta)
+				transferencias = cursor.fetchall()
+				consulta = 'SELECT ROUND(SUM(total),2) from transferencias where fecha = "' + fechareq + '"'
+				cursor.execute(consulta)
+				totaltransferencias = cursor.fetchone()
+				consulta = 'SELECT ROUND(billete1 + (billete5 * 5)  + (billete10 * 10) + (billete20 * 20) + (billete50 * 50) + (billete100 * 100) + (billete200 * 200), 2), facturas, vales, tarjeta from efectivo where fecha = "' + fechareq + '"'
+				cursor.execute(consulta)
+				efectivo = cursor.fetchone()
+				print(consulta)
+				efectivo1 = []
+				for i in efectivo:
+					arreglo = str(i).split('+')
+					total = 0
+					for j in arreglo:
+						total = total + float(j)
+					efectivo1.append(total)
+				efectivo = efectivo1
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	
+	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=fechareq, resumen = resumen, cantidadresumen = cantidadresumen, totalrecibo = totalrecibo, cantidadrecibo = cantidadrecibo, transferencias = transferencias, totaltransferencias=totaltransferencias, efectivo=efectivo)
+	options = {'enable-local-file-access': None}
+	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+	response = make_response(pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
+	print(response)
+	return response
+
 @app.route('/repgen', methods=['GET', 'POST'])
 def repgen():
 	try:
