@@ -101,6 +101,15 @@
       {% endfor %}
       .
     </h5>
+	{% if lugar != 0 and lugar != '0' %}
+	<h5>Lugar: {{lugar}}</h5>
+	{% endif %}
+	{% if fechainicio != 0 and fechainicio != '0' %}
+	<h5>Fecha Inicio: {{fechainicio}}</h5>
+	{% endif %}
+	{% if fechafin != 0 and fechafin != '0' %}
+	<h5>Fecha Finalizacion: {{fechafin}}</h5>
+	{% endif %}
       <form action="" method="POST">
         <center><button onclick="submit" class="button">Aceptar</button>   <a class="regresar" href="{{ url_for('p') }}">Regresar</a></center>
       </form>

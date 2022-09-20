@@ -104,6 +104,14 @@
           <div id="myDiv">
             <input type="text" id="mes1" name="mes1" class="inputtext1" required placeholder="  Descripción">
           </div>
+		  <br>
+		  <div id="practicalenq" style="display: none;">
+			<center>
+				<input type="text" id="lugar" name="lugar" class="inputtext1" placeholder="  Lugar"><br><br>
+				<input type="date" id="fechainicio" name="fechainicio" class="inputtext">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="date" id="fechafin" name="fechafin" class="inputtext">
+			</center>
+		  </div>
     </center>
         <br>
         <center><button onclick="submit" class="button">Aceptar</button>  <button type="button" class="button" onclick="agregar()">Agregar Campo</button>  <button type="button" class="button" onclick="eliminar('')">Eliminar Campo</button></center>
@@ -171,30 +179,38 @@
     var aux = select.value
     var aux = aux.split(',')[1]
     var num = document.getElementById('cant').value
+	var datalenq = document.getElementById('practicalenq')
     for(var i = 1; i<=parseInt(num); i++){
       var aux1 = 'mes' + String(i)
       var desc = document.getElementById(aux1)
       if(aux.includes('LBCQ') || aux.includes('MGGQ') || aux.includes('TLCQ')) {
         desc.placeholder = 'Mes'
         desc.setAttribute('list', 'meses')
+		datalenq.style.display = 'none'
       }else if(aux.includes('LENQ')){
         desc.placeholder = 'Tipo de Práctica'
         desc.setAttribute('list', 'pracenf')
+		datalenq.style.display = 'block'
       }else if(aux.includes('THDQ') || (aux.includes('TRADQ') && !(aux.includes('Prepractica'))) || aux.includes('Optometria')  && aux.includes('EPS')){
         desc.placeholder = 'Descripción'
         desc.setAttribute('list', '')
-        if(aux.includes('THDQ')) desc.value = 'Pago de Práctica THDQ'
-        else if (aux.includes('Optometria')) desc.value = 'Pago de EPS TOPTQ'
-        else desc.value = 'Pago de Práctica TRADQ'
+		datalenq.style.display = 'none'
+        if(aux.includes('THDQ')) desc.value = 'Pago de Práctica THDQ';
+        else if (aux.includes('Optometria')) desc.value = 'Pago de EPS TOPTQ';
+        else desc.value = 'Pago de Práctica TRADQ';
+		datalenq.style.display = 'none'
       }else if(aux.includes('TOPTQ') && !(aux.includes('EPS')) || aux.includes('TRADQ')){
         desc.placeholder = 'Módulo'
         desc.setAttribute('list', 'modulos')
+		datalenq.style.display = 'none'
       }else if(aux.includes('TUEVQ')){
         desc.setAttribute('list', '')
         desc.placeholder = 'Monto'
+		datalenq.style.display = 'none'
       }else {
         desc.setAttribute('list', '')
         desc.placeholder = 'Descripción'
+		datalenq.style.display = 'none'
       }
     }
     

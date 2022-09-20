@@ -1250,7 +1250,7 @@ def p():
 	if logeado == 0:
 		return redirect(url_for('login'))
 	numeros = []
-	for i in range(25):
+	for i in range(10):
 		numeros.append(i+1)
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 
@@ -1270,6 +1270,15 @@ def p():
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
 		datacarrera = request.form["carrera"]
+		datalugar = request.form["lugar"]
+		if len(datalugar) < 1:
+			datalugar = 0
+		datafechainicio = request.form["fechainicio"]
+		if len(datafechainicio) < 1:
+			datafechainicio = 0
+		datafechafin = request.form["fechafin"]
+		if len(datafechafin) < 1:
+			datafechafin = 0
 		data = datacarrera.split(',')
 		pid = data[0]
 		pcod = data[1]
@@ -1281,11 +1290,11 @@ def p():
 			aux = request.form[aux1]
 			if(len(aux) > 0):
 				datames.append(aux)
-		return redirect(url_for('confirmacionp', carnet = datacarnet, nombre = datanombre, datames= datames, pid = pid, pcod = pcod, cantidad=cantidad))
+		return redirect(url_for('confirmacionp', carnet = datacarnet, nombre = datanombre, datames= datames, pid = pid, pcod = pcod, cantidad=cantidad, lugar=datalugar, fechainicio = datafechainicio, fechafin=datafechafin))
 	return render_template('practica.html', title="Practica",  carreras=carreras, numeros=numeros, meses=meses, logeado=logeado)
 
-@app.route('/confirmacionp/<carnet>&<nombre>&<datames>&<pid>&<pcod>&<cantidad>', methods=['GET', 'POST'])
-def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
+@app.route('/confirmacionp/<carnet>&<nombre>&<datames>&<pid>&<pcod>&<cantidad>&<lugar>&<fechainicio>&<fechafin>', methods=['GET', 'POST'])
+def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainicio, fechafin):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -1333,13 +1342,16 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad):
 							if 'LENQ' in precios1[0][2] and ('1' in meses[i] or '2' in meses[i] or '3' in meses[i] or '4' in meses[i]):
 								precioasig = precioasig + 50
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
+							if 'LENQ' in precios1[0][2]:
+								consulta = "INSERT INTO practicalenq(nombre,carnet,practica,lugar,fechainicio,fechafin,fecha) VALUES (%s,%s,%s,%s,%s,%s,CURDATE());"
+								cursor.execute(consulta, (nombre, carnet, meses[i], lugar, fechainicio,fechafin))
 						conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('p'))
-	return render_template('confirmacionp.html', title="Confirmación", carnet = carnet, nombre = nombre, meses = meses, pid = pid, pcod = pcod, cantidad=cantidad, logeado=logeado)
+	return render_template('confirmacionp.html', title="Confirmación", carnet = carnet, nombre = nombre, meses = meses, pid = pid, pcod = pcod, cantidad=cantidad, logeado=logeado, lugar=lugar, fechainicio = fechainicio, fechafin = fechafin)
 
 @app.route('/repp', methods=['GET', 'POST'])
 def repp():
@@ -2193,6 +2205,60 @@ def repdiariopdffecha(dia, mes, anio):
 	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
 	print(response)
 	return response
+
+@app.route('/replenq', methods=['GET', 'POST'])
+def replenq():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	data = []
+	conteo = 0
+	datacarnet = ""
+	datafechapago = ""
+	datafechaini = ""
+	datafechafin = ""
+	datanombre = ""
+	datadescripcion = ""
+	if request.method == "POST":
+		datacarnet = request.form["carnet"]
+		datanombre = request.form["nombre"]
+		datafechaini = request.form["fechaini"]
+		datafechafin = request.form["fechafin"]
+		datalugar = request.form["lugar"]
+		datadescripcion = request.form["descripcion"]
+		datafechapago = request.form["fechapago"]
+		print(datafechapago)
+		try:
+			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+			try:
+				with conexion.cursor() as cursor:
+					consulta = 'SELECT nombre, carnet, fecha, practica, lugar, fechainicio, fechafin FROM practicalenq '
+					consulta = consulta + 'where nombre like "%' + str(datanombre) + '%"'
+					consulta = consulta + ' and carnet like "%' + str(datacarnet) + '%"'
+					if len(datafechaini) != 0:
+						consulta = consulta + ' and fechainicio = "' + str(datafechaini) + '"'
+					if len(datafechafin) != 0:
+						consulta = consulta + ' and fechafin = "' + str(datafechafin) + '"'
+					if len(datafechapago) != 0:
+						consulta = consulta + ' and fecha = "' + str(datafechapago) + '"'
+					consulta = consulta + ' and lugar like "%' + str(datalugar) + '%"'
+					consulta = consulta + ' and practica like "%' + str(datadescripcion) + '%"'
+					consulta = consulta + ' order by fecha desc, practica asc, nombre asc;'
+					print(consulta)
+					cursor.execute(consulta)
+				# Con fetchall traemos todas las filas
+					data = cursor.fetchall()
+					conteo = len(data)
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return render_template('replenq.html', title="Reporte Práctica Enfermeria", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, datafechapago = datafechapago, datadescripcion = datadescripcion)
+	return render_template('replenq.html', title="Reporte Práctica Enfermeria", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, datafechapago = datafechapago, datadescripcion = datadescripcion)
+
 
 @app.route('/repgen', methods=['GET', 'POST'])
 def repgen():

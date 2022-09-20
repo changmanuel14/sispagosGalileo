@@ -25,10 +25,10 @@
             </a>
         </li>
         <li  >
-          <a href="/repgen">
-              <span>Listado General</span>
-          </a>
-      </li>
+            <a href="/repgen">
+                <span>Listado General</span>
+            </a>
+        </li>
           <li >
             <a href="/repi">
               <span>Inscripciones</span>
@@ -96,25 +96,32 @@
   <!-- sidebar-wrapper  -->
   <main class="page-content">
     <div class="container">
-        <h2>Meses extra</h2>
+        <h2>Reporte general</h2>
         <hr>
-        <input type="date" id="myInput2" name="fecha" onchange="myFunction2()" class="inputtext3">&nbsp;&nbsp;&nbsp;&nbsp;
-        <select name="carrera" id="myInput3" class="inputtext3" onchange="myFunction3()">
-            <option value="">Seleccione carrera</option>
-            {% for i in carreras %}
-            <option value="{{i[1]}}">{{i[1]}}</option>
-            {% endfor %}
-    </select>   
+        <form action="" method="POST">
+        <input type="date" id="fechaini" name="fechaini" class="inputtext3" value="{{datafechaini}}">&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="date" id="fechafin" name="fechafin" class="inputtext3" value="{{datafechafin}}"><br>
+        
+        <input type="text" id="carnet" name="carnet" placeholder="  Carnet" class="inputtext3" value="{{datacarnet}}">   &nbsp;&nbsp;&nbsp;
+        <input type="text" id="nombre" name="nombre" placeholder="  Nombre" class="inputtext3" value="{{datanombre}}">  
         <br>
-        <input type="text" id="carnet" onkeyup="myFunction4()" placeholder="  Carnet" class="inputtext3">   &nbsp;&nbsp;&nbsp;
-        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="  Nombre" class="inputtext3">       
-              <table id="myTable">
+        <input type="text" id="descripcion" name="descripcion" placeholder="  Descripción" class="inputtext3" value="{{datadescripcion}}">&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" id="lugar" name="lugar" placeholder="  Lugar" class="inputtext3" value="{{datalugar}}">
+        <br>
+        <input type="date" id="fechapago" name="fechapago" class="inputtext3" value="{{datafechapago}}"><br>
+        <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+        <br>
+        <center><button onclick="submit" class="button">Buscar</button>
+      </form>
+        <table class="sorttable" id="myTable" data-page-length="25">
             <tr>
                 <th>Nombre</th>
                 <th>Carnet</th>
                 <th>Fecha</th>
                 <th>Descripción</th>
-                <th>Total</th>
+                <th>Lugar</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
             </tr>
             {% for i in data %}
             <tr>
@@ -122,14 +129,25 @@
                 <td>{{i[1]}}</td>
                 <td>{{i[2]}}</td>
                 <td>{{i[3]}}</td>
-                <td>Q. {{i[4]}}</td>
+                <td>{{i[4]}}</td>
+                <td>{{i[5]}}</td>
+                <td>{{i[6]}}</td>
+
             </tr>
             {% endfor %}
-           
         </table>
-    </form>
     </main>
     <script>
+        function calcmostrar() {
+          var input, filter, table, tr, td, i, txtValue, numpag;
+          input = document.getElementById("myInput");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("myTable");
+          tr = table.getElementsByTagName("tr");
+          numpag = document.getElementById("numpagina").value;
+
+          
+        }
         function myFunction() {
           // Declare variables
           var input, filter, table, tr, td, i, txtValue;
@@ -204,6 +222,27 @@
         // Loop through all table rows, and hide those who don't match the search query
         for (i = 0; i < tr.length; i++) {
           td = tr[i].getElementsByTagName("td")[1];
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      }
+      function myFunction5() {
+        // Declare variables
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput4");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+      
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 0; i < tr.length; i++) {
+          td = tr[i].getElementsByTagName("td")[4];
           if (td) {
             txtValue = td.textContent || td.innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
