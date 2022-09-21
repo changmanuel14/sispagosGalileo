@@ -1332,25 +1332,51 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 					consulta1 = 'SELECT idcodigos, precio, concepto FROM codigos WHERE idcodigos = "' + str(pid) + '"'
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
+					precioasig = float(precios1[0][1])
+					idpagos = []
 					for i in range(cantidad):
 						if 'TUEVQ' in pcod:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, meses[i], date.today(), 'Practica TUEVQ',0,session['idusercaja']))
+							conexion.commit()
+						elif 'LBCQ' in pcod:
+							if 'Banco' in pcod:
+								consulta = "INSERT INTO practicalbcq(nombre, carnet, idcodigo, fecha, descripcion, user) VALUES (%s,%s,%s,CURDATE(),%s,%s);"
+								cursor.execute(consulta, (nombre, carnet, pid, meses[i],session['idusercaja']))
+								conexion.commit()
+								consulta = "Select MAX(idpracticalbcq) from practicalbcq;"
+								cursor.execute(consulta)
+								idpago = cursor.fetchone()
+								idpago = idpago[0]
+								idpagos.append(idpago)
+							else:
+								consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+								cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
+								consulta = "INSERT INTO practicalbcq(nombre, carnet, idcodigo, fecha, descripcion, user) VALUES (%s,%s,%s,CURDATE(),%s,%s);"
+								cursor.execute(consulta, (nombre, carnet, pid, meses[i],session['idusercaja']))
+								conexion.commit()
+								consulta = "Select MAX(idpracticalbcq) from practicalbcq;"
+								cursor.execute(consulta)
+								idpago = cursor.fetchone()
+								idpago = idpago[0]
+								idpagos.append(idpago)
 						else:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							precioasig = float(precios1[0][1])
 							if 'LENQ' in precios1[0][2] and ('1' in meses[i] or '2' in meses[i] or '3' in meses[i] or '4' in meses[i]):
 								precioasig = precioasig + 50
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
 							if 'LENQ' in precios1[0][2]:
 								consulta = "INSERT INTO practicalenq(nombre,carnet,practica,lugar,fechainicio,fechafin,fecha) VALUES (%s,%s,%s,%s,%s,%s,CURDATE());"
 								cursor.execute(consulta, (nombre, carnet, meses[i], lugar, fechainicio,fechafin))
-						conexion.commit()
+							conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		return redirect(url_for('p'))
+		if 'LBCQ' in pcod:
+			return redirect(url_for('hojalbcq', idpagos = idpagos))
+		else:
+			return redirect(url_for('p'))
 	return render_template('confirmacionp.html', title="Confirmación", carnet = carnet, nombre = nombre, meses = meses, pid = pid, pcod = pcod, cantidad=cantidad, logeado=logeado, lugar=lugar, fechainicio = fechainicio, fechafin = fechafin)
 
 @app.route('/repp', methods=['GET', 'POST'])
@@ -1412,6 +1438,57 @@ def repp():
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 	return render_template('repp.html', title="Reporte Prácticas", data = data, suma=suma, carreras=carreras, logeado=logeado)
+
+@app.route('/hojalbcq/<idpagos>', methods=['GET', 'POST'])
+def hojalbcq(idpagos):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	array = idpagos.split(',')
+	newarray = []
+	cantidad = len(array)
+	for i in range(cantidad):
+		varaux = ''
+		for j in array[i]:
+			if j.isdigit():
+				varaux = varaux + str(j)
+		newarray.append(varaux)
+	print(newarray)
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				meses = []
+				for i in range(cantidad):
+					consulta = 'SELECT nombre, carnet, descripcion FROM practicalbcq WHERE idpracticalbcq = '+str(newarray[i])+';'
+					cursor.execute(consulta)
+				# Con fetchall traemos todas las filas
+					data = cursor.fetchone()
+					nombre = data[0]
+					carnet = data[1]
+					aux = data[2]
+					aux = str(aux).split(':')
+					meses.append(aux[1])
+
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	fechaact = date.today()
+	year = fechaact.year
+	
+	rendered = render_template('hojalbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year)
+	options = {'enable-local-file-access': None, 'page-size': 'Legal'}
+	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+	response = make_response(pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
+	print(response)
+	return response
 
 @app.route('/mextra', methods=['GET', 'POST'])
 def mextra():
@@ -2258,7 +2335,6 @@ def replenq():
 			print("Ocurrió un error al conectar: ", e)
 		return render_template('replenq.html', title="Reporte Práctica Enfermeria", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, datafechapago = datafechapago, datadescripcion = datadescripcion)
 	return render_template('replenq.html', title="Reporte Práctica Enfermeria", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, datafechapago = datafechapago, datadescripcion = datadescripcion)
-
 
 @app.route('/repgen', methods=['GET', 'POST'])
 def repgen():
