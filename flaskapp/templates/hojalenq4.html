@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    {% if title %}
+        <title>Sistema de caja - {{ title }}</title>
+    {% else %}
+        <title>Sistema de caja</title>
+    {% endif %}
+         <link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
+	<style type="text/css">
+	body {
+		background: #ffffff;
+		margin-top: 5rem;
+	}
+	table {
+		border: 0px;
+		width: 100%;
+	}
+	td, th {
+		font-size: 14px;
+		padding-left: 8px;
+		padding-right: 8px;
+		padding-top: 0px;
+		padding-bottom: 0px;
+		height: 30px;
+	}
+
+	td {
+		border-bottom: #000000 1px solid;
+		text-align: center;
+		vertical-align: bottom;
+	}
+
+	th {
+		text-align: left;
+		vertical-align: bottom;
+	}
+	h1, h2, h3, h4, h5, h6 {
+		color: #000000;
+	}
+	p {
+		size: 12px;
+	}
+	.tabla {
+		border: #000000 1px solid;
+		text-align: center;
+		vertical-align: middle;
+		height: 20px;
+	}
+	.tdtabla {
+		border: #000000 1px solid;
+		text-align: left;
+		vertical-align: middle;
+		height: 20px;
+	}
+	.tablaobjetivos {
+		border: #000000 1px solid;
+		text-align: left;
+		vertical-align: top;
+	}
+</style>
+</head>
+<body>
+    <main role="main" class="container">
+		<div style="width: 25%; float: left;">
+			<img src="https://eventos.galileo.edu/images/logo-noslogan.png" width="100%"> 
+		</div>
+		<div style="width: 70%; float: right;">
+			<center><h5>FACULTAD DE CIENCIAS DE LA SALUD<br>TÉCNICO UNIVERSITARIO EN ENFERMERÍA<br>PRÁCTICA “ENFERMERÍA EN LA ATENCIÓN INTEGRAL AL NIÑO Y AL ADOLESCENTE”<br><strong>CENTRO EDUCATIVO Y DE CUIDADO</strong></h5></center>
+		</div>
+		<br><br><br>
+		<table>
+			<tr>
+				<th style="width: 20%;">Nombre completo: </th>
+				<td colspan="3">{{practica[0]}}</td>
+			</tr>
+			<tr>
+				<th>Lugar de práctica: </th>
+				<td colspan="3">{{practica[3]}}</td>
+			</tr>
+			<tr>
+				<th>Periodo de práctica: </th>
+				<td style="width: 50%;">{{practica[4]}} al {{practica[5]}}</td>
+				<th style="width: 10%;">Carnet: </th>
+				<td style="width: 20%;">{{practica[1]}}</td>
+			</tr>
+			<tr>
+				<th>Fecha: </th>
+				<td></td>
+				<th>Punteo: </th>
+				<td></td>
+			</tr>
+			<tr>
+				<td colspan="4" style="border: #ffffff;">VALOR 37.5 PUNTOS</td>
+			</tr>
+		</table>
+		
+    </main>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
+</body>
+</html>
