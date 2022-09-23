@@ -1368,6 +1368,11 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 							if 'LENQ' in precios1[0][2]:
 								consulta = "INSERT INTO practicalenq(nombre,carnet,practica,lugar,fechainicio,fechafin,fecha) VALUES (%s,%s,%s,%s,%s,%s,CURDATE());"
 								cursor.execute(consulta, (nombre, carnet, meses[i], lugar, fechainicio,fechafin))
+								consulta = "Select MAX(idpracticalenq) from practicalenq;"
+								cursor.execute(consulta)
+								idpago = cursor.fetchone()
+								idpago = idpago[0]
+								idpagos.append(idpago)
 							conexion.commit()
 			finally:
 				conexion.close()
@@ -1375,6 +1380,8 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 			print("Ocurrió un error al conectar: ", e)
 		if 'LBCQ' in pcod:
 			return redirect(url_for('hojalbcq', idpagos = idpagos))
+		elif 'LENQ' in pcod:
+			return redirect(url_for('hojalenq', idpagos = idpagos))
 		else:
 			return redirect(url_for('p'))
 	return render_template('confirmacionp.html', title="Confirmación", carnet = carnet, nombre = nombre, meses = meses, pid = pid, pcod = pcod, cantidad=cantidad, logeado=logeado, lugar=lugar, fechainicio = fechainicio, fechafin = fechafin)
@@ -1487,6 +1494,64 @@ def hojalbcq(idpagos):
 	response = make_response(pdf)
 	response.headers['Content-Type'] = 'application/pdf'
 	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
+	print(response)
+	return response
+
+@app.route('/hojalenq/<idpagos>', methods=['GET', 'POST'])
+def hojalenq(idpagos):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	array = idpagos.split(',')
+	newarray = []
+	cantidad = len(array)
+	for i in range(cantidad):
+		varaux = ''
+		for j in array[i]:
+			if j.isdigit():
+				varaux = varaux + str(j)
+		newarray.append(varaux)
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				meses = []
+				consulta = 'SELECT nombre, carnet, practica, lugar, DATE_FORMAT(fechainicio,"%d/%m/%Y"), DATE_FORMAT(fechafin,"%d/%m/%Y") FROM practicalenq WHERE idpracticalenq = '+str(newarray[0])+';'
+				cursor.execute(consulta)
+			# Con fetchall traemos todas las filas
+				practica = cursor.fetchone()
+
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	fechaact = date.today()
+	year = fechaact.year
+
+	if '1' in practica[2]:
+		template = 'hojalenq1.html'
+	elif '2' in practica[2]:
+		template = 'hojalenq2.html'
+	elif '3' in practica[2]:
+		template = 'hojalenq3.html'
+	elif '4' in practica[2]:
+		template = 'hojalenq4.html'
+	elif '5' in practica[2]:
+		template = 'hojalenq5.html'
+	elif '6' in practica[2]:
+		template = 'hojalenq6.html'
+
+	
+	rendered = render_template(template, title="Hoja de Práctica ", practica = practica, year = year)
+	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'footer-right': 'Página [page] de [topage]'}
+	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+	response = make_response(pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=practicalenq.pdf'
 	print(response)
 	return response
 
