@@ -1546,7 +1546,7 @@ def hojalenq(idpagos):
 
 	
 	rendered = render_template(template, title="Hoja de Práctica ", practica = practica, year = year)
-	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'footer-right': 'Página [page] de [topage]'}
+	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'footer-right': 'Página [page] de [topage]', 'margin-bottom': '40mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
 	response = make_response(pdf)
