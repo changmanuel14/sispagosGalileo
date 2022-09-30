@@ -1469,8 +1469,9 @@ def hojalbcq(idpagos):
 		try:
 			with conexion.cursor() as cursor:
 				meses = []
+				idhojas = []
 				for i in range(cantidad):
-					consulta = 'SELECT nombre, carnet, descripcion FROM practicalbcq WHERE idpracticalbcq = '+str(newarray[i])+';'
+					consulta = 'SELECT nombre, carnet, descripcion, idpracticalbcq FROM practicalbcq WHERE idpracticalbcq = '+str(newarray[i])+';'
 					cursor.execute(consulta)
 				# Con fetchall traemos todas las filas
 					data = cursor.fetchone()
@@ -1479,6 +1480,7 @@ def hojalbcq(idpagos):
 					aux = data[2]
 					aux = str(aux).split(':')
 					meses.append(aux[1])
+					idhojas.append(data[3])
 
 		finally:
 			conexion.close()
@@ -1487,7 +1489,7 @@ def hojalbcq(idpagos):
 	fechaact = date.today()
 	year = fechaact.year
 	
-	rendered = render_template('hojalbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year)
+	rendered = render_template('hojalbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas)
 	options = {'enable-local-file-access': None, 'page-size': 'Legal'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
