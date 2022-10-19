@@ -51,7 +51,7 @@
 	}
 
 	.tdthtabla {
-		height: 52px;
+		height: 40px;
 		text-align: center;
 	}
 
@@ -69,7 +69,7 @@
     <main role="main" class="container">
 		{% for i in range(cantidad) %}
 		<div style="width: 70%; float: left;">
-			<h6>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>LICENCIATURA EN QUÍMICA BIOLÓGICA<br>Ejercicio Profesional Supervisado</h6>
+			<h6>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>TÉCNICO EN LABORATORIO CLÍNICO<br>ASISTENCIA A PRÁCTICA</h6>
 		</div>
 
 		<div style="width: 25%; float: right;">
@@ -99,11 +99,11 @@
 				<th class="tabla tdthtabla" style="width: 10%;">Fecha</th>
 				<th class="tabla tdthtabla" style="width: 15%;">Hora de Entrada</th>
 				<th class="tabla tdthtabla" style="width: 15%;">Hora de Salida</th>
-				<th class="tabla tdthtabla" style="width: 15%;">Área</th>
+				<th class="tabla tdthtabla" style="width: 15%;">Total horas</th>
 				<th class="tabla tdthtabla" style="width: 20%;">Nombre de quien firma</th>
 				<th class="tabla tdthtabla" style="width: 20%;">Firma</th>
 			</tr>
-			{% for j in range(21) %}
+			{% for j in range(27) %}
 			<tr>
 				<th class="tabla tdthtabla" style="width: 5%;">{{j+1}}</th>
 				<td class="tabla tdthtabla" style="width: 10%;"></td>
@@ -120,7 +120,7 @@
 		<br>
 
 		<div style="width: 70%; float: left;">
-			<center><h6>UNIVERSIDAD GALILEO<br>FACULTAD DE CIENCIAS DE LA SALUD<br>SEDE QUETZALTENANGO<br>LICENCIATURA EN QUÍMICA BIOLÓGICA</h6></center>
+			<center><h6>UNIVERSIDAD GALILEO<br>FACULTAD DE CIENCIAS DE LA SALUD<br>SEDE QUETZALTENANGO<br>TÉCNICO EN LABORATORIO CLÍNICO</h6></center>
 		</div>
 
 		<div style="width: 25%; float: right;">
@@ -198,10 +198,10 @@
 				<td class="tabla tdthtabla1">Casi siempre aceptable</td>
 				<td class="tabla tdthtabla1">Buena</td>
 				<td class="tabla tdthtabla1">Superior</td>
-				<td class="tabla tdthtabla1">2</td>
-				<td class="tabla tdthtabla1">4</td>
-				<td class="tabla tdthtabla1">7</td>
+				<td class="tabla tdthtabla1">5</td>
 				<td class="tabla tdthtabla1">10</td>
+				<td class="tabla tdthtabla1">15</td>
+				<td class="tabla tdthtabla1">20</td>
 			</tr>
 			<tr>
 				<th class="tabla tdthtabla1">Seguimiento de instrucciones</th>
@@ -269,17 +269,6 @@
 				<td class="tabla tdthtabla1">7</td>
 				<td class="tabla tdthtabla1">10</td>
 			</tr>
-			<tr>
-				<th class="tabla tdthtabla1">Entrega de tareas o trabajos (entrega puntual y completa)</th>
-				<td class="tabla tdthtabla1">No las entrega</td>
-				<td class="tabla tdthtabla1">Entrega incompleta</td>
-				<td class="tabla tdthtabla1">Bueno</td>
-				<td class="tabla tdthtabla1">Excelente</td>
-				<td class="tabla tdthtabla1">2</td>
-				<td class="tabla tdthtabla1">4</td>
-				<td class="tabla tdthtabla1">7</td>
-				<td class="tabla tdthtabla1">10</td>
-			</tr>
 		</table>
 		<div style="width: 40%; float: left; padding-right: 25px;">
 			<center><h5>RESUMEN</h5></center>
@@ -318,10 +307,6 @@
 				</tr>
 				<tr>
 					<th class="tabla" style="height: 15px;">Adaptabilidad</th>
-					<td class="tabla"></td>
-				</tr>
-				<tr>
-					<th class="tabla" style="height: 15px;">Entrega de tareas y trabajos</th>
 					<td class="tabla"></td>
 				</tr>
 				<tr>
@@ -380,10 +365,11 @@
 		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 		<center>
 			<h6>CALIFICACIÓN FINAL (APROBADO O REPROBADO): _______________________________________________________</h6>
-			<br>
+			<br><br>
 			<h6>Nombre, firma y sello: _______________________________________________________________</h6>
 			<h6>JEFATURA DE LABORATORIO</h6>
 		</center>
+		<br>
 
 		{% endfor %}
 
