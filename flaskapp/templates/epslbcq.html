@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    {% if title %}
+        <title>Sistema de caja - {{ title }}</title>
+    {% else %}
+        <title>Sistema de caja</title>
+    {% endif %}
+         <link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
+	<style type="text/css">
+	body {
+		background: #ffffff;
+		margin-top: 5rem;
+	}
+	table {
+		border: 0px;
+		width: 100%;
+	}
+	td, th {
+		font-size: 14px;
+		padding-left: 8px;
+		padding-right: 8px;
+		padding-top: 0px;
+		padding-bottom: 0px;
+		height: 30px;
+	}
+
+	li {
+		font-size: 14px;
+	}
+
+	td {
+		border-bottom: #000000 1px solid;
+		text-align: center;
+		vertical-align: bottom;
+	}
+	h1, h2, h3, h4, h5, h6 {
+		color: #000000;
+	}
+	p{
+		size: 12px;
+	}
+
+	.tabla {
+		border: #000000 1px solid;
+		text-align: center;
+		vertical-align: middle;
+	}
+
+	.tdthtabla {
+		height: 52px;
+		text-align: center;
+	}
+
+	.tdthtabla1 {
+		height: 40px;
+		text-align: center;
+	}
+	.tdthtabla2 {
+		height: 20px;
+		text-align: center;
+	}
+</style>
+</head>
+<body>
+    <main role="main" class="container">
+		{% for i in range(cantidad) %}
+		<div style="width: 70%; float: left;">
+			<h6>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>LICENCIATURA EN QUÍMICA BIOLÓGICA<br>Ejercicio Profesional Supervisado</h6>
+		</div>
+
+		<div style="width: 25%; float: right;">
+			<img src="https://eventos.galileo.edu/images/logo-noslogan.png" width="100%"> 
+		</div>
+		<br><br><br><br><br>
+		<p style="display: inline;">Hoja No. </p><p style="border-bottom: #000000 1px solid; display: inline; padding-left: 10px;padding-right: 10px;">{{idhojas[i]}}</p><br>
+		<table>
+			<tr>
+				<th style="width: 20%;">Nombre: </th>
+				<td style="width: 50%;">{{nombre}}</td>
+				<th style="width: 10%;">Carnet: </th>
+				<td style="width: 20%;">{{carnet}}</td>
+			</tr>
+			<tr>
+				<th style="width: 20%;">Lugar de Práctica: </th>
+				<td style="width: 50%;"></td>
+				<th style="width: 10%;">Periodo: </th>
+				<td style="width: 20%;">{{meses[i]}} {{year}}</td>
+			</tr>
+		</table>
+		<br><br>
+
+		<table class="tabla">
+			<tr>
+				<th class="tabla tdthtabla" style="width: 5%;"></th>
+				<th class="tabla tdthtabla" style="width: 10%;">Fecha</th>
+				<th class="tabla tdthtabla" style="width: 15%;">Hora de Entrada</th>
+				<th class="tabla tdthtabla" style="width: 15%;">Hora de Salida</th>
+				<th class="tabla tdthtabla" style="width: 15%;">Área</th>
+				<th class="tabla tdthtabla" style="width: 20%;">Nombre de quien firma</th>
+				<th class="tabla tdthtabla" style="width: 20%;">Firma</th>
+			</tr>
+			{% for j in range(21) %}
+			<tr>
+				<th class="tabla tdthtabla" style="width: 5%;">{{j+1}}</th>
+				<td class="tabla tdthtabla" style="width: 10%;"></td>
+				<td class="tabla tdthtabla" style="width: 15%;"></td>
+				<td class="tabla tdthtabla" style="width: 15%;"></td>
+				<td class="tabla tdthtabla" style="width: 15%;"></th>
+				<td class="tabla tdthtabla" style="width: 20%;"></td>
+				<td class="tabla tdthtabla" style="width: 20%;"></td>
+			</tr>
+
+			{% endfor %}
+
+		</table>
+		<br>
+
+		<div style="width: 70%; float: left;">
+			<center><h6>UNIVERSIDAD GALILEO<br>FACULTAD DE CIENCIAS DE LA SALUD<br>SEDE QUETZALTENANGO<br>LICENCIATURA EN QUÍMICA BIOLÓGICA<br>HOJA DE EVALUACIÓN DE EJERCICIO PROFESIONAL SUPERVISADO</h6></center>
+		</div>
+
+		<div style="width: 25%; float: right;">
+			<img src="https://eventos.galileo.edu/images/logo-noslogan.png" width="90%"> 
+		</div>
+		<br><br><br><br>
+		<table>
+			<tr>
+				<th style="width: 37%;">Unidad de Ejercicio Profesional Supervisado: </th>
+				<td style="width: 63%;"></td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<th style="width: 20%;">Nombre del estudiante: </th>
+				<td style="width: 55%;">{{nombre}}</td>
+				<th style="width: 10%;">Carnet: </th>
+				<td style="width: 20%;">{{carnet}}</td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<th style="width: 18%;">Fecha inicio de EPS: </th>
+				<td style="width: 40%;"></td>
+				<th style="width: 22%;">Fecha de término de EPS: </th>
+				<td style="width: 20%;"></td>
+			</tr>
+			<tr>
+				<th>Evaluador: </th>
+				<td></td>
+				<th>Cargo: </th>
+				<td></td>
+			</tr>
+		</table>
+		<br>
+		<center><h5><strong>Instrucciones</strong></h5></center>
+		<ol>
+			<li>En las la áreas relativas a CALIFICACIÓN, para cada uno de los parámetros de evaluación, marque con una X la opción que a su criterio considere apropiada.</li>
+			<li>Su evaluación es muy importante para calificar apropiadamente al practicante; por lo que se le ruega hacerlo a conciencia.</li>
+			<li>En el cuadro RESUMEN, coloque los puntos obtenidos en cada parámetro y súmelos.</li>
+			<li>La evaluación sólo es válida si está completa y debidamente <strong>firmada y sellada</strong> por el jefe de la unidad de práctica.</li>
+		</ol>
+		<table class="tabla">
+			<tr>
+				<th class="tabla" rowspan="2" style="width: 20%;">PARÁMETROS</th>
+				<th class="tabla" colspan="4">EVALUACIÓN</th>
+			</tr>
+			<tr>
+				<th class="tabla" colspan="4">CALIFICACIÓN</th>
+			</tr>
+			<tr>
+				<th class="tabla tdthtabla1">Administración de laboratorio</th>
+				<td class="tabla tdthtabla1">5</td>
+				<td class="tabla tdthtabla1">10</td>
+				<td class="tabla tdthtabla1">15</td>
+				<td class="tabla tdthtabla1">20</td>
+			</tr>
+			<tr>
+				<th class="tabla tdthtabla1">Gestión de Calidad</th>
+				<td class="tabla tdthtabla1">5</td>
+				<td class="tabla tdthtabla1">10</td>
+				<td class="tabla tdthtabla1">15</td>
+				<td class="tabla tdthtabla1">20</td>
+			</tr>
+			<tr>
+				<th class="tabla tdthtabla1">Docencia</th>
+				<td class="tabla tdthtabla1">5</td>
+				<td class="tabla tdthtabla1">10</td>
+				<td class="tabla tdthtabla1">15</td>
+				<td class="tabla tdthtabla1">20</td>
+			</tr>
+			<tr>
+				<th class="tabla tdthtabla1">Cumplimiento de normas y reglamentos</th>
+				<td class="tabla tdthtabla1">2</td>
+				<td class="tabla tdthtabla1">4</td>
+				<td class="tabla tdthtabla1">7</td>
+				<td class="tabla tdthtabla1">10</td>
+			</tr>
+			<tr>
+				<th class="tabla tdthtabla1">Relaciones interpersonales</th>
+				<td class="tabla tdthtabla1">2</td>
+				<td class="tabla tdthtabla1">4</td>
+				<td class="tabla tdthtabla1">7</td>
+				<td class="tabla tdthtabla1">10</td>
+			</tr>
+			<tr>
+				<th class="tabla tdthtabla1">Iniciativa (aporta y desarrolla ideas constructivas)</th>
+				<td class="tabla tdthtabla1">2</td>
+				<td class="tabla tdthtabla1">4</td>
+				<td class="tabla tdthtabla1">7</td>
+				<td class="tabla tdthtabla1">10</td>
+			</tr>
+			<tr>
+				<th class="tabla tdthtabla1">Organización (sigue métodos y procedimientos)</th>
+				<td class="tabla tdthtabla1">2</td>
+				<td class="tabla tdthtabla1">4</td>
+				<td class="tabla tdthtabla1">7</td>
+				<td class="tabla tdthtabla1">10</td>
+			</tr>
+		</table>
+		<br>
+		<div style="width: 60%;">
+			<center><h5>RESUMEN</h5></center>
+			<table class="tabla">
+				<tr>
+					<th class="tabla" style="width: 75%; height: 15px;">PARÁMETRO</th>
+					<th class="tabla" style="width: 25%;">PUNTEO</th>
+				</tr>
+				<tr>
+					<th class="tabla" style="height: 15px;">Administración de Laboratorio</th>
+					<td class="tabla"></td>
+				</tr>
+				<tr>
+					<th class="tabla" style="height: 15px;">Gestión de la Calidad</th>
+					<td class="tabla"></td>
+				</tr>
+				<tr>
+					<th class="tabla" style="height: 15px;">Docencia</th>
+					<td class="tabla"></td>
+				</tr>
+				<tr>
+					<th class="tabla" style="height: 15px;">Cumplimiento de normas y reglamentos</th>
+					<td class="tabla"></td>
+				</tr>
+				<tr>
+					<th class="tabla" style="height: 15px;">Relaciones interpersonales</th>
+					<td class="tabla"></td>
+				</tr>
+				<tr>
+					<th class="tabla" style="height: 15px;">Iniciativa</th>
+					<td class="tabla"></td>
+				</tr>
+				<tr>
+					<th class="tabla" style="height: 15px;">Organización</th>
+					<td class="tabla"></td>
+				</tr>
+				<tr>
+					<th class="tabla" style="height: 15px;">TOTAL</th>
+					<td class="tabla"></td>
+				</tr>
+			</table>
+		</div>
+		<br><br><br><br>
+		<center>
+			<h6>CALIFICACIÓN FINAL (APROBADO O REPROBADO): _______________________________________________________</h6>
+			<br><br><br>
+			<h6>Nombre, firma y sello: _______________________________________________________________</h6>
+			<h6>JEFATURA DE LABORATORIO</h6>
+		</center>
+
+		{% endfor %}
+
+
+        
+    </main>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
+</body>
+</html>

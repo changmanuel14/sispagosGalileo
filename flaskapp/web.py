@@ -1398,7 +1398,10 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		if 'LBCQ' in pcod:
-			return redirect(url_for('hojalbcq', idpagos = idpagos))
+			if 'EPS' in pcod:
+				return redirect(url_for('epslbcq', idpagos = idpagos))
+			else:
+				return redirect(url_for('hojalbcq', idpagos = idpagos))
 		elif 'LENQ' in pcod:
 			return redirect(url_for('hojalenq', idpagos = idpagos))
 		elif 'THDQ' in pcod:
@@ -1515,6 +1518,59 @@ def hojalbcq(idpagos):
 	year = fechaact.year
 	
 	rendered = render_template('hojalbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas)
+	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'margin-bottom': '35mm'}
+	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+	response = make_response(pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
+	print(response)
+	return response
+
+@app.route('/epslbcq/<idpagos>', methods=['GET', 'POST'])
+def epslbcq(idpagos):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	array = idpagos.split(',')
+	newarray = []
+	cantidad = len(array)
+	for i in range(cantidad):
+		varaux = ''
+		for j in array[i]:
+			if j.isdigit():
+				varaux = varaux + str(j)
+		newarray.append(varaux)
+	print(newarray)
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				meses = []
+				idhojas = []
+				for i in range(cantidad):
+					consulta = 'SELECT nombre, carnet, descripcion, idpracticalbcq FROM practicalbcq WHERE idpracticalbcq = '+str(newarray[i])+';'
+					cursor.execute(consulta)
+				# Con fetchall traemos todas las filas
+					data = cursor.fetchone()
+					nombre = data[0]
+					carnet = data[1]
+					aux = data[2]
+					aux = str(aux).split(':')
+					meses.append(aux[1])
+					idhojas.append(data[3])
+
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	fechaact = date.today()
+	year = fechaact.year
+	
+	rendered = render_template('epslbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas)
 	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'margin-bottom': '35mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
