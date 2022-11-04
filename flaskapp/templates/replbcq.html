@@ -24,7 +24,7 @@
                 <span>Corte Diario</span>
             </a>
         </li>
-          <li  >
+        <li  >
             <a href="/repgen">
                 <span>Listado General</span>
             </a>
@@ -101,45 +101,45 @@
   <!-- sidebar-wrapper  -->
   <main class="page-content">
     <div class="container">
-        <h2>Reporte diario</h2>
+        <h2>Reporte Práctica de Química Biológica</h2>
         <hr>
-        <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-        <p>{{mensaje}}</p>
         <form action="" method="POST">
-          <input type="text" class="inputtext1" name="regen" placeholder="  Boleta General">
-          <br><br>
-        <table class="sortable">
+        <input type="text" id="carnet" name="carnet" placeholder="  Carnet" class="inputtext3" value="{{datacarnet}}">   &nbsp;&nbsp;&nbsp;
+        <input type="text" id="nombre" name="nombre" placeholder="  Nombre" class="inputtext3" value="{{datanombre}}">  
+        <br>
+        <input type="text" id="descripcion" name="descripcion" placeholder="  Descripción" class="inputtext3" value="{{datadescripcion}}">&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="date" id="fechapago" name="fechapago" class="inputtext3" value="{{datafechapago}}"><br>
+		<input type="text" id="concepto" name="concepto" placeholder="  Concepto" class="inputtext3" value="{{dataconcepto}}">&nbsp;&nbsp;&nbsp;&nbsp;
+        <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+        <br>
+        <center><button onclick="submit" class="button">Buscar</button>
+      </form>
+        <table class="sorttable">
             <tr>
                 <th>Nombre</th>
                 <th>Carnet</th>
                 <th>Fecha</th>
-                <th>Concepto</th>
+				<th>Concepto</th>
                 <th>Descripción</th>
-                <th>Total</th>
-                <th>Usuario</th>
-                <th>Recibo</th>
-                <th colspan="3">Opciones</th>
+				<th>Imprimir</th>
             </tr>
             {% for i in data %}
             <tr>
                 <td>{{i[0]}}</td>
                 <td>{{i[1]}}</td>
                 <td>{{i[2]}}</td>
+				<td>{{i[5]}}</td>
                 <td>{{i[3]}}</td>
-                <td>{{i[4]}}</td>
-                <td>Q. {{i[5]}}</td>
-                <td>{{i[7]}}</td>
-                <td><input type="text" class="inputtyperecibo" name="re{{i[6]}}"> </td>
-                <td><a href="/editarpago/{{i[6]}}" style="color: black;">Editar</a></td>
-                <td><a href="/eliminarpago/{{i[6]}}" style="color: black;">Eliminar</a></td>
-                <td><a href="/imprimir/{{i[6]}}" style="color: black;" target=”_blank”>Imprimir</a></td>
+				{% if 'EPS' in i[5] %}
+				<td><a href="/epslbcq/{{i[4]}}">Imprimir</a></td>
+				{% else %}
+				<td><a href="/hojalbcq/{{i[4]}}">Imprimir</a></td>
+				{% endif %}
             </tr>
             {% endfor %}
         </table>
-        <br>
-        <center><button onclick="submit" class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}" target="_blank">Ver PDF</a></button>  <button onclick="submit" class="button">Registrar</button></center>
-      </form>
     </main>
+ 
     <!-- page-content" -->
   </div>
   <!-- page-wrapper -->

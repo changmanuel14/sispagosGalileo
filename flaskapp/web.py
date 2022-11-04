@@ -1430,11 +1430,11 @@ def repp():
  
 			# Con fetchall traemos todas las filas
 				carreras = cursor.fetchall()
-				consulta = '''select p.nombre, p.carnet, p.fecha, d.cod, p.extra, p.total from pagos p 
+				consulta = '''select p.nombre, p.carnet, p.fecha, d.cod, p.extra, p.total, p.idpagos from pagos p 
 				inner join codigos d on p.idcod = d.idcodigos
 				inner join carreras c on d.idcarrera = c.idcarreras
 				where d.practica = 1
-				order by p.fecha asc, c.codigo desc, p.nombre asc, p.extra asc'''
+				order by p.fecha desc, c.codigo desc, p.nombre asc, p.extra asc'''
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
 				data = cursor.fetchall()
@@ -2607,7 +2607,7 @@ def replenq():
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
-					consulta = 'SELECT nombre, carnet, fecha, practica, lugar, fechainicio, fechafin FROM practicalenq '
+					consulta = 'SELECT nombre, carnet, fecha, practica, lugar, fechainicio, fechafin, idpracticalenq FROM practicalenq '
 					consulta = consulta + 'where nombre like "%' + str(datanombre) + '%"'
 					consulta = consulta + ' and carnet like "%' + str(datacarnet) + '%"'
 					if len(datafechaini) != 0:
@@ -2630,6 +2630,54 @@ def replenq():
 			print("Ocurrió un error al conectar: ", e)
 		return render_template('replenq.html', title="Reporte Práctica Enfermeria", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, datafechapago = datafechapago, datadescripcion = datadescripcion)
 	return render_template('replenq.html', title="Reporte Práctica Enfermeria", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, datafechapago = datafechapago, datadescripcion = datadescripcion)
+
+@app.route('/replbcq', methods=['GET', 'POST'])
+def replbcq():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	data = []
+	conteo = 0
+	datacarnet = ""
+	datafechapago = ""
+	datanombre = ""
+	datadescripcion = ""
+	dataconcepto = ""
+	if request.method == "POST":
+		datacarnet = request.form["carnet"]
+		datanombre = request.form["nombre"]
+		datadescripcion = request.form["descripcion"]
+		datafechapago = request.form["fechapago"]
+		dataconcepto = request.form["concepto"]
+		print(datafechapago)
+		try:
+			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+			try:
+				with conexion.cursor() as cursor:
+					consulta = 'SELECT q.nombre, q.carnet, q.fecha, q.descripcion, q.idpracticalbcq, c.concepto FROM practicalbcq q '
+					consulta = consulta + "inner join codigos c on q.idcodigo = c.idcodigos "
+					consulta = consulta + 'where q.nombre like "%' + str(datanombre) + '%"'
+					consulta = consulta + ' and q.carnet like "%' + str(datacarnet) + '%"'
+					if len(datafechapago) != 0:
+						consulta = consulta + ' and q.fecha = "' + str(datafechapago) + '"'
+					consulta = consulta + ' and q.descripcion like "%' + str(datadescripcion) + '%"'
+					consulta = consulta + ' and c.concepto like "%' + str(dataconcepto) + '%"'
+					consulta = consulta + ' order by fecha desc, nombre asc;'
+					print(consulta)
+					cursor.execute(consulta)
+				# Con fetchall traemos todas las filas
+					data = cursor.fetchall()
+					conteo = len(data)
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return render_template('replbcq.html', title="Reporte Práctica Química Biológica", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechapago = datafechapago, datadescripcion = datadescripcion)
+	return render_template('replbcq.html', title="Reporte Práctica  Química Biológica", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechapago = datafechapago, datadescripcion = datadescripcion)
+
 
 @app.route('/repgen', methods=['GET', 'POST'])
 def repgen():

@@ -64,6 +64,11 @@
 				<span>Practica Enfermeria</span>
 			</a>
 		</li>
+		<li  >
+			<a href="/replbcq">
+				<span>Practica Química Biológica</span>
+			</a>
+		</li>
           <li  >
               <a href="/repm">
                   <span>Manuales</span>
@@ -120,6 +125,7 @@
                 <th>Codigo</th>
                 <th>Descripción</th>
                 <th>Total</th>
+				<th>imprimir</th>
             </tr>
             {% for i in data %}
             <tr>
@@ -129,6 +135,17 @@
                 <td>{{i[3]}}</td>
                 <td>{{i[4]}}</td>
                 <td>Q. {{i[5]}}</td>
+				<td>
+					{% if 'THDQ' in i[3] %}
+					<a href="/hojathdq/{{i[6]}}">Imprimir</a>
+					{% elif 'PREPTRAD' in i[3] %}
+					<a href="/prepracticatradq/{{i[6]}}">Imprimir</a>
+					{% elif  'TLCQ' in i[3] %}
+					<a href="/hojatlcq/{{i[6]}}">Imprimir</a>
+					{% else %}
+					No Aplica
+					{% endif %}
+				</td>
             </tr>
             {% endfor %}
             

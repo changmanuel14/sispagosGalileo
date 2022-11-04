@@ -64,6 +64,11 @@
 				<span>Practica Enfermeria</span>
 			</a>
 		</li>
+		<li  >
+			<a href="/replbcq">
+				<span>Practica Química Biológica</span>
+			</a>
+		</li>
           <li  >
               <a href="/repm">
                   <span>Manuales</span>
@@ -96,7 +101,7 @@
   <!-- sidebar-wrapper  -->
   <main class="page-content">
     <div class="container">
-        <h2>Reporte general</h2>
+        <h2>Reporte Práctica de Enfermería</h2>
         <hr>
         <form action="" method="POST">
         <input type="date" id="fechaini" name="fechaini" class="inputtext3" value="{{datafechaini}}">&nbsp;&nbsp;&nbsp;&nbsp;
@@ -112,7 +117,7 @@
         <br>
         <center><button onclick="submit" class="button">Buscar</button>
       </form>
-        <table class="sorttable" id="myTable" data-page-length="25">
+        <table class="sorttable">
             <tr>
                 <th>Nombre</th>
                 <th>Carnet</th>
@@ -121,6 +126,7 @@
                 <th>Lugar</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
+				<th>Imprimir</th>
             </tr>
             {% for i in data %}
             <tr>
@@ -131,128 +137,11 @@
                 <td>{{i[4]}}</td>
                 <td>{{i[5]}}</td>
                 <td>{{i[6]}}</td>
-
+				<td><a href="/hojalenq/{{i[7]}}">Imprimir</a></td>
             </tr>
             {% endfor %}
         </table>
     </main>
-    <script>
-        function calcmostrar() {
-          var input, filter, table, tr, td, i, txtValue, numpag;
-          input = document.getElementById("myInput");
-          filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
-          tr = table.getElementsByTagName("tr");
-          numpag = document.getElementById("numpagina").value;
-
-          
-        }
-        function myFunction() {
-          // Declare variables
-          var input, filter, table, tr, td, i, txtValue;
-          input = document.getElementById("myInput");
-          filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
-          tr = table.getElementsByTagName("tr");
-        
-          // Loop through all table rows, and hide those who don't match the search query
-          for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-              txtValue = td.textContent || td.innerText;
-              if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-              } else {
-                tr[i].style.display = "none";
-              }
-            }
-          }
-        }
-        function myFunction2() {
-          // Declare variables
-          var input, filter, table, tr, td, i, txtValue;
-          input = document.getElementById("myInput2");
-          filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
-          tr = table.getElementsByTagName("tr");
-        
-          // Loop through all table rows, and hide those who don't match the search query
-          for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[2];
-            if (td) {
-              txtValue = td.textContent || td.innerText;
-              if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-              } else {
-                tr[i].style.display = "none";
-              }
-            }
-          }
-        }
-        function myFunction3() {
-          // Declare variables
-          var input, filter, table, tr, td, i, txtValue;
-          input = document.getElementById("myInput3");
-          filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
-          tr = table.getElementsByTagName("tr");
-        
-          // Loop through all table rows, and hide those who don't match the search query
-          for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[3];
-            if (td) {
-              txtValue = td.textContent || td.innerText;
-              if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-              } else {
-                tr[i].style.display = "none";
-              }
-            }
-          }
-        }
-        function myFunction4() {
-        // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("carnet");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-      
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[1];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }
-        }
-      }
-      function myFunction5() {
-        // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("myInput4");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-      
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[4];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }
-        }
-      }
-        </script>
     <!-- page-content" -->
   </div>
   <!-- page-wrapper -->
