@@ -65,7 +65,7 @@ def devolucion(idpago):
 			nombrearc = nombrearc + 'jpg'
 		elif '.jpeg' in file.filename:
 			nombrearc = nombrearc + 'jpeg'
-		file.save(os.path.join("flaskapp\\static\\uploads", nombrearc))
+		file.save("flaskapp\\static\\uploads\\" + nombrearc)
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
