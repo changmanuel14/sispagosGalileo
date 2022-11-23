@@ -57,15 +57,10 @@ def devolucion(idpago):
 	if request.method == 'POST':
 		file = request.files['file']
 		nombrearc = 'dev' + str(idpago) + '.'
-		if '.png' in file.filename:
-			nombrearc = nombrearc + 'png'
-		elif '.pdf' in file.filename:
-			nombrearc = nombrearc + 'pdf'
-		elif '.jpg' in file.filename:
-			nombrearc = nombrearc + 'jpg'
-		elif '.jpeg' in file.filename:
-			nombrearc = nombrearc + 'jpeg'
-		file.save("flaskapp\\static\\uploads\\" + nombrearc)
+		div = str(file.filename).split('.')
+		nombrearc = nombrearc + div[1]
+		aux = r"flaskapp\static\uploads" + '\\' + nombrearc
+		file.save(aux)
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
@@ -2678,7 +2673,6 @@ def replbcq():
 		return render_template('replbcq.html', title="Reporte Práctica Química Biológica", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechapago = datafechapago, datadescripcion = datadescripcion)
 	return render_template('replbcq.html', title="Reporte Práctica  Química Biológica", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechapago = datafechapago, datadescripcion = datadescripcion)
 
-
 @app.route('/repgen', methods=['GET', 'POST'])
 def repgen():
 	try:
@@ -2719,7 +2713,6 @@ def repgen():
 					consulta = consulta + ' and p.extra like "%' + str(datadescripcion) + '%"'
 					consulta = consulta + ' and p.recibo like "%' + str(datarecibo) + '%"'
 					consulta = consulta + ' order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
-					print(consulta)
 					cursor.execute(consulta)
 				# Con fetchall traemos todas las filas
 					data = cursor.fetchall()
