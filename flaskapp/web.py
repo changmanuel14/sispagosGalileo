@@ -5,9 +5,10 @@ import os
 import webbrowser
 import pdfkit as pdfkit
 
-
+UPLOAD_FOLDER = r'C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\uploads'
 app = Flask(__name__)
 app.secret_key = 'd589d3d0d15d764ed0a98ff5a37af547'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def home():
 	return redirect(url_for('login'))
@@ -59,8 +60,7 @@ def devolucion(idpago):
 		nombrearc = 'dev' + str(idpago) + '.'
 		div = str(file.filename).split('.')
 		nombrearc = nombrearc + div[1]
-		aux = r"flaskapp\static\uploads" + '\\' + nombrearc
-		file.save(aux)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], nombrearc))
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
