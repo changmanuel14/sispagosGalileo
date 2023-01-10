@@ -11,16 +11,19 @@
     {% endif %}
          <link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
 	<style type="text/css">
+		@page {
+            size: Legal;
+			margin: 1cm;
+        }
 	body {
-		background: #ffffff;
-		margin-top: 5rem;
+		background: #ffffff; /* change here */
 	}
 	table {
 		border: 0px;
 		width: 100%;
 	}
 	td, th {
-		font-size: 14px;
+		font-size: 14px;	
 		padding-left: 8px;
 		padding-right: 8px;
 		padding-top: 0px;
@@ -57,6 +60,7 @@
 
 	.tdthtabla1 {
 		height: 40px;
+		font-size: 12px;
 		text-align: center;
 	}
 	.tdthtabla2 {
@@ -155,7 +159,6 @@
 				<td></td>
 			</tr>
 		</table>
-		<br>
 		<center><h5><strong>Instrucciones</strong></h5></center>
 		<ol>
 			<li>En las la áreas relativas a CALIFICACIÓN, para cada uno de los parámetros de evaluación, marque con una X la opción que a su criterio considere apropiada.</li>
@@ -173,52 +176,59 @@
 			</tr>
 			<tr>
 				<th class="tabla tdthtabla1">Administración de laboratorio</th>
-				<td class="tabla tdthtabla1">5</td>
-				<td class="tabla tdthtabla1">10</td>
-				<td class="tabla tdthtabla1">15</td>
-				<td class="tabla tdthtabla1">20</td>
+				<td class="tabla tdthtabla2">5</td>
+				<td class="tabla tdthtabla2">10</td>
+				<td class="tabla tdthtabla2">15</td>
+				<td class="tabla tdthtabla2">20</td>
 			</tr>
 			<tr>
 				<th class="tabla tdthtabla1">Gestión de Calidad</th>
-				<td class="tabla tdthtabla1">5</td>
-				<td class="tabla tdthtabla1">10</td>
-				<td class="tabla tdthtabla1">15</td>
-				<td class="tabla tdthtabla1">20</td>
+				<td class="tabla tdthtabla2">5</td>
+				<td class="tabla tdthtabla2">10</td>
+				<td class="tabla tdthtabla2">15</td>
+				<td class="tabla tdthtabla2">20</td>
 			</tr>
 			<tr>
-				<th class="tabla tdthtabla1">Docencia</th>
-				<td class="tabla tdthtabla1">5</td>
-				<td class="tabla tdthtabla1">10</td>
-				<td class="tabla tdthtabla1">15</td>
-				<td class="tabla tdthtabla1">20</td>
+				<th class="tabla tdthtabla1">Docencia: dominio de temas y forma de darlo</th>
+				<td class="tabla tdthtabla2">2</td>
+				<td class="tabla tdthtabla2">4</td>
+				<td class="tabla tdthtabla2">7</td>
+				<td class="tabla tdthtabla2">10</td>
 			</tr>
 			<tr>
-				<th class="tabla tdthtabla1">Cumplimiento de normas y reglamentos</th>
-				<td class="tabla tdthtabla1">2</td>
-				<td class="tabla tdthtabla1">4</td>
-				<td class="tabla tdthtabla1">7</td>
-				<td class="tabla tdthtabla1">10</td>
+				<th class="tabla tdthtabla1">Disciplina: Cumplimiento de normas y reglamentos</th>
+				<td class="tabla tdthtabla2">2</td>
+				<td class="tabla tdthtabla2">4</td>
+				<td class="tabla tdthtabla2">7</td>
+				<td class="tabla tdthtabla2">10</td>
 			</tr>
 			<tr>
 				<th class="tabla tdthtabla1">Relaciones interpersonales</th>
-				<td class="tabla tdthtabla1">2</td>
-				<td class="tabla tdthtabla1">4</td>
-				<td class="tabla tdthtabla1">7</td>
-				<td class="tabla tdthtabla1">10</td>
+				<td class="tabla tdthtabla2">2</td>
+				<td class="tabla tdthtabla2">4</td>
+				<td class="tabla tdthtabla2">7</td>
+				<td class="tabla tdthtabla2">10</td>
 			</tr>
 			<tr>
 				<th class="tabla tdthtabla1">Iniciativa (aporta y desarrolla ideas constructivas)</th>
-				<td class="tabla tdthtabla1">2</td>
-				<td class="tabla tdthtabla1">4</td>
-				<td class="tabla tdthtabla1">7</td>
-				<td class="tabla tdthtabla1">10</td>
+				<td class="tabla tdthtabla2">2</td>
+				<td class="tabla tdthtabla2">4</td>
+				<td class="tabla tdthtabla2">7</td>
+				<td class="tabla tdthtabla2">10</td>
 			</tr>
 			<tr>
 				<th class="tabla tdthtabla1">Organización (sigue métodos y procedimientos)</th>
-				<td class="tabla tdthtabla1">2</td>
-				<td class="tabla tdthtabla1">4</td>
-				<td class="tabla tdthtabla1">7</td>
-				<td class="tabla tdthtabla1">10</td>
+				<td class="tabla tdthtabla2">2</td>
+				<td class="tabla tdthtabla2">4</td>
+				<td class="tabla tdthtabla2">7</td>
+				<td class="tabla tdthtabla2">10</td>
+			</tr>
+			<tr>
+				<th class="tabla tdthtabla1">Solución a problemas que surgen por equipo, material o procedimientos</th>
+				<td class="tabla tdthtabla2">2</td>
+				<td class="tabla tdthtabla2">4</td>
+				<td class="tabla tdthtabla2">7</td>
+				<td class="tabla tdthtabla2">10</td>
 			</tr>
 		</table>
 		<br>
@@ -234,15 +244,15 @@
 					<td class="tabla"></td>
 				</tr>
 				<tr>
-					<th class="tabla" style="height: 15px;">Gestión de la Calidad</th>
-					<td class="tabla"></td>
-				</tr>
-				<tr>
 					<th class="tabla" style="height: 15px;">Docencia</th>
 					<td class="tabla"></td>
 				</tr>
 				<tr>
-					<th class="tabla" style="height: 15px;">Cumplimiento de normas y reglamentos</th>
+					<th class="tabla" style="height: 15px;">Gestión de la Calidad</th>
+					<td class="tabla"></td>
+				</tr>
+				<tr>
+					<th class="tabla" style="height: 15px;">Disciplina</th>
 					<td class="tabla"></td>
 				</tr>
 				<tr>
@@ -258,24 +268,33 @@
 					<td class="tabla"></td>
 				</tr>
 				<tr>
+					<th class="tabla" style="height: 15px;">Solución Problemas</th>
+					<td class="tabla"></td>
+				</tr>
+				<tr>
 					<th class="tabla" style="height: 15px;">TOTAL</th>
 					<td class="tabla"></td>
 				</tr>
 			</table>
 		</div>
-		<br><br><br><br>
 		<center>
-			<h6>CALIFICACIÓN FINAL (APROBADO O REPROBADO): _______________________________________________________</h6>
+			<br>
+			<h6>CALIFICACIÓN FINAL EN LETRAS: _______________________________________________________</h6><br>
+			<h6>OBSERVACIONES:_______________________________________________________________________________________________________________</h6>
+			<h6>_________________________________________________________________________________________________________________________________</h6>
+			<h6>_________________________________________________________________________________________________________________________________</h6>
 			<br><br><br>
-			<h6>Nombre, firma y sello: _______________________________________________________________</h6>
-			<h6>JEFATURA DE LABORATORIO</h6>
+			<table>
+				<tr>
+					<th>FIRMA DEL EVALUADOR</th>
+					<th>SELLO JEFATURA DE LABORATORIO </th>
+				</tr>
+			</table>
 		</center>
-		<br><br><br>
+		{% if i != cantidad - 1 %}
+		<p>.</p>
+		{% endif %}
 		{% endfor %}
-		
-
-
-        
     </main>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

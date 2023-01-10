@@ -4,6 +4,7 @@ from datetime import date, datetime
 import os
 import webbrowser
 import pdfkit as pdfkit
+#from flask_weasyprint import HTML, render_pdf
 
 UPLOAD_FOLDER = r'C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\uploads'
 app = Flask(__name__)
@@ -1566,12 +1567,12 @@ def epslbcq(idpagos):
 	year = fechaact.year
 	
 	rendered = render_template('epslbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas)
-	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'margin-bottom': '35mm'}
+	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'footer-right': 'Página [page] de [topage]', 'margin-bottom': '40mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
 	response = make_response(pdf)
 	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=practicalenq.pdf'
 	print(response)
 	return response
 
@@ -2818,7 +2819,7 @@ def imprimir(idpagos):
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	
+
 	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma)
 	options = {'enable-local-file-access': None, 'page-size': 'A8', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '0', 'margin-top': '0', 'margin-bottom': '5', 'encoding': 'utf-8', 'zoom': '0.8'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
