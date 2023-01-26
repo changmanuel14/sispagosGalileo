@@ -104,10 +104,30 @@
         <h2>Reporte diario</h2>
         <hr>
         <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-        <p>{{mensaje}}</p>
         <form action="" method="POST">
           <input type="text" class="inputtext1" name="regen" placeholder="  Boleta General">
           <br><br>
+			<h4>Resumen</h4>
+		  <table class="sortable" style="width: 60%;">
+            <tr>
+                <th>Código</th>
+                <th>Concepto</th>
+                <th>Cantidad</th>
+                <th>Suma</th>
+				<th>Boleta</th>
+            </tr>
+            {% for i in resumen %}
+            <tr>
+                <td>{{i[0]}}</td>
+                <td>{{i[1]}}</td>
+                <td>{{i[2]}}</td>
+                <td>Q.{{i[3]}}</td>
+				<td><input type="text" class="inputtyperecibo" name="resumen{{i[4]}}"> </td>
+            </tr>
+            {% endfor %}
+			</table>
+			<br><br>
+			<h4>Desplegado</h4>
         <table class="sortable">
             <tr>
                 <th>Nombre</th>

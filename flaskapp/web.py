@@ -2315,7 +2315,6 @@ def reportes():
 					efectivo = cursor.fetchone()
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
-			# Con fetchall traemos todas las filas
 				sumas = cursor.fetchall()
 				sumtotal = 0
 				for i in sumas:
@@ -2391,7 +2390,11 @@ def repdiario():
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
+				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), c.idcodigos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
+				cursor.execute(consulta)
+				resumen = cursor.fetchall()
 				consulta = 'SELECT p.nombre, p.carnet, p.fecha, c.concepto, p.extra, round(p.total,2), p.idpagos, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 order by c.cod asc, p.nombre asc;'
+				print(consulta)
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
 				data = cursor.fetchall()
@@ -2405,10 +2408,6 @@ def repdiario():
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	if data == 1 or data == '1':
-		mensaje = "No se pudo eliminar el elemento seleccionado"
-	else:
-		mensaje = ""
 	if request.method == 'POST':
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
@@ -2416,6 +2415,13 @@ def repdiario():
 				with conexion.cursor() as cursor:
 					regen = request.form["regen"]
 					if regen == '0' or len(regen) < 1:
+						for i in resumen:
+							aux = "resumen" + str(i[4])
+							varaux = str(request.form[aux])
+							if len(varaux) > 0:
+								consulta = 'UPDATE pagos SET recibo = "'+str(varaux)+'" WHERE idcod = '+str(i[4])+';'
+								print(consulta)
+								cursor.execute(consulta)
 						for i in data:
 							aux = "re"+str(i[6])
 							varaux = str(request.form[aux])
@@ -2436,7 +2442,7 @@ def repdiario():
 			print("Ocurrió un error al conectar: ", e)
 		#webbrowser.open("http://galileoserver:5000/repdiariopdf")
 		return redirect(url_for('repdiario'))
-	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev, mensaje=mensaje)
+	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev, resumen=resumen)
 
 @app.route('/repdiariopdf', methods=['GET', 'POST'])
 def repdiariopdf():
