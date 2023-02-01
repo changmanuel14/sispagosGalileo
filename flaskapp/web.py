@@ -2301,19 +2301,19 @@ def reportes():
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE();'
+				consulta = 'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE() and iduser = ;' + str(session['idusercaja'])
 				cursor.execute(consulta)
 				efectivo = cursor.fetchall()
 				if len(efectivo) > 0:
 					efectivo = efectivo[0]
 				else:
-					consulta = 'INSERT INTO efectivo(billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, fecha) values (0,0,0,0,0,0,0,0,0,0,CURDATE());'
-					cursor.execute(consulta)
+					consulta = 'INSERT INTO efectivo(billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, fecha, iduser) values (0,0,0,0,0,0,0,0,0,0,CURDATE(),%s);'
+					cursor.execute(consulta, session['idusercaja'])
 					conexion.commit()
-					consulta = 'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE();'
+					consulta = 'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE() and iduser = ;' + str(session['idusercaja'])
 					cursor.execute(consulta)
 					efectivo = cursor.fetchone()
-				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
+				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 and p.user = ' + str(session['idusercaja']) + ' group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				sumas = cursor.fetchall()
 				sumtotal = 0
@@ -2368,8 +2368,8 @@ def reportes():
 			try:
 				with conexion.cursor() as cursor:
 					print(facturas)
-					consulta = "UPDATE efectivo set billete1=%s, billete5=%s, billete10=%s, billete20=%s, billete50=%s, billete100=%s, billete200=%s, facturas=%s, vales=%s, tarjeta=%s where idefectivo = %s;"
-					cursor.execute(consulta, (q1, q5, q10, q20, q50, q100, q200, facturas, vales, tarjeta, efectivo[10]))
+					consulta = "UPDATE efectivo set billete1=%s, billete5=%s, billete10=%s, billete20=%s, billete50=%s, billete100=%s, billete200=%s, facturas=%s, vales=%s, tarjeta=%s where idefectivo = %s and iduser = %s;"
+					cursor.execute(consulta, (q1, q5, q10, q20, q50, q100, q200, facturas, vales, tarjeta, efectivo[10], session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
