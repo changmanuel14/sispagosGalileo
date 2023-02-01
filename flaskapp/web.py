@@ -2419,7 +2419,7 @@ def repdiario():
 							aux = "resumen" + str(i[4])
 							varaux = str(request.form[aux])
 							if len(varaux) > 0:
-								consulta = 'UPDATE pagos SET recibo = "'+str(varaux)+'" WHERE idcod = '+str(i[4])+';'
+								consulta = 'UPDATE pagos SET recibo = "'+str(varaux)+'" WHERE idcod = '+str(i[4])+' and fecha = CURDATE() and recibo = 0;'
 								print(consulta)
 								cursor.execute(consulta)
 						for i in data:
