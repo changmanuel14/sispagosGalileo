@@ -2038,7 +2038,7 @@ def repm():
 				consulta = '''select p.nombre, p.carnet, p.fecha, c.codigo, p.extra, p.total, p.extra1, p.fechaextra1, p.idpagos from pagos p 
 				inner join codigos d on p.idcod = d.idcodigos
 				inner join carreras c on d.idcarrera = c.idcarreras
-				where d.concepto LIKE '%Manual%'
+				where d.concepto LIKE '%Manual%' and p.fecha > DATE_SUB(now(), INTERVAL 6 MONTH)
 				order by p.fecha desc, p.nombre asc'''
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
