@@ -2366,6 +2366,7 @@ def reportes():
 					cursor.execute(consulta)
 					efectivo = cursor.fetchone()
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 and p.user = ' + str(session['idusercaja']) + ' group by c.cod order by c.cod asc, p.nombre asc;'
+				print(consulta)
 				cursor.execute(consulta)
 				sumas = cursor.fetchall()
 				sumtotal = 0
@@ -2538,7 +2539,7 @@ def repdiariopdf():
 				consulta = 'SELECT ROUND(SUM(total),2) from transferencias where fecha = CURDATE()'
 				cursor.execute(consulta)
 				totaltransferencias = cursor.fetchone()
-				consulta = 'SELECT ROUND(billete1 + (billete5 * 5)  + (billete10 * 10) + (billete20 * 20) + (billete50 * 50) + (billete100 * 100) + (billete200 * 200), 2), facturas, vales, tarjeta from efectivo where fecha = CURDATE()'
+				consulta = 'SELECT SUM(ROUND(billete1 + (billete5 * 5)  + (billete10 * 10) + (billete20 * 20) + (billete50 * 50) + (billete100 * 100) + (billete200 * 200), 2)), facturas, vales, tarjeta from efectivo where fecha = CURDATE()'
 				cursor.execute(consulta)
 				efectivo = cursor.fetchone()
 				efectivo1 = []
