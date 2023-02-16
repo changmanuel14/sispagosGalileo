@@ -1365,7 +1365,7 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 							idpago = cursor.fetchone()
 							idpago = idpago[0]
 							idpagos.append(idpago)
-						elif 'TRADQ' in pcod and 'Prepractica' in pcod:
+						elif ('TRADQ' in pcod and 'Prepractica' in pcod) or ('TOPTQ' in pcod):
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
 							conexion.commit()
@@ -1406,6 +1406,8 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 			return redirect(url_for('hojatlcq', idpagos = idpagos))
 		elif 'TRADQ' in pcod and 'Prepractica' in pcod:
 			return redirect(url_for('prepracticatradq', idpagos = idpagos))
+		elif 'TOPTQ' in pcod:
+			return redirect(url_for('practicatoptq', idpagos = idpagos))
 		else:
 			return redirect(url_for('p'))
 	return render_template('confirmacionp.html', title="Confirmación", carnet = carnet, nombre = nombre, meses = meses, pid = pid, pcod = pcod, cantidad=cantidad, logeado=logeado, lugar=lugar, fechainicio = fechainicio, fechafin = fechafin)
@@ -1778,6 +1780,56 @@ def prepracticatradq(idpagos):
 	response = make_response(pdf)
 	response.headers['Content-Type'] = 'application/pdf'
 	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
+	print(response)
+	return response
+
+@app.route('/practicatoptq/<idpagos>', methods=['GET', 'POST'])
+def practicatoptq(idpagos):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	array = idpagos.split(',')
+	newarray = []
+	cantidad = len(array)
+	for i in range(cantidad):
+		varaux = ''
+		for j in array[i]:
+			if j.isdigit():
+				varaux = varaux + str(j)
+		newarray.append(varaux)
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				numeros = []
+				for i in range(cantidad):
+					consulta = 'SELECT nombre, carnet, extra FROM pagos WHERE idpagos = '+str(newarray[i])+';'
+					cursor.execute(consulta)
+				# Con fetchall traemos todas las filas
+					data = cursor.fetchone()
+					nombre = data[0]
+					carnet = data[1]
+					aux = data[2]
+					aux = str(aux).split(':')
+					numeros.append(int(aux[1]))
+
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	fechaact = date.today()
+	year = fechaact.year
+	
+	rendered = render_template('practicatoptq.html', title="Práctica TOPTQ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros)
+	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-bottom': '35mm','margin-right': '10mm'}
+	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+	response = make_response(pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=modulotoptq.pdf'
 	print(response)
 	return response
 
@@ -2827,7 +2879,7 @@ def imprimir(idpagos):
 		print("Ocurrió un error al conectar: ", e)
 
 	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma)
-	options = {'enable-local-file-access': None, 'page-size': 'A8', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '0', 'margin-top': '0', 'margin-bottom': '5', 'encoding': 'utf-8'}
+	options = {'enable-local-file-access': None, 'page-size': 'A8', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '5mm', 'margin-top': '0', 'margin-bottom': '0', 'encoding': 'utf-8'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
 	response = make_response(pdf)
