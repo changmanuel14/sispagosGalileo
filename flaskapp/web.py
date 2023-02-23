@@ -1102,12 +1102,12 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 			my_barcode = barcode_format(number, writer=ImageWriter())
 			
 			#Save barcode as PNG
-			aux = "C:\\Users\\USUARIO\\Documents\\siscaja\\flaskapp\\static\\codbars\\" + str(idpago)
+			aux = "C:\\Users\\galileoserver\\Documents\\sispagosGalileo\\flaskapp\\static\\codbars\\" + str(idpago)
 			my_barcode.save(aux)
 
 			#Inserción a archivo de Google Sheets
 			scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-			creds = ServiceAccountCredentials.from_json_keyfile_name(r"C:\Users\USUARIO\Documents\siscaja\flaskapp\clientcongreso.json", scope)
+			creds = ServiceAccountCredentials.from_json_keyfile_name(r"C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\clientcongreso.json", scope)
 			client = gspread.authorize(creds)
 			sheet = client.open("Tabulación Congreso").sheet1
 			row = [nombre, carnet, descripcion, idpago]
