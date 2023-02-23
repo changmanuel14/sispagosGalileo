@@ -34,6 +34,8 @@
     <br>
     <h4>NOTA: PARA RECIBIR EL ARTICULO CANCELADO DEBE PRESENTAR FISICAMENTE ESTE TICKET - NO LO PIERDA</h4>
     <h4>EN CASO DE EXTRAVÍO, DEBERÁ CANCELAR Q 25.00 POR REPOSICIÓN</h4>
-    <br><br>
+	{% for i in range(numpagos) %}
+	<img style="width: 100%;" src="C:\Users\USUARIO\Documents\siscaja\flaskapp\static\codbars\{{newarray[i]}}.png"/>
+	{% endfor %}
     <center><h6>.....................................................</h6></center>
 </body>

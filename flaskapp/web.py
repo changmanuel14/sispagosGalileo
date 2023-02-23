@@ -4,6 +4,10 @@ from datetime import date, datetime
 import os
 import webbrowser
 import pdfkit as pdfkit
+import barcode
+from barcode.writer import ImageWriter
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 #from flask_weasyprint import HTML, render_pdf
 
 UPLOAD_FOLDER = r'C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\uploads'
@@ -1048,15 +1052,16 @@ def extra():
 	if request.method == 'POST':
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
+		descripcion = request.form["descripcion"]
 		dataextra = request.form["extra"]
 		data = dataextra.split(',')
 		extraid = data[0]
 		extracod = data[1]
-		return redirect(url_for('confirmacionextra', carnet = datacarnet, nombre = datanombre, idp = extraid, cod = extracod))
+		return redirect(url_for('confirmacionextra', carnet = datacarnet, nombre = datanombre, idp = extraid, cod = extracod, descripcion = descripcion))
 	return render_template('extra.html', title="Pagos extra", data = data, logeado=logeado)
 
-@app.route('/confirmacionextra/<carnet>&<nombre>&<idp>&<cod>', methods=['GET', 'POST'])
-def confirmacionextra(carnet, nombre, idp, cod):
+@app.route('/confirmacionextra/<carnet>&<nombre>&<idp>&<cod>&<descripcion>', methods=['GET', 'POST'])
+def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -1067,6 +1072,7 @@ def confirmacionextra(carnet, nombre, idp, cod):
 	carnet = str(carnet)
 	nombre = str(nombre)
 	cod = str(cod)
+	descripcion = str(descripcion)
 	if request.method == "POST":
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
@@ -1076,14 +1082,40 @@ def confirmacionextra(carnet, nombre, idp, cod):
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
 					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (idp, nombre, carnet, precios1[0][0], date.today(), "",0,session['idusercaja']))
-				conexion.commit()
+					cursor.execute(consulta, (idp, nombre, carnet, precios1[0][0], date.today(), descripcion,0,session['idusercaja']))
+					conexion.commit()
+					consulta = "Select MAX(idpagos) from pagos;"
+					cursor.execute(consulta)
+					pagos = cursor.fetchone()
+					idpago = pagos[0]
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		return redirect(url_for('extra'))
-	return render_template('confirmacionextra.html', title="Confirmación", carnet = carnet, nombre = nombre, idp = idp, cod = cod, logeado=logeado)
+		if cod == "Congreso":
+			idpago = int(idpago)
+			idpago = str(idpago)
+			number = idpago.rjust(6, '0')
+			number = number + '98765'
+			barcode_format = barcode.get_barcode_class('upc')
+			#Generate barcode and render as image
+			my_barcode = barcode_format(number, writer=ImageWriter())
+			
+			#Save barcode as PNG
+			aux = "C:\\Users\\USUARIO\\Documents\\siscaja\\flaskapp\\static\\codbars\\" + str(idpago)
+			my_barcode.save(aux)
+
+			#Inserción a archivo de Google Sheets
+			scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+			creds = ServiceAccountCredentials.from_json_keyfile_name(r"C:\Users\USUARIO\Documents\siscaja\flaskapp\clientcongreso.json", scope)
+			client = gspread.authorize(creds)
+			sheet = client.open("Tabulación Congreso").sheet1
+			row = [nombre, carnet, descripcion, idpago]
+			index = 2
+			sheet.insert_row(row, index)
+
+		return redirect(url_for('imprimir', idpagos = idpago))
+	return render_template('confirmacionextra.html', title="Confirmación", carnet = carnet, nombre = nombre, idp = idp, cod = cod, logeado=logeado, descripcion=descripcion)
 
 @app.route('/repextra', methods=['GET', 'POST'])
 def repextra():
@@ -2879,7 +2911,7 @@ def imprimir(idpagos):
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 
-	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma)
+	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma, numpagos=numpagos, newarray=newarray)
 	options = {'enable-local-file-access': None, 'page-size': 'A8', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '5mm', 'margin-top': '0', 'margin-bottom': '0', 'encoding': 'utf-8'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -2887,7 +2919,6 @@ def imprimir(idpagos):
 	response.headers['Content-Type'] = 'application/pdf'
 	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
 	print(response)
-	#webbrowser.open("http://galileoserver:5000/pagos")
 	return response
 
 if __name__ == '__main__':
