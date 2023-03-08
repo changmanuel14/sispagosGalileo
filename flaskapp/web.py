@@ -1092,11 +1092,12 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		if cod == "Congreso":
+		if  "Congreso" in cod:
 			idpago = int(idpago)
 			idpago = str(idpago)
 			number = idpago.rjust(6, '0')
 			number = number + '98765'
+			print(number)
 			barcode_format = barcode.get_barcode_class('upc')
 			#Generate barcode and render as image
 			my_barcode = barcode_format(number, writer=ImageWriter())
@@ -1704,7 +1705,7 @@ def hojathdq(idpagos):
 	year = fechaact.year
 	
 	rendered = render_template('hojathdq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year)
-	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-bottom': '35mm','margin-right': '10mm'}
+	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
 	response = make_response(pdf)
