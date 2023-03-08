@@ -155,12 +155,15 @@
 					<td>233-500181-1</td>
 				</tr>
 				<tr>
-					<tr>Boleta Siguiente</tr>
-					<tr>{{boletasig}}</tr>
+					<th>Boleta Siguiente</th>
+					<th>{{boletasig}}</th>
 				</tr>
 			</table>
 		</div>
 			<br><br>
+
+      <div style="float: left">
+        <br><br>
 			<h4>Desplegado</h4>
 		<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
         <table class="sortable">
@@ -194,6 +197,7 @@
         <br>
         <center><button onclick="submit" class="button"><a style="color: white;" href="{{ url_for('repdiariopdf') }}" target="_blank">Ver PDF</a></button>  <button onclick="submit" class="button">Registrar</button></center>
       </form>
+    </div>
     </main>
     <!-- page-content" -->
   </div>
