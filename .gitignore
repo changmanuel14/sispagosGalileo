@@ -6,3 +6,4 @@ MyPDF.pdf
 pyvenv.cfg
 myvenv/
 flaskapp/static/uploads/
+flaskapp/static/codbars/

@@ -2479,6 +2479,10 @@ def repdiario():
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), c.idcodigos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				resumen = cursor.fetchall()
+				consulta = 'select idpagos from pagos where recibo <> 0 and fecha <> CURDATE() order by idpagos desc;'
+				cursor.execute(consulta)
+				boletasig = cursor.fetchone()
+				boletasig = boletasig[0]
 				consulta = 'SELECT p.nombre, p.carnet, p.fecha, c.concepto, p.extra, round(p.total,2), p.idpagos, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 order by c.cod asc, p.nombre asc;'
 				print(consulta)
 				cursor.execute(consulta)
@@ -2528,7 +2532,7 @@ def repdiario():
 			print("Ocurrió un error al conectar: ", e)
 		#webbrowser.open("http://galileoserver:5000/repdiariopdf")
 		return redirect(url_for('repdiario'))
-	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev, resumen=resumen)
+	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev, resumen=resumen, boletasig = boletasig)
 
 @app.route('/repdiariopdf', methods=['GET', 'POST'])
 def repdiariopdf():
