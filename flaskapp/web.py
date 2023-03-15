@@ -1,3 +1,4 @@
+from operator import truediv
 from flask import Flask, render_template, request, url_for, redirect, make_response, session
 import pymysql
 from datetime import date, datetime
@@ -1363,6 +1364,7 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 					precios1 = cursor.fetchall()
 					precioasig = float(precios1[0][1])
 					idpagos = []
+					idpracticas = []
 					for i in range(cantidad):
 						if 'TUEVQ' in pcod:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
@@ -1410,13 +1412,22 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 
 						else:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							if 'LENQ' in precios1[0][2] and ('1' in meses[i] or '2' in meses[i] or '3' in meses[i] or '4' in meses[i]):
-								precioasig = precioasig + 50
+							if 'LENQ' in precios1[0][2] and ('2' in meses[i] or '4' in meses[i] or '6' in meses[i] or ('1' in meses[i] and '3' in meses[i]) or ('3' in meses[i] and '1' not in meses[i] and '2' not in meses[i] and '3' not in meses[i]) or ('5' in meses[i] and '3' in meses[i])):
+								imprimir = True
+							else:
+								imprimir = False
+							if 'LENQ' in precios1[0][2] and ('1' in meses[i] or '3' in meses[i]  or '5' in meses[i]):
+								precioasig = 200
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
 							if 'LENQ' in precios1[0][2]:
 								consulta = "INSERT INTO practicalenq(nombre,carnet,practica,lugar,fechainicio,fechafin,fecha) VALUES (%s,%s,%s,%s,%s,%s,CURDATE());"
 								cursor.execute(consulta, (nombre, carnet, meses[i], lugar, fechainicio,fechafin))
 								consulta = "Select MAX(idpracticalenq) from practicalenq;"
+								cursor.execute(consulta)
+								idpractica = cursor.fetchone()
+								idpractica = idpractica[0]
+								idpracticas.append(idpractica)
+								consulta = "Select MAX(idpagos) from pagos;"
 								cursor.execute(consulta)
 								idpago = cursor.fetchone()
 								idpago = idpago[0]
@@ -1432,7 +1443,10 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 			else:
 				return redirect(url_for('hojalbcq', idpagos = idpagos))
 		elif 'LENQ' in pcod:
-			return redirect(url_for('hojalenq', idpagos = idpagos))
+			if imprimir:
+				return redirect(url_for('hojalenq', idpagos = idpracticas))
+			else:
+				return redirect(url_for('imprimir', idpagos = idpagos))
 		elif 'THDQ' in pcod:
 			return redirect(url_for('hojathdq', idpagos = idpagos))
 		elif 'TLCQ' in pcod:
