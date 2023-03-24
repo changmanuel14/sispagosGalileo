@@ -103,6 +103,14 @@
               <label for="exavis" id="exavisl">50.00</label>
             </td>
           </tr>
+		  <tr>
+            <th>Examen de la Vista (EPS)</th>
+            <td>
+              <input type="checkbox" id="exaviseps" name="exaviseps" value="1" onclick="calctotal()">
+              <label for="exaviseps">Q </label>
+              <label for="exaviseps" id="exaviseps1">40.00</label>
+            </td>
+          </tr>
           <tr>
             <th>Aro</th>
             <td><input type="number" step="0.01" id="aro" name="aro" class="inputtext3" onchange="calctotal()"></td>
@@ -136,6 +144,7 @@
 <script type="text/javascript">
   function calctotal(){
     var examenvista = document.getElementById('exavis')
+	var examenvistaeps = document.getElementById('exaviseps')
     var aro = document.getElementById('aro').value
     var lente = document.getElementById('lente').value
     var tot = document.getElementById('total')
@@ -143,6 +152,9 @@
     var aux = 0
     if (examenvista.checked == true){
       total = total + 50
+    }
+	if (examenvistaeps.checked == true){
+      total = total + 40
     }
     if (aro.length == 0){
       total = total + 0

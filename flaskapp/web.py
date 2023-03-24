@@ -619,15 +619,19 @@ def optica():
 			exavis = request.form["exavis"]
 		except:
 			exavis = 0
+		try:
+			exaviseps = request.form["exaviseps"]
+		except:
+			exaviseps = 0
 		if len(aro) < 1:
 			aro = 0
 		if len(lente) < 1:
 			lente = 0
-		return redirect(url_for('confirmacionopt', carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis))
+		return redirect(url_for('confirmacionopt', carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis, exaviseps = exaviseps))
 	return render_template('optica.html', title="Óptica", logeado=logeado)
 
-@app.route('/confirmacionopt/<carnet>&<nombre>&<aro>&<lente>&<exavis>', methods=['GET', 'POST'])
-def confirmacionopt(carnet, nombre, aro, lente, exavis):
+@app.route('/confirmacionopt/<carnet>&<nombre>&<aro>&<lente>&<exavis>&<exaviseps>', methods=['GET', 'POST'])
+def confirmacionopt(carnet, nombre, aro, lente, exavis, exaviseps):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -647,6 +651,19 @@ def confirmacionopt(carnet, nombre, aro, lente, exavis):
 						idexamen = datos[0][0]
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0, session['idusercaja']))
+						conexion.commit()
+						examen = 1
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						pagoexamen = cursor.fetchone()
+						pagoexamen = pagoexamen[0]
+					if exaviseps != 0 and exaviseps != '0':
+						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
+						cursor.execute(consulta)
+						datos = cursor.fetchall()
+						idexamen = datos[0][0]
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (idexamen, nombre, carnet, 40, date.today(), "Examen de la Vista EPS",0, session['idusercaja']))
 						conexion.commit()
 						examen = 1
 						consulta = "Select MAX(idpagos) from pagos;"
@@ -677,7 +694,7 @@ def confirmacionopt(carnet, nombre, aro, lente, exavis):
 			return redirect(url_for('optica'))
 		else:
 			return redirect(url_for('imprimir', idpagos=pagoexamen))
-	return render_template('confirmacionopt.html', title="Confirmación Óptica", carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis, logeado=logeado)
+	return render_template('confirmacionopt.html', title="Confirmación Óptica", carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis, exaviseps=exaviseps,logeado=logeado)
 
 @app.route('/i', methods=['GET', 'POST'])
 def i():
