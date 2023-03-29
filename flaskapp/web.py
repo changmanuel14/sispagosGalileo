@@ -338,7 +338,7 @@ def repingles():
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
-				cursor.execute("SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre;")
+				cursor.execute("SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;")
 				nombres = cursor.fetchall()
 				mesesdelete = []
 				for i in meses:
@@ -361,7 +361,8 @@ def repingles():
 							data.append(pago[0][0])
 						else:
 							data.append("Pend")
-				datos.append(data)	
+					datos.append(data)
+				print(datos)	
 			# Con fetchall traemos todas las filas
 		finally:
 			conexion.close()
