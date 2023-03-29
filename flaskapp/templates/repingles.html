@@ -127,6 +127,20 @@
             {% endfor %}
         </table>
     </main>
+	<script>
+        window.onload = function menos() {
+
+			myBody = document.getElementsByTagName("td");
+			cantidad = myBody.length;
+			for (i=0; i<cantidad;i++) {
+				if(myBody[i].innerHTML == "Pend") {
+					myBody[i].style.backgroundColor = "orange";
+				}else {
+					myBody[i].style.backgroundColor = "green";
+				}
+			}
+        }
+    </script>
     <!-- page-content" -->
   </div>
   <!-- page-wrapper -->
