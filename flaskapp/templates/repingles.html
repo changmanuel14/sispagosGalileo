@@ -110,15 +110,17 @@
 		<h3>Pagos de ultimos 6 meses</h3>
         <hr>
 		<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+		{% for n in range(4) %}
+		<h4>Ciclo {{n+1}}</h4>
         <table class="sortable">
             <tr>
                 <th>Nombre</th>
                 <th>Carnet</th>
-                {% for i in meses %}
+                {% for i in meses[n] %}
 				<th>{{i}}</th>
 				{% endfor %}
             </tr>
-            {% for i in datos %}
+            {% for i in datos[n] %}
             <tr>
                 {% for j in i %}
 				<td>{{j}}</td>
@@ -126,6 +128,7 @@
             </tr>
             {% endfor %}
         </table>
+		{% endfor %}
     </main>
 	<script>
         window.onload = function menos() {
@@ -136,7 +139,7 @@
 				if(myBody[i].innerHTML == "Pend") {
 					myBody[i].style.backgroundColor = "orange";
 				}else {
-					myBody[i].style.backgroundColor = "green";
+					myBody[i].style.backgroundColor = "lightgreen";
 				}
 			}
         }

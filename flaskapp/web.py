@@ -332,43 +332,48 @@ def repingles():
 		logeado = 0
 	if logeado == 0:
 		return redirect(url_for('login'))
-	meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
-	datos = []
+	mesesbase = []
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
-				cursor.execute("SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;")
-				nombres = cursor.fetchall()
-				mesesdelete = []
-				for i in meses:
-					consulta = f"SELECT idpagos from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{i}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH);"
-					cursor.execute(consulta)
-					pagomeses = cursor.fetchall()
-					if len(pagomeses) > 0:
-						pass
-					else:
-						mesesdelete.append(i)
-				for i in mesesdelete:
-					meses.remove(i)
-				for i in nombres:
-					data = [i[0], i[1]]
-					for j in meses:
-						consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{j}%' and p.nombre like '%{i[0]}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) order by p.nombre asc;"
+				datagen = []
+				for n in range(4):
+					ciclo = n+1
+					meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
+					datos = []
+					cursor.execute("SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;")
+					nombres = cursor.fetchall()
+					mesesdelete = []
+					for i in meses:
+						consulta = f"SELECT idpagos from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{i}%' and p.extra like '%{ciclo}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH);"
 						cursor.execute(consulta)
-						pago = cursor.fetchall()
-						if len(pago) > 0:
-							data.append(pago[0][0])
+						pagomeses = cursor.fetchall()
+						if len(pagomeses) > 0:
+							pass
 						else:
-							data.append("Pend")
-					datos.append(data)
-				print(datos)	
+							mesesdelete.append(i)
+					for i in mesesdelete:
+						meses.remove(i)
+					mesesbase.append(meses)
+					for i in nombres:
+						data = [i[0], i[1]]
+						for j in meses:
+							consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{j}%' and p.extra like '%{ciclo}%' and p.nombre like '%{i[0]}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) order by p.nombre asc;"
+							cursor.execute(consulta)
+							pago = cursor.fetchall()
+							if len(pago) > 0:
+								data.append(pago[0][0])
+							else:
+								data.append("Pend")
+						datos.append(data)
+					datagen.append(datos)	
 			# Con fetchall traemos todas las filas
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	return render_template('repingles.html', title="Reporte ingles", datos = datos, meses = meses, logeado=logeado)
+	return render_template('repingles.html', title="Reporte ingles", datos = datagen, meses = mesesbase, logeado=logeado)
 
 @app.route("/laboratorio", methods=['GET', 'POST'])
 def laboratorio():
