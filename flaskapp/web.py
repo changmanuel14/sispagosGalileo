@@ -324,6 +324,40 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
 		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacioningles.html', title='Confirmación Ingles', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datainsc=datainsc, datamen=datamen, insc=insc, meses=meses, ciclo=ciclo)
 
+@app.route('/repingles', methods=['GET', 'POST'])
+def repingles():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
+	datos = []
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				cursor.execute("SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre;")
+				nombres = cursor.fetchall()
+				for i in nombres:
+					data = [i[0], i[1]]
+					for j in meses:
+						consulta = f"SELECT p.fecha from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and c.descripcion like '%{{j}}%' and p.nombre like '%{{i}}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) order by p.nombre asc;"
+						cursor.execute(consulta)
+						pago = cursor.fetchall()
+						if len(pago) > 0:
+							data.append(pago[1])
+						else:
+							data.append("Pendiente")
+				datos.append(data)	
+			# Con fetchall traemos todas las filas
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('repingles.html', title="Reporte ingles", datos = datos, meses = meses, logeado=logeado)
+
 @app.route("/laboratorio", methods=['GET', 'POST'])
 def laboratorio():
 	try:
