@@ -220,6 +220,7 @@ def ingles():
 			ciclo = 0
 		cantidad = int(request.form["cant"]) + 1
 		plan = request.form["plan"]
+		ciclomen = request.form["ciclomen"]
 		try:
 			insc = request.form["insc"]
 		except:
@@ -235,11 +236,11 @@ def ingles():
 					datameses = datameses + str(mes)
 		if len(datameses) < 1:
 			datameses = 'None'
-		return redirect(url_for('confirmacioningles', nombre=nombre, carnet=carnet, plan = plan, insc=insc, datameses=datameses, ciclo=ciclo))
+		return redirect(url_for('confirmacioningles', nombre=nombre, carnet=carnet, plan = plan, insc=insc, datameses=datameses, ciclo=ciclo, ciclomen = ciclomen))
 	return render_template('ingles.html', title='Ingles', logeado=logeado, meses=meses, cuotas=cuotas)
 
-@app.route("/confirmacioningles/<nombre>&<carnet>&<plan>&<insc>&<datameses>&<ciclo>", methods=['GET', 'POST'])
-def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
+@app.route("/confirmacioningles/<nombre>&<carnet>&<plan>&<insc>&<datameses>&<ciclo>&<ciclomen>", methods=['GET', 'POST'])
+def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -250,6 +251,7 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
 	carnet = str(carnet)
 	plan = int(plan)
 	insc = int(insc)
+	ciclomen = int(ciclomen)
 	cantidad = 0
 	if datameses != 'None':
 		meses = datameses.split(",")
@@ -310,7 +312,7 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
 					for i in range(cantidad):
 						for j in datamen:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
-							cursor.execute(consulta, (j[0], nombre, carnet, j[1], date.today(), 'Mes: ' + meses[i] ,0, session['idusercaja']))
+							cursor.execute(consulta, (j[0], nombre, carnet, j[1], date.today(), 'Mes: ' + meses[i] + ", Ciclo: " + str(ciclomen),0, session['idusercaja']))
 							conexion.commit()
 							consulta = "Select MAX(idpagos) from pagos;"
 							cursor.execute(consulta)
@@ -322,7 +324,7 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo):
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('imprimir', idpagos=idpagos))
-	return render_template('confirmacioningles.html', title='Confirmación Ingles', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datainsc=datainsc, datamen=datamen, insc=insc, meses=meses, ciclo=ciclo)
+	return render_template('confirmacioningles.html', title='Confirmación Ingles', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datainsc=datainsc, datamen=datamen, insc=insc, meses=meses, ciclo=ciclo, ciclomen = ciclomen)
 
 @app.route('/repingles', methods=['GET', 'POST'])
 def repingles():
@@ -342,7 +344,8 @@ def repingles():
 					ciclo = n+1
 					meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
 					datos = []
-					cursor.execute("SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;")
+					consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;"
+					cursor.execute(consulta)
 					nombres = cursor.fetchall()
 					mesesdelete = []
 					for i in meses:
@@ -360,6 +363,7 @@ def repingles():
 						data = [i[0], i[1]]
 						for j in meses:
 							consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{j}%' and p.extra like '%{ciclo}%' and p.nombre like '%{i[0]}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) order by p.nombre asc;"
+							print(consulta)
 							cursor.execute(consulta)
 							pago = cursor.fetchall()
 							if len(pago) > 0:
@@ -367,7 +371,7 @@ def repingles():
 							else:
 								data.append("Pend")
 						datos.append(data)
-					datagen.append(datos)	
+					datagen.append(datos)
 			# Con fetchall traemos todas las filas
 		finally:
 			conexion.close()
@@ -497,16 +501,9 @@ def eliminarpago(idpago):
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'SELECT recibo from pagos where idpagos = ' + str(idpago) + ';'
+				consulta = 'DELETE from pagos where idpagos = ' + str(idpago) + ';'
 				cursor.execute(consulta)
-				recibo = cursor.fetchone()
-				recibo = recibo[0]
-				print(recibo)
-				if recibo == '0' or recibo == 0:
-					print('eliminacion')
-					consulta = 'DELETE from pagos where idpagos = ' + str(idpago) + ';'
-					cursor.execute(consulta)
-					conexion.commit()
+				conexion.commit()
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
