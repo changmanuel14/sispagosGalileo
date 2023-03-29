@@ -340,16 +340,27 @@ def repingles():
 			with conexion.cursor() as cursor:
 				cursor.execute("SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre;")
 				nombres = cursor.fetchall()
+				mesesdelete = []
+				for i in meses:
+					consulta = f"SELECT idpagos from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{i}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH);"
+					cursor.execute(consulta)
+					pagomeses = cursor.fetchall()
+					if len(pagomeses) > 0:
+						pass
+					else:
+						mesesdelete.append(i)
+				for i in mesesdelete:
+					meses.remove(i)
 				for i in nombres:
 					data = [i[0], i[1]]
 					for j in meses:
-						consulta = f"SELECT p.fecha from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and c.descripcion like '%{{j}}%' and p.nombre like '%{{i}}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) order by p.nombre asc;"
+						consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{j}%' and p.nombre like '%{i[0]}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) order by p.nombre asc;"
 						cursor.execute(consulta)
 						pago = cursor.fetchall()
 						if len(pago) > 0:
-							data.append(pago[1])
+							data.append(pago[0][0])
 						else:
-							data.append("Pendiente")
+							data.append("Pend")
 				datos.append(data)	
 			# Con fetchall traemos todas las filas
 		finally:
