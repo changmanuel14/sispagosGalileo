@@ -1,9 +1,11 @@
 from operator import truediv
-from flask import Flask, render_template, request, url_for, redirect, make_response, session
+from flask import Flask, render_template, request, url_for, redirect, make_response, session, Response
 import pymysql
 from datetime import date, datetime
 import os
 import webbrowser
+import io
+import xlwt
 import pdfkit as pdfkit
 import barcode
 from barcode.writer import ImageWriter
@@ -190,7 +192,8 @@ def confirmacionaca(nombre, carnet, datameses, carrera, insc):
 	return render_template('confirmacionaca.html', title='Confirmación Academia', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datacarrera=datacarrera, insc=insc, meses=meses)
 
 @app.route("/ingles", methods=['GET', 'POST'])
-def ingles():
+@app.route("/ingles/<mensaje>", methods=['GET', 'POST'])
+def ingles(mensaje = None):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -237,7 +240,7 @@ def ingles():
 		if len(datameses) < 1:
 			datameses = 'None'
 		return redirect(url_for('confirmacioningles', nombre=nombre, carnet=carnet, plan = plan, insc=insc, datameses=datameses, ciclo=ciclo, ciclomen = ciclomen))
-	return render_template('ingles.html', title='Ingles', logeado=logeado, meses=meses, cuotas=cuotas)
+	return render_template('ingles.html', title='Ingles', logeado=logeado, meses=meses, cuotas=cuotas, mensaje = mensaje)
 
 @app.route("/confirmacioningles/<nombre>&<carnet>&<plan>&<insc>&<datameses>&<ciclo>&<ciclomen>", methods=['GET', 'POST'])
 def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
@@ -276,16 +279,26 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
 					consulta = 'SELECT idcodigos, precio from codigos where cod like "MEINGLESS"'
 					cursor.execute(consulta)
 					datamen = cursor.fetchall()
+				pagoant = False
+				for i in range(cantidad):
+					consulta = f'SELECT idpagos from pagos where nombre = "{nombre}" and extra like "%{meses[i]}%" and extra like "%{ciclomen}%"'
+					cursor.execute(consulta)
+					pagosprev = cursor.fetchall()
+					if len(pagosprev) > 0:
+						pagoant = True
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
+	if pagoant:
+		return redirect(url_for('ingles', mensaje = 1))
 	total = 0
 	if insc == 1:
 		total = total + float(datainsc[0][1]) + float(datainsc[1][1])
 	for i in datamen:
 		for j in range(cantidad):
 			total = total + float(i[1])
+
 	if request.method == 'POST':
 		try:
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
@@ -334,7 +347,15 @@ def repingles():
 		logeado = 0
 	if logeado == 0:
 		return redirect(url_for('login'))
+	meses1 = ["Febrero", "Marzo", "Abril"]
+	meses2 = ["Enero", "Febrero", "Marzo"]
+	meses3 = ["Enero", "Febrero", "Marzo"]
+	meses4 = ["Enero", "Febrero", "Marzo"]
 	mesesbase = []
+	mesesbase.append(meses1)
+	mesesbase.append(meses2)
+	mesesbase.append(meses3)
+	mesesbase.append(meses4)
 	try:
 		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 		try:
@@ -342,26 +363,13 @@ def repingles():
 				datagen = []
 				for n in range(4):
 					ciclo = n+1
-					meses = ["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
 					datos = []
 					consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;"
 					cursor.execute(consulta)
 					nombres = cursor.fetchall()
-					mesesdelete = []
-					for i in meses:
-						consulta = f"SELECT idpagos from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{i}%' and p.extra like '%{ciclo}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH);"
-						cursor.execute(consulta)
-						pagomeses = cursor.fetchall()
-						if len(pagomeses) > 0:
-							pass
-						else:
-							mesesdelete.append(i)
-					for i in mesesdelete:
-						meses.remove(i)
-					mesesbase.append(meses)
 					for i in nombres:
 						data = [i[0], i[1]]
-						for j in meses:
+						for j in mesesbase[n]:
 							consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{j}%' and p.extra like '%{ciclo}%' and p.nombre like '%{i[0]}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) order by p.nombre asc;"
 							print(consulta)
 							cursor.execute(consulta)
@@ -378,6 +386,239 @@ def repingles():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 	return render_template('repingles.html', title="Reporte ingles", datos = datagen, meses = mesesbase, logeado=logeado)
+
+@app.route('/repinglesexcel', methods=['GET', 'POST'])
+def repinglesexcel():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	meses1 = ["Febrero", "Marzo", "Abril"]
+	meses2 = ["Enero", "Febrero", "Marzo"]
+	meses3 = ["Enero", "Febrero", "Marzo"]
+	meses4 = ["Enero", "Febrero", "Marzo"]
+	mesesbase = []
+	mesesbase.append(meses1)
+	mesesbase.append(meses2)
+	mesesbase.append(meses3)
+	mesesbase.append(meses4)
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				datagen = []
+				for n in range(4):
+					ciclo = n+1
+					datos = []
+					consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;"
+					cursor.execute(consulta)
+					nombres = cursor.fetchall()
+					for i in nombres:
+						data = [i[0], i[1]]
+						for j in mesesbase[n]:
+							consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{j}%' and p.extra like '%{ciclo}%' and p.nombre like '%{i[0]}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) order by p.nombre asc;"
+							print(consulta)
+							cursor.execute(consulta)
+							pago = cursor.fetchall()
+							if len(pago) > 0:
+								data.append(pago[0][0])
+							else:
+								data.append("Pend")
+						datos.append(data)
+					datagen.append(datos)
+			# Con fetchall traemos todas las filas
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	output = io.BytesIO()
+	workbook = xlwt.Workbook()
+	sh1 = workbook.add_sheet("Ciclo 1")
+
+	xlwt.add_palette_colour("Orange", 0x21) # the second argument must be a number between 8 and 64
+	workbook.set_colour_RGB(0x21, 255, 165, 0) # Red — 79, Green — 129, Blue — 189
+	xlwt.add_palette_colour("Lightgreen", 0x22) # the second argument must be a number between 8 and 64
+	workbook.set_colour_RGB(0x22, 144, 238, 144) # Red — 79, Green — 129, Blue — 189
+	
+
+	#bordes
+	borders = xlwt.Borders()
+	borders.left = 1
+	borders.right = 1
+	borders.top = 1
+	borders.bottom = 1
+
+	#encabezados
+	header_font = xlwt.Font()
+	header_font.name = 'Arial'
+	header_font.bold = True
+	header_style = xlwt.XFStyle()
+	header_style.font = header_font
+	header_style.borders = borders
+
+	#contenido1
+	content_font = xlwt.Font()
+	content_font.name = 'Arial'
+	content_pattern = xlwt.Pattern()
+	content_pattern.pattern = 0x00
+	content_pattern.pattern_back_colour = 0x35
+	content_style = xlwt.XFStyle()
+	content_style.font = content_font
+	content_style.borders = borders
+	content_style.pattern = content_pattern
+
+	#contenido1
+	content_font1 = xlwt.Font()
+	content_font1.name = 'Arial'
+	content_pattern1 = xlwt.Pattern()
+	content_pattern1.pattern = 0x00
+	content_pattern1.pattern_back_colour = 0x2A
+	content_style1 = xlwt.XFStyle()
+	content_style1.font = content_font1
+	content_style1.borders = borders
+
+	#titulos
+	tittle_font = xlwt.Font()
+	tittle_font.name = 'Arial'
+	tittle_font.bold = True
+	tittle_font.italic = True
+	tittle_font.height = 20*20
+	tittle_style = xlwt.XFStyle()
+	tittle_style.font = tittle_font
+
+	
+
+	sh1.write(0,0,"Ciclo 1", tittle_style)
+	sh1.write(3,0,"No.", header_style)
+	sh1.write(3,1,"Nombre", header_style)
+	sh1.write(3,2,"Carnet", header_style)
+	for i in range(3):
+		sh1.write(3,i+3,mesesbase[0][i], header_style)
+
+	for i in range(len(datagen[0])):
+		sh1.write(i+4,0,i+1, content_style)
+		sh1.write(i+4,1,datagen[0][i][0], content_style)
+		sh1.write(i+4,2,datagen[0][i][1], content_style)
+		if datagen[0][i][2] == "Pend":
+			sh1.write(i+4,3,datagen[0][i][2], content_style)
+		else:
+			sh1.write(i+4,3,datagen[0][i][2], content_style1)
+		if datagen[0][i][3] == "Pend":
+			sh1.write(i+4,4,datagen[0][i][3], content_style)
+		else:
+			sh1.write(i+4,4,datagen[0][i][3], content_style1)
+		if datagen[0][i][4] == "Pend":
+			sh1.write(i+4,5,datagen[0][i][4], content_style)
+		else:
+			sh1.write(i+4,5,datagen[0][i][4], content_style1)
+	
+	sh1.col(0).width = 18 * 256
+	sh1.col(1).width = 24 * 256
+	sh1.col(2).width = 28 * 256
+	sh1.col(3).width = 28 * 256
+	sh1.col(4).width = 15 * 256
+	
+	sh2 = workbook.add_sheet("Ciclo 2")
+	sh2.write(0,0,"Ciclo 2", tittle_style)
+
+	sh2.write(3,0,"No.", header_style)
+	sh2.write(3,1,"Nombre", header_style)
+	sh2.write(3,2,"Carnet", header_style)
+	for i in range(3):
+		sh2.write(3,i+3,mesesbase[1][i], header_style)
+
+	for i in range(len(datagen[1])):
+		sh2.write(i+4,0,i+1, content_style)
+		sh2.write(i+4,1,datagen[1][i][0], content_style)
+		sh2.write(i+4,2,datagen[1][i][1], content_style)
+		if datagen[1][i][2] == "Pend":
+			sh2.write(i+4,3,datagen[1][i][2], content_style)
+		else:
+			sh2.write(i+4,3,datagen[1][i][2], content_style1)
+		if datagen[1][i][3] == "Pend":
+			sh2.write(i+4,4,datagen[1][i][3], content_style)
+		else:
+			sh2.write(i+4,4,datagen[1][i][3], content_style1)
+		if datagen[1][i][4] == "Pend":
+			sh2.write(i+4,5,datagen[1][i][4], content_style)
+		else:
+			sh2.write(i+4,5,datagen[1][i][4], content_style1)
+	
+	sh2.col(0).width = 18 * 256
+	sh2.col(1).width = 24 * 256
+	sh2.col(2).width = 28 * 256
+	sh2.col(3).width = 28 * 256
+	sh2.col(4).width = 15 * 256
+
+	sh3 = workbook.add_sheet("Ciclo 3")
+	sh3.write(0,0,"Ciclo 3", tittle_style)
+
+	sh3.write(3,0,"No.", header_style)
+	sh3.write(3,1,"Nombre", header_style)
+	sh3.write(3,2,"Carnet", header_style)
+	for i in range(3):
+		sh3.write(3,i+3,mesesbase[2][i], header_style)
+
+	for i in range(len(datagen[2])):
+		sh3.write(i+4,0,i+1, content_style)
+		sh3.write(i+4,1,datagen[2][i][0], content_style)
+		sh3.write(i+4,2,datagen[2][i][1], content_style)
+		if datagen[2][i][2] == "Pend":
+			sh3.write(i+4,3,datagen[2][i][2], content_style)
+		else:
+			sh3.write(i+4,3,datagen[2][i][2], content_style1)
+		if datagen[2][i][3] == "Pend":
+			sh3.write(i+4,4,datagen[2][i][3], content_style)
+		else:
+			sh3.write(i+4,4,datagen[2][i][3], content_style1)
+		if datagen[2][i][4] == "Pend":
+			sh3.write(i+4,5,datagen[2][i][4], content_style)
+		else:
+			sh3.write(i+4,5,datagen[2][i][4], content_style1)
+	
+	sh3.col(0).width = 18 * 256
+	sh3.col(1).width = 24 * 256
+	sh3.col(2).width = 28 * 256
+	sh3.col(3).width = 28 * 256
+	sh3.col(4).width = 15 * 256
+
+	sh4 = workbook.add_sheet("Ciclo 4")
+	sh4.write(0,0,"Ciclo 4", tittle_style)
+
+	sh4.write(3,0,"No.", header_style)
+	sh4.write(3,1,"Nombre", header_style)
+	sh4.write(3,2,"Carnet", header_style)
+	for i in range(3):
+		sh4.write(3,i+3,mesesbase[3][i], header_style)
+
+	for i in range(len(datagen[3])):
+		sh4.write(i+4,0,i+1, content_style)
+		sh4.write(i+4,1,datagen[3][i][0], content_style)
+		sh4.write(i+4,2,datagen[3][i][1], content_style)
+		if datagen[3][i][2] == "Pend":
+			sh4.write(i+4,3,datagen[3][i][2], content_style)
+		else:
+			sh4.write(i+4,3,datagen[3][i][2], content_style1)
+		if datagen[2][i][3] == "Pend":
+			sh4.write(i+4,4,datagen[3][i][3], content_style)
+		else:
+			sh4.write(i+4,4,datagen[3][i][3], content_style1)
+		if datagen[2][i][4] == "Pend":
+			sh4.write(i+4,5,datagen[3][i][4], content_style)
+		else:
+			sh4.write(i+4,5,datagen[3][i][4], content_style1)
+	
+	sh4.col(0).width = 18 * 256
+	sh4.col(1).width = 24 * 256
+	sh4.col(2).width = 28 * 256
+	sh4.col(3).width = 28 * 256
+	sh4.col(4).width = 15 * 256
+	workbook.save(output)
+	output.seek(0)
+
+	return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=Reporteingles.xls"})
 
 @app.route("/laboratorio", methods=['GET', 'POST'])
 def laboratorio():
@@ -2558,7 +2799,12 @@ def repdiario():
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), c.idcodigos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				resumen = cursor.fetchall()
-				consulta = 'select recibo from pagos where (length(recibo) < 5 and fecha = date_sub(CURDATE(), interval 1 day)) or (fecha = CURDATE() and recibo <> 0 and length(recibo) < 5) or (length(recibo) < 5 and fecha = date_sub(CURDATE(), interval 2 day)) order by recibo desc;'
+				consulta = "Select fecha from pagos where length(recibo) < 5 and recibo <> 0 order by fecha desc"
+				cursor.execute(consulta)
+				fechasig = cursor.fetchone()
+				fechasig = fechasig[0]
+				print(fechasig)
+				consulta = f'select recibo from pagos where length(recibo) < 5 and fecha <= "{fechasig}" order by recibo desc;'
 				cursor.execute(consulta)
 				boletasig = cursor.fetchone()
 				boletasig = boletasig[0]

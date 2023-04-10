@@ -148,6 +148,15 @@
     <!-- page-content" -->
 </div>
 <script type="text/javascript">
+	window.onload = function(){
+        var mensaje = {{ mensaje }}
+        if(mensaje == 1) {
+            return alert("No se puede ingresar pago de mes duplicado");
+        }else {
+            return 0;
+        }
+    }
+
     function check() {
         var check = document.getElementById('insc')
         var ciclo = document.getElementById('ciclo')

@@ -109,6 +109,8 @@
         <h2>Ingles</h2>
 		<h3>Pagos de ultimos 6 meses</h3>
         <hr>
+		<a style="color: white;" href="{{ url_for('repinglesexcel') }}" target="_blank"><button class="button">Exportar Excel</button></a>
+		<hr>
 		<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 		{% for n in range(4) %}
 		<h4>Ciclo {{n+1}}</h4>
