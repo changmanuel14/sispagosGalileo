@@ -501,18 +501,9 @@ def repinglesexcel():
 		sh1.write(i+4,0,i+1, content_style)
 		sh1.write(i+4,1,datagen[0][i][0], content_style)
 		sh1.write(i+4,2,datagen[0][i][1], content_style)
-		if datagen[0][i][2] == "Pend":
-			sh1.write(i+4,3,datagen[0][i][2], content_style)
-		else:
-			sh1.write(i+4,3,datagen[0][i][2], content_style1)
-		if datagen[0][i][3] == "Pend":
-			sh1.write(i+4,4,datagen[0][i][3], content_style)
-		else:
-			sh1.write(i+4,4,datagen[0][i][3], content_style1)
-		if datagen[0][i][4] == "Pend":
-			sh1.write(i+4,5,datagen[0][i][4], content_style)
-		else:
-			sh1.write(i+4,5,datagen[0][i][4], content_style1)
+		sh1.write(i+4,3,datagen[0][i][2], content_style)
+		sh1.write(i+4,4,datagen[0][i][3], content_style)
+		sh1.write(i+4,5,datagen[0][i][4], content_style)
 	
 	sh1.col(0).width = 18 * 256
 	sh1.col(1).width = 24 * 256
@@ -533,18 +524,9 @@ def repinglesexcel():
 		sh2.write(i+4,0,i+1, content_style)
 		sh2.write(i+4,1,datagen[1][i][0], content_style)
 		sh2.write(i+4,2,datagen[1][i][1], content_style)
-		if datagen[1][i][2] == "Pend":
-			sh2.write(i+4,3,datagen[1][i][2], content_style)
-		else:
-			sh2.write(i+4,3,datagen[1][i][2], content_style1)
-		if datagen[1][i][3] == "Pend":
-			sh2.write(i+4,4,datagen[1][i][3], content_style)
-		else:
-			sh2.write(i+4,4,datagen[1][i][3], content_style1)
-		if datagen[1][i][4] == "Pend":
-			sh2.write(i+4,5,datagen[1][i][4], content_style)
-		else:
-			sh2.write(i+4,5,datagen[1][i][4], content_style1)
+		sh2.write(i+4,3,datagen[1][i][2], content_style)
+		sh2.write(i+4,4,datagen[1][i][3], content_style)
+		sh2.write(i+4,5,datagen[1][i][4], content_style)
 	
 	sh2.col(0).width = 18 * 256
 	sh2.col(1).width = 24 * 256
@@ -565,18 +547,9 @@ def repinglesexcel():
 		sh3.write(i+4,0,i+1, content_style)
 		sh3.write(i+4,1,datagen[2][i][0], content_style)
 		sh3.write(i+4,2,datagen[2][i][1], content_style)
-		if datagen[2][i][2] == "Pend":
-			sh3.write(i+4,3,datagen[2][i][2], content_style)
-		else:
-			sh3.write(i+4,3,datagen[2][i][2], content_style1)
-		if datagen[2][i][3] == "Pend":
-			sh3.write(i+4,4,datagen[2][i][3], content_style)
-		else:
-			sh3.write(i+4,4,datagen[2][i][3], content_style1)
-		if datagen[2][i][4] == "Pend":
-			sh3.write(i+4,5,datagen[2][i][4], content_style)
-		else:
-			sh3.write(i+4,5,datagen[2][i][4], content_style1)
+		sh3.write(i+4,3,datagen[2][i][2], content_style)
+		sh3.write(i+4,4,datagen[2][i][3], content_style)
+		sh3.write(i+4,5,datagen[2][i][4], content_style)
 	
 	sh3.col(0).width = 18 * 256
 	sh3.col(1).width = 24 * 256
@@ -597,18 +570,9 @@ def repinglesexcel():
 		sh4.write(i+4,0,i+1, content_style)
 		sh4.write(i+4,1,datagen[3][i][0], content_style)
 		sh4.write(i+4,2,datagen[3][i][1], content_style)
-		if datagen[3][i][2] == "Pend":
-			sh4.write(i+4,3,datagen[3][i][2], content_style)
-		else:
-			sh4.write(i+4,3,datagen[3][i][2], content_style1)
-		if datagen[2][i][3] == "Pend":
-			sh4.write(i+4,4,datagen[3][i][3], content_style)
-		else:
-			sh4.write(i+4,4,datagen[3][i][3], content_style1)
-		if datagen[2][i][4] == "Pend":
-			sh4.write(i+4,5,datagen[3][i][4], content_style)
-		else:
-			sh4.write(i+4,5,datagen[3][i][4], content_style1)
+		sh4.write(i+4,3,datagen[3][i][2], content_style)
+		sh4.write(i+4,4,datagen[3][i][3], content_style)
+		sh4.write(i+4,5,datagen[3][i][4], content_style)
 	
 	sh4.col(0).width = 18 * 256
 	sh4.col(1).width = 24 * 256
@@ -2799,12 +2763,12 @@ def repdiario():
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), c.idcodigos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				resumen = cursor.fetchall()
-				consulta = "Select fecha from pagos where length(recibo) < 5 and recibo <> 0 order by fecha desc"
+				consulta = "Select fecha from pagos where recibo <> 0 order by fecha desc"
 				cursor.execute(consulta)
 				fechasig = cursor.fetchone()
 				fechasig = fechasig[0]
 				print(fechasig)
-				consulta = f'select recibo from pagos where length(recibo) < 5 and fecha <= "{fechasig}" order by recibo desc;'
+				consulta = f'select recibo from pagos where length(recibo) < 5 and fecha = "{fechasig}" order by recibo desc;'
 				cursor.execute(consulta)
 				boletasig = cursor.fetchone()
 				boletasig = boletasig[0]
