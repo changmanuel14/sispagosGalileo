@@ -434,7 +434,7 @@ def repinglesexcel():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 	output = io.BytesIO()
-	workbook = xlwt.Workbook()
+	workbook = xlwt.Workbook(encoding="utf-8")
 	sh1 = workbook.add_sheet("Ciclo 1")
 
 	xlwt.add_palette_colour("Orange", 0x21) # the second argument must be a number between 8 and 64
@@ -462,8 +462,8 @@ def repinglesexcel():
 	content_font = xlwt.Font()
 	content_font.name = 'Arial'
 	content_pattern = xlwt.Pattern()
-	content_pattern.pattern = 0x00
-	content_pattern.pattern_back_colour = 0x35
+	content_pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+	content_pattern.pattern_fore_colour = xlwt.Style.colour_map['orange']
 	content_style = xlwt.XFStyle()
 	content_style.font = content_font
 	content_style.borders = borders
@@ -473,11 +473,12 @@ def repinglesexcel():
 	content_font1 = xlwt.Font()
 	content_font1.name = 'Arial'
 	content_pattern1 = xlwt.Pattern()
-	content_pattern1.pattern = 0x00
-	content_pattern1.pattern_back_colour = 0x2A
+	content_pattern1.pattern = xlwt.Pattern.SOLID_PATTERN
+	content_pattern1.pattern_fore_colour = xlwt.Style.colour_map['light_green']
 	content_style1 = xlwt.XFStyle()
 	content_style1.font = content_font1
 	content_style1.borders = borders
+	content_style1.pattern = content_pattern1
 
 	#titulos
 	tittle_font = xlwt.Font()
@@ -497,19 +498,37 @@ def repinglesexcel():
 	for i in range(3):
 		sh1.write(3,i+3,mesesbase[0][i], header_style)
 
-	for i in range(len(datagen[0])):
-		sh1.write(i+4,0,i+1, content_style)
-		sh1.write(i+4,1,datagen[0][i][0], content_style)
-		sh1.write(i+4,2,datagen[0][i][1], content_style)
-		sh1.write(i+4,3,datagen[0][i][2], content_style)
-		sh1.write(i+4,4,datagen[0][i][3], content_style)
-		sh1.write(i+4,5,datagen[0][i][4], content_style)
+	if len(datagen[0]) > 0:
+		for i in range(len(datagen[0])):
+			sh1.write(i+4,0,i+1, content_style1)
+			sh1.write(i+4,1,datagen[0][i][0], content_style1)
+			sh1.write(i+4,2,datagen[0][i][1], content_style1)
+			if datagen[0][i][2] == "Pend":
+				sh1.write(i+4,3,datagen[0][i][2], content_style)
+			else:
+				sh1.write(i+4,3,datagen[0][i][2], content_style1)
+			if datagen[0][i][3] == "Pend":
+				sh1.write(i+4,4,datagen[0][i][3], content_style)
+			else:
+				sh1.write(i+4,4,datagen[0][i][3], content_style1)
+			if datagen[0][i][4] == "Pend":
+				sh1.write(i+4,5,datagen[0][i][4], content_style)
+			else:
+				sh1.write(i+4,5,datagen[0][i][4], content_style1)
 	
-	sh1.col(0).width = 18 * 256
-	sh1.col(1).width = 24 * 256
-	sh1.col(2).width = 28 * 256
-	sh1.col(3).width = 28 * 256
-	sh1.col(4).width = 15 * 256
+	sh1.col(0).width = 0x0d00 + len("Ciclo 1")
+	try:
+		sh1.col(1).width = 256 * (max([len(str(row[i])) for row in datagen[0][i][0]]) + 1) * 10
+		sh1.col(2).width = 256 * (max([len(str(row[i])) for row in datagen[0][i][1]]) + 1) * 10
+		sh1.col(3).width = 256 * (max([len(str(row[i])) for row in datagen[0][i][2]]) + 1) * 10
+		sh1.col(4).width = 256 * (max([len(str(row[i])) for row in datagen[0][i][3]]) + 1) * 10
+		sh1.col(5).width = 256 * (max([len(str(row[i])) for row in datagen[0][i][4]]) + 1) * 10
+	except:
+		sh1.col(1).width = 256 * 20
+		sh1.col(2).width = 256 * 20
+		sh1.col(3).width = 256 * 20
+		sh1.col(4).width = 256 * 20
+		sh1.col(5).width = 256 * 20
 	
 	sh2 = workbook.add_sheet("Ciclo 2")
 	sh2.write(0,0,"Ciclo 2", tittle_style)
@@ -520,19 +539,37 @@ def repinglesexcel():
 	for i in range(3):
 		sh2.write(3,i+3,mesesbase[1][i], header_style)
 
-	for i in range(len(datagen[1])):
-		sh2.write(i+4,0,i+1, content_style)
-		sh2.write(i+4,1,datagen[1][i][0], content_style)
-		sh2.write(i+4,2,datagen[1][i][1], content_style)
-		sh2.write(i+4,3,datagen[1][i][2], content_style)
-		sh2.write(i+4,4,datagen[1][i][3], content_style)
-		sh2.write(i+4,5,datagen[1][i][4], content_style)
+	if len(datagen[1]) > 0:
+		for i in range(len(datagen[1])):
+			sh2.write(i+4,0,i+1, content_style1)
+			sh2.write(i+4,1,datagen[1][i][0], content_style1)
+			sh2.write(i+4,2,datagen[1][i][1], content_style1)
+			if datagen[1][i][2] == "Pend":
+				sh2.write(i+4,3,datagen[1][i][2], content_style)
+			else:
+				sh2.write(i+4,3,datagen[1][i][2], content_style1)
+			if datagen[1][i][3] == "Pend":
+				sh2.write(i+4,4,datagen[1][i][3], content_style)
+			else:
+				sh2.write(i+4,4,datagen[1][i][3], content_style1)
+			if datagen[1][i][4] == "Pend":
+				sh2.write(i+4,5,datagen[1][i][4], content_style)
+			else:
+				sh2.write(i+4,5,datagen[1][i][4], content_style1)
 	
-	sh2.col(0).width = 18 * 256
-	sh2.col(1).width = 24 * 256
-	sh2.col(2).width = 28 * 256
-	sh2.col(3).width = 28 * 256
-	sh2.col(4).width = 15 * 256
+	sh2.col(0).width = 0x0d00 + len("Ciclo 2")
+	try:
+		sh2.col(1).width = 256 * (max([len(str(row[i])) for row in datagen[1][i][0]]) + 1) * 10
+		sh2.col(2).width = 256 * (max([len(str(row[i])) for row in datagen[1][i][1]]) + 1) * 10
+		sh2.col(3).width = 256 * (max([len(str(row[i])) for row in datagen[1][i][2]]) + 1) * 10
+		sh2.col(4).width = 256 * (max([len(str(row[i])) for row in datagen[1][i][3]]) + 1) * 10
+		sh2.col(5).width = 256 * (max([len(str(row[i])) for row in datagen[1][i][4]]) + 1) * 10
+	except:
+		sh2.col(1).width = 256 * 20
+		sh2.col(2).width = 256 * 20
+		sh2.col(3).width = 256 * 20
+		sh2.col(4).width = 256 * 20
+		sh2.col(5).width = 256 * 20
 
 	sh3 = workbook.add_sheet("Ciclo 3")
 	sh3.write(0,0,"Ciclo 3", tittle_style)
@@ -543,42 +580,77 @@ def repinglesexcel():
 	for i in range(3):
 		sh3.write(3,i+3,mesesbase[2][i], header_style)
 
-	for i in range(len(datagen[2])):
-		sh3.write(i+4,0,i+1, content_style)
-		sh3.write(i+4,1,datagen[2][i][0], content_style)
-		sh3.write(i+4,2,datagen[2][i][1], content_style)
-		sh3.write(i+4,3,datagen[2][i][2], content_style)
-		sh3.write(i+4,4,datagen[2][i][3], content_style)
-		sh3.write(i+4,5,datagen[2][i][4], content_style)
+	if len(datagen[2]) > 0:
+		for i in range(len(datagen[2])):
+			sh3.write(i+4,0,i+1, content_style1)
+			sh3.write(i+4,1,datagen[2][i][0], content_style1)
+			sh3.write(i+4,2,datagen[2][i][1], content_style1)
+			if datagen[2][i][2] == "Pend":
+				sh3.write(i+4,3,datagen[2][i][2], content_style)
+			else:
+				sh3.write(i+4,3,datagen[2][i][2], content_style1)
+			if datagen[2][i][3] == "Pend":
+				sh3.write(i+4,4,datagen[2][i][3], content_style)
+			else:
+				sh3.write(i+4,4,datagen[2][i][3], content_style1)
+			if datagen[2][i][4] == "Pend":
+				sh3.write(i+4,5,datagen[2][i][4], content_style)
+			else:
+				sh3.write(i+4,5,datagen[2][i][4], content_style1)
 	
-	sh3.col(0).width = 18 * 256
-	sh3.col(1).width = 24 * 256
-	sh3.col(2).width = 28 * 256
-	sh3.col(3).width = 28 * 256
-	sh3.col(4).width = 15 * 256
+	sh3.col(0).width = 0x0d00 + len("Ciclo 3")
+	try:
+		sh3.col(1).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][0]]) + 1) * 10
+		sh3.col(2).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][1]]) + 1) * 10
+		sh3.col(3).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][2]]) + 1) * 10
+		sh3.col(4).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][3]]) + 1) * 10
+		sh3.col(5).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][4]]) + 1) * 10
+	except:
+		sh3.col(1).width = 256 * 20
+		sh3.col(2).width = 256 * 20
+		sh3.col(3).width = 256 * 20
+		sh3.col(4).width = 256 * 20
+		sh3.col(5).width = 256 * 20
 
 	sh4 = workbook.add_sheet("Ciclo 4")
 	sh4.write(0,0,"Ciclo 4", tittle_style)
-
 	sh4.write(3,0,"No.", header_style)
 	sh4.write(3,1,"Nombre", header_style)
 	sh4.write(3,2,"Carnet", header_style)
 	for i in range(3):
 		sh4.write(3,i+3,mesesbase[3][i], header_style)
 
-	for i in range(len(datagen[3])):
-		sh4.write(i+4,0,i+1, content_style)
-		sh4.write(i+4,1,datagen[3][i][0], content_style)
-		sh4.write(i+4,2,datagen[3][i][1], content_style)
-		sh4.write(i+4,3,datagen[3][i][2], content_style)
-		sh4.write(i+4,4,datagen[3][i][3], content_style)
-		sh4.write(i+4,5,datagen[3][i][4], content_style)
+	if len(datagen[3]) > 0:
+		for i in range(len(datagen[3])):
+			sh4.write(i+4,0,i+1, content_style1)
+			sh4.write(i+4,1,datagen[3][i][0], content_style1)
+			sh4.write(i+4,2,datagen[3][i][1], content_style1)
+			if datagen[3][i][2] == "Pend":
+				sh4.write(i+4,3,datagen[3][i][2], content_style)
+			else:
+				sh4.write(i+4,3,datagen[3][i][2], content_style1)
+			if datagen[3][i][3] == "Pend":
+				sh4.write(i+4,4,datagen[3][i][3], content_style)
+			else:
+				sh4.write(i+4,4,datagen[3][i][3], content_style1)
+			if datagen[3][i][4] == "Pend":
+				sh4.write(i+4,5,datagen[3][i][4], content_style)
+			else:
+				sh4.write(i+4,5,datagen[3][i][4], content_style1)
 	
-	sh4.col(0).width = 18 * 256
-	sh4.col(1).width = 24 * 256
-	sh4.col(2).width = 28 * 256
-	sh4.col(3).width = 28 * 256
-	sh4.col(4).width = 15 * 256
+	sh4.col(0).width = 0x0d00 + len("Ciclo 4")
+	try:
+		sh4.col(1).width = 256 * (max([len(str(row[i])) for row in datagen[3][i][0]]) + 1) * 10
+		sh4.col(2).width = 256 * (max([len(str(row[i])) for row in datagen[3][i][1]]) + 1) * 10
+		sh4.col(3).width = 256 * (max([len(str(row[i])) for row in datagen[3][i][2]]) + 1) * 10
+		sh4.col(4).width = 256 * (max([len(str(row[i])) for row in datagen[3][i][3]]) + 1) * 10
+		sh4.col(5).width = 256 * (max([len(str(row[i])) for row in datagen[3][i][4]]) + 1) * 10
+	except:
+		sh4.col(1).width = 256 * 20
+		sh4.col(2).width = 256 * 20
+		sh4.col(3).width = 256 * 20
+		sh4.col(4).width = 256 * 20
+		sh4.col(5).width = 256 * 20
 	workbook.save(output)
 	output.seek(0)
 
