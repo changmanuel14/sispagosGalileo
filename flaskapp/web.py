@@ -1682,11 +1682,11 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 
 						else:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							if 'LENQ' in precios1[0][2] and ('2' in meses[i] or '4' in meses[i] or '6' in meses[i] or ('1' in meses[i] and '3' in meses[i]) or ('3' in meses[i] and '1' not in meses[i] and '2' not in meses[i] and '3' not in meses[i]) or ('5' in meses[i] and '3' in meses[i])):
+							if 'LENQ' in precios1[0][2] and '2)' in meses[i] or '4)' in meses[i] or '6)' in meses[i] or ('1)' in meses[i] and 'Pago 4' in meses[i]) or ('3)' in meses[i] and 'Pago 4' in meses[i]) or ('5)' in meses[i] and 'Pago 4' in meses[i]):
 								imprimir = True
 							else:
 								imprimir = False
-							if 'LENQ' in precios1[0][2] and ('1' in meses[i] or '3' in meses[i]  or '5' in meses[i]):
+							if 'LENQ' in precios1[0][2] and ('1)' in meses[i] or '3)' in meses[i]  or '5)' in meses[i]):
 								precioasig = 200
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
 							if 'LENQ' in precios1[0][2]:
