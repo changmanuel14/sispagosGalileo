@@ -185,7 +185,6 @@
 		var inputs = myDiv.querySelectorAll("input");
 		var numInputs = inputs.length;
 		var fechaActual = new Date();
-		console.log(fechaActual)
 		var fechaAnterior = new Date();
 		var arreglo = {{ meses | tojson }};
 		var totaldias = 0;
@@ -195,7 +194,6 @@
 				for (var j = 0; j<12;j++){
 					if (arreglo[j] == input.value){
 						mes = j;
-						console.log(mes)
 					}
 				}
 				var anio = fechaAnterior.getFullYear();
@@ -203,8 +201,7 @@
 				var fechaAnterior1 = new Date(anio, mes, dia);
 				var diferenciaEnMilisegundos = fechaActual - fechaAnterior1;
 				var diasTranscurridos = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
-				totaldias = totaldias + diasTranscurridos;
-				console.log(diasTranscurridos)
+				if (diasTranscurridos > 0) totaldias = totaldias + diasTranscurridos;
 			}
 		});
 		var mora = document.getElementById("mora");

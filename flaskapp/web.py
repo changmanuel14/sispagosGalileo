@@ -277,6 +277,7 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
 			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
 			try:
 				with conexion.cursor() as cursor:
+					idpago = 0
 					if insc == 1:
 						consulta = f"INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES ({cuotas[0][0]},'{nombre}','{carnet}',{cuotas[0][1]},'{date.today()}','Inscripción Auxiliar de enfermeria',0, {session['idusercaja']});"
 						cursor.execute(consulta)
@@ -289,12 +290,182 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
 						consulta = f"INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES ({cuotas[2][0]},'{nombre}','{carnet}',{mora},'{date.today()}','Mora Auxiliar de enfermeria',0, {session['idusercaja']});"
 						cursor.execute(consulta)
 						conexion.commit()
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						idpago = cursor.fetchone()
+						idpago = idpago[0]
+						imprimir = True
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		return redirect(url_for('auxenf', mensaje="Datos ingresados correctamente"))
+		if imprimir:
+			return redirect(url_for('imprimir', idpagos=idpago))
+		else:
+			return redirect(url_for('auxenf', mensaje="Datos ingresados correctamente"))
 	return render_template('confirmacionauxenf.html', title='Confirmación Auxiliar de Enfermeria', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, insc=insc, meses=meses, mora = mora)
+
+@app.route('/repauxenf', methods=['GET', 'POST'])
+def repauxenf():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				datagen = []
+				consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Auxiliar de enfermeria%' group by p.nombre order by p.nombre;"
+				cursor.execute(consulta)
+				nombres = cursor.fetchall()
+				datos = []
+				for i in nombres:
+					data = [i[0], i[1]]
+					for j in meses:
+						consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Auxiliar de enfermeria%' and p.extra like '%{j}%' and p.nombre like '%{i[0]}%' order by p.nombre asc;"
+						cursor.execute(consulta)
+						pago = cursor.fetchall()
+						if len(pago) > 0:
+							data.append(pago[0][0])
+						else:
+							data.append("Pend")
+					datos.append(data)
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('repauxenf.html', title="Reporte Auxiliares de Enfermeria", datos = datos, meses = meses, logeado=logeado)
+
+@app.route('/repauxenfexcel', methods=['GET', 'POST'])
+def repauxenfexcel():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				datagen = []
+				consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Auxiliar de enfermeria%' group by p.nombre order by p.nombre;"
+				cursor.execute(consulta)
+				nombres = cursor.fetchall()
+				datos = []
+				for i in nombres:
+					data = [i[0], i[1]]
+					for j in meses:
+						consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Auxiliar de enfermeria%' and p.extra like '%{j}%' and p.nombre like '%{i[0]}%' order by p.nombre asc;"
+						cursor.execute(consulta)
+						pago = cursor.fetchall()
+						if len(pago) > 0:
+							data.append(pago[0][0])
+						else:
+							data.append("Pend")
+					datos.append(data)
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	output = io.BytesIO()
+	workbook = xlwt.Workbook(encoding="utf-8")
+	sh1 = workbook.add_sheet("Ciclo 1")
+
+	xlwt.add_palette_colour("Orange", 0x21) # the second argument must be a number between 8 and 64
+	workbook.set_colour_RGB(0x21, 255, 165, 0) # Red — 79, Green — 129, Blue — 189
+	xlwt.add_palette_colour("Lightgreen", 0x22) # the second argument must be a number between 8 and 64
+	workbook.set_colour_RGB(0x22, 144, 238, 144) # Red — 79, Green — 129, Blue — 189
+	
+
+	#bordes
+	borders = xlwt.Borders()
+	borders.left = 1
+	borders.right = 1
+	borders.top = 1
+	borders.bottom = 1
+
+	#encabezados
+	header_font = xlwt.Font()
+	header_font.name = 'Arial'
+	header_font.bold = True
+	header_style = xlwt.XFStyle()
+	header_style.font = header_font
+	header_style.borders = borders
+
+	#contenido1
+	content_font = xlwt.Font()
+	content_font.name = 'Arial'
+	content_pattern = xlwt.Pattern()
+	content_pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+	content_pattern.pattern_fore_colour = xlwt.Style.colour_map['orange']
+	content_style = xlwt.XFStyle()
+	content_style.font = content_font
+	content_style.borders = borders
+	content_style.pattern = content_pattern
+
+	#contenido1
+	content_font1 = xlwt.Font()
+	content_font1.name = 'Arial'
+	content_pattern1 = xlwt.Pattern()
+	content_pattern1.pattern = xlwt.Pattern.SOLID_PATTERN
+	content_pattern1.pattern_fore_colour = xlwt.Style.colour_map['light_green']
+	content_style1 = xlwt.XFStyle()
+	content_style1.font = content_font1
+	content_style1.borders = borders
+	content_style1.pattern = content_pattern1
+
+	#titulos
+	tittle_font = xlwt.Font()
+	tittle_font.name = 'Arial'
+	tittle_font.bold = True
+	tittle_font.italic = True
+	tittle_font.height = 20*20
+	tittle_style = xlwt.XFStyle()
+	tittle_style.font = tittle_font
+
+	
+
+	sh1.write(0,0,"Ciclo 1", tittle_style)
+	sh1.write(3,0,"No.", header_style)
+	sh1.write(3,1,"Nombre", header_style)
+	sh1.write(3,2,"Carnet", header_style)
+	for i in range(12):
+		sh1.write(3,i+3,meses[i], header_style)
+
+	if len(datos) > 0:
+		for i in range(len(datos)):
+			sh1.write(i+4,0,i+1, content_style1)
+			sh1.write(i+4,1,datos[i][0], content_style1)
+			sh1.write(i+4,2,datos[i][1], content_style1)
+			for j in range(12):
+				if datos[i][j+2] == "Pend":
+					sh1.write(i+4,j+3,datos[i][j+2], content_style)
+				else:
+					sh1.write(i+4,j+3,datos[i][j+2], content_style1)
+	
+	sh1.col(0).width = 0x0d00 + len("Ciclo 1")
+	try:
+		sh1.col(1).width = 256 * (max([len(str(row[i])) for row in datos[i][0]]) + 1) * 10
+		sh1.col(2).width = 256 * (max([len(str(row[i])) for row in datos[i][1]]) + 1) * 10
+		sh1.col(3).width = 256 * (max([len(str(row[i])) for row in datos[i][2]]) + 1) * 10
+		sh1.col(4).width = 256 * (max([len(str(row[i])) for row in datos[i][3]]) + 1) * 10
+		sh1.col(5).width = 256 * (max([len(str(row[i])) for row in datos[i][4]]) + 1) * 10
+	except:
+		sh1.col(1).width = 256 * 20
+		sh1.col(2).width = 256 * 30
+		sh1.col(3).width = 256 * 20
+		sh1.col(4).width = 256 * 20
+		sh1.col(5).width = 256 * 20
+	workbook.save(output)
+	output.seek(0)
+
+	return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=Reporteauxenf.xls"})
 
 @app.route("/ingles", methods=['GET', 'POST'])
 @app.route("/ingles/<mensaje>", methods=['GET', 'POST'])
