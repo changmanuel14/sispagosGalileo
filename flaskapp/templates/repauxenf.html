@@ -111,18 +111,28 @@
 		<a style="color: white;" href="{{ url_for('repauxenfexcel') }}" target="_blank"><button class="button">Exportar Excel</button></a>
 		<hr>
 		<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+		<style>
+			.peque {
+		font-size: small;
+		}
+		.normal {
+			font-size: medium;
+		}
+		</style>
         <table class="sortable">
             <tr>
-                <th>Nombre</th>
-                <th>Carnet</th>
+                <th class="normal" style="width: 5%;">Nombre</th>
+                <th class="normal">Carnet</th>
                 {% for i in meses %}
-				<th>{{i}}</th>
+				<th class="peque">{{i}}</th>
 				{% endfor %}
             </tr>
             {% for i in datos %}
             <tr>
-                {% for j in i %}
-				<td>{{j}}</td>
+				<td class="normal">{{i[0]}}</td>
+				<td class="normal">{{i[1]}}</td>
+                {% for j in i[2:] %}
+				<td class="peque">{{j}}</td>
 				{% endfor %}
             </tr>
             {% endfor %}
