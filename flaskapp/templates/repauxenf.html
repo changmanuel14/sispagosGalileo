@@ -121,10 +121,10 @@
 		</style>
         <table class="sortable">
             <tr>
-                <th class="normal" style="width: 5%;">Nombre</th>
-                <th class="normal">Carnet</th>
+                <th class="normal" style="width:auto;">Nombre</th>
+                <th class="normal" style="width:auto;">Carnet</th>
                 {% for i in meses %}
-				<th class="peque">{{i}}</th>
+				<th class="peque" style="width:auto;">{{i}}</th>
 				{% endfor %}
             </tr>
             {% for i in datos %}
