@@ -2277,17 +2277,17 @@ def hojalenq(idpagos):
 	fechaact = date.today()
 	year = fechaact.year
 
-	if '1' in practica[2]:
+	if '1)' in practica[2]:
 		template = 'hojalenq1.html'
-	elif '2' in practica[2]:
+	elif '2)' in practica[2]:
 		template = 'hojalenq2.html'
-	elif '3' in practica[2]:
+	elif '3)' in practica[2]:
 		template = 'hojalenq3.html'
-	elif '4' in practica[2]:
+	elif '4)' in practica[2]:
 		template = 'hojalenq4.html'
-	elif '5' in practica[2]:
+	elif '5)' in practica[2]:
 		template = 'hojalenq5.html'
-	elif '6' in practica[2]:
+	elif '6)' in practica[2]:
 		template = 'hojalenq6.html'
 
 	
