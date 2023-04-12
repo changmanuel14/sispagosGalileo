@@ -191,6 +191,111 @@ def confirmacionaca(nombre, carnet, datameses, carrera, insc):
 		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacionaca.html', title='Confirmación Academia', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datacarrera=datacarrera, insc=insc, meses=meses)
 
+@app.route("/auxenf", methods=['GET', 'POST'])
+@app.route("/auxenf/<mensaje>", methods=['GET', 'POST'])
+def auxenf(mensaje = None):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+	if request.method == 'POST':
+		carnet = request.form["carnet"]
+		if len(carnet) < 1:
+			carnet = 0
+		nombre = request.form["nombre"]
+		cantidad = int(request.form["cant"]) + 1
+		mora = request.form["mora"]
+		try:
+			insc = request.form["insc"]
+		except:
+			insc = 0
+		datameses = ""
+		for i in range(cantidad):
+			aux = 'mes' + str(i)
+			mes = request.form[aux]
+			if len(mes) > 0:
+				if i > 0:
+					datameses = datameses + ',' + str(mes)
+				else:
+					datameses = datameses + str(mes)
+		if len(datameses) < 1:
+			datameses = 'None'
+		return redirect(url_for('confirmacionauxenf', nombre=nombre, carnet=carnet, insc=insc, datameses=datameses, mora=mora))
+	return render_template('auxenf.html', title='Auxiliares de Enfermeria', logeado=logeado, meses=meses, mensaje = mensaje)
+
+@app.route("/confirmacionauxenf/<nombre>&<carnet>&<insc>&<datameses>&<mora>", methods=['GET', 'POST'])
+def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		logeado = 0
+	if logeado == 0:
+		return redirect(url_for('login'))
+	nombre = str(nombre)
+	carnet = str(carnet)
+	insc = int(insc)
+	mora = float(mora)
+	cantidad = 0
+	if datameses != 'None':
+		meses = datameses.split(",")
+		cantidad = len(meses)
+	else:
+		meses = ""
+	try:
+		conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT idcodigos, precio from codigos where cod like "%AUXE%" order by cod asc'
+				cursor.execute(consulta)
+				cuotas = cursor.fetchall()
+				pagoant = False
+				for i in range(cantidad):
+					consulta = f'SELECT idpagos from pagos where nombre = "{nombre}" and extra like "%{meses[i]}%" and extra like "%MENSAUXE%"'
+					cursor.execute(consulta)
+					pagosprev = cursor.fetchall()
+					if len(pagosprev) > 0:
+						pagoant = True
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if pagoant:
+		return redirect(url_for('auxenf', mensaje = 1))
+	total = 0
+	if insc == 1:
+		total = total + float(cuotas[0][1])
+	for i in range(cantidad):
+		total = total + float(cuotas[1][1])
+	if mora > 0:
+		total = total + mora
+
+	if request.method == 'POST':
+		try:
+			conexion = pymysql.connect(host='localhost', user='root', password='database', db='pagossis')
+			try:
+				with conexion.cursor() as cursor:
+					if insc == 1:
+						consulta = f"INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES ({cuotas[0][0]},'{nombre}','{carnet}',{cuotas[0][1]},'{date.today()}','Inscripción Auxiliar de enfermeria',0, {session['idusercaja']});"
+						cursor.execute(consulta)
+						conexion.commit()
+					for i in meses:
+						consulta = f"INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES ({cuotas[1][0]},'{nombre}','{carnet}',{cuotas[1][1]},'{date.today()}','{i}',0, {session['idusercaja']});"
+						cursor.execute(consulta)
+						conexion.commit()
+					if mora > 0:
+						consulta = f"INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES ({cuotas[2][0]},'{nombre}','{carnet}',{mora},'{date.today()}','Mora Auxiliar de enfermeria',0, {session['idusercaja']});"
+						cursor.execute(consulta)
+						conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('auxenf', mensaje="Datos ingresados correctamente"))
+	return render_template('confirmacionauxenf.html', title='Confirmación Auxiliar de Enfermeria', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, insc=insc, meses=meses, mora = mora)
+
 @app.route("/ingles", methods=['GET', 'POST'])
 @app.route("/ingles/<mensaje>", methods=['GET', 'POST'])
 def ingles(mensaje = None):
@@ -600,7 +705,7 @@ def repinglesexcel():
 	
 	sh3.col(0).width = 0x0d00 + len("Ciclo 3")
 	try:
-		sh3.col(1).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][0]]) + 1) * 10
+		sh3.col(1).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][0]]) + 1) * 20
 		sh3.col(2).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][1]]) + 1) * 10
 		sh3.col(3).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][2]]) + 1) * 10
 		sh3.col(4).width = 256 * (max([len(str(row[i])) for row in datagen[2][i][3]]) + 1) * 10

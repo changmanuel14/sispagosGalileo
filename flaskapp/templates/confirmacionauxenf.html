@@ -93,11 +93,23 @@
   <main class="page-content" id="main">
     <div class="container">
       <h2>¿Está seguro de continuar?</h2>
-      <h5>Carrera: {{carrera}}</h5>
       <h5>Carnet: {{carnet}}</h5>
       <h5>Nombre: {{nombre}}</h5>
+      <h5>Pago: Auxiliar de Enfermeria</h5>
+      <h5>Descripción: </h5>
+      {% if insc == 1 %}
+      <h5>Inscripción: Aplica</h5>
+      {% else %}
+      <h5>Inscripción: No Aplica</h5>
+      {% endif %}
+      {% for i in range(cantidad) %}
+        <h6>Mes: {{meses[i]}}</h6>
+      {% endfor %}
+	  <h6>Mora: Q {{mora}}</h6>
+      <h5>Total: Q {{total}}</h5>
+      
       <form action="" method="POST">
-        <center><button onclick="submit" class="button">Aceptar</button>   <a class="regresar" href="{{ url_for('ini') }}">Regresar</a></center>
+        <center><button onclick="submit" class="button">Aceptar</button>   <a class="regresar" href="{{ url_for('auxenf') }}">Regresar</a></center>
       </form>
     </main>
     <!-- page-content" -->
