@@ -295,6 +295,8 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
 						idpago = cursor.fetchone()
 						idpago = idpago[0]
 						imprimir = True
+					else:
+						imprimir = False
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
