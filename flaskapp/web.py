@@ -3111,7 +3111,7 @@ def repdiario():
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), c.idcodigos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "'+str(date.today())+'" and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				resumen = cursor.fetchall()
-				consulta = "Select fecha from pagos where recibo <> 0 order by fecha desc"
+				consulta = "Select fecha from pagos where recibo <> 0 and LENGTH(recibo) < 5 order by fecha desc"
 				cursor.execute(consulta)
 				fechasig = cursor.fetchone()
 				fechasig = fechasig[0]
