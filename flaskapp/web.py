@@ -321,7 +321,7 @@ def repauxenf():
 		try:
 			with conexion.cursor() as cursor:
 				datagen = []
-				consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Auxiliar de enfermeria%' group by p.nombre order by p.nombre;"
+				consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Inscripción Auxiliar de enfermeria%' and c.descripcion not like '%Retirado%' group by p.nombre order by p.nombre;"
 				cursor.execute(consulta)
 				nombres = cursor.fetchall()
 				datos = []
