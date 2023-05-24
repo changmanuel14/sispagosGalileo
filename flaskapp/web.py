@@ -621,7 +621,7 @@ def repingles():
 				for n in range(4):
 					ciclo = n+1
 					datos = []
-					consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;"
+					consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and (p.extra like '%{mesesbase[n][0]}%' or p.extra like '%{mesesbase[n][1]}%' or p.extra like '%{mesesbase[n][2]}%')  and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;"
 					cursor.execute(consulta)
 					nombres = cursor.fetchall()
 					for i in nombres:
