@@ -1,278 +1,280 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li  >
-            <a href="/repdiario">
-                <span>Corte Diario</span>
-            </a>
-        </li>
-        <li  >
-            <a href="/repgen">
-                <span>Listado General</span>
-            </a>
-        </li>
-          <li >
-            <a href="/repi">
-              <span>Inscripciones</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repauxenf">
-              <span>Auxiliar de Enfermeria</span>
-            </a>
-          </li>
-          <li >
-              <a href="/repini">
-                  <span>Internet Inscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repir">
-                  <span>Internet Reinscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repu">
-                  <span>Uniformes</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repp">
-                  <span>Practica</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/replenq">
-				<span>Practica Enfermeria</span>
-			</a>
-		</li>
-		<li  >
-			<a href="/replbcq">
-				<span>Practica Química Biológica</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/repm">
-                  <span>Manuales</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/repingles">
-				<span>Ingles</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/reppag">
-                  <span>Pagos</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repgrad">
-                  <span>Graduacion</span>
-              </a>
-          </li>
-          <li >
-            <a href="/repextra">
-              <span>Pagos Extra</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repparq">
-              <span>Parqueo</span>
-            </a>
-          </li>
-      <!-- sidebar-menu  -->
-    </div>
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content">
-    <div class="container">
-        <h2>Reporte general</h2>
-        <hr>
-        <form action="" method="POST">
-        <input type="date" id="fechaini" name="fechaini" class="inputtext3" value="{{datafechaini}}">&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="date" id="fechafin" name="fechafin" class="inputtext3" value="{{datafechafin}}"><br>
-        
-        <input type="text" id="carnet" name="carnet" placeholder="  Carnet" class="inputtext3" value="{{datacarnet}}">   &nbsp;&nbsp;&nbsp;
-        <input type="text" id="nombre" name="nombre" placeholder="  Nombre" class="inputtext3" value="{{datanombre}}">  
-        <br>
-        <input type="text" id="descripcion" name="descripcion" placeholder="  Descripción" class="inputtext3" value="{{datadescripcion}}">&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="text" id="concepto" name="concepto" placeholder="  Concepto" class="inputtext3" value="{{dataconcepto}}">
-        <br>
-        <input type="text" id="recibo" name="recibo" placeholder="  Recibo" class="inputtext3" value="{{datarecibo}}">&nbsp;&nbsp;&nbsp;&nbsp; 
-        <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-        <br>
-        <center><button onclick="submit" class="button">Buscar</button>
-      </form>
-        <table class="sorttable" id="myTable" data-page-length="25">
-            <tr>
-                <th>Nombre</th>
-                <th>Carnet</th>
-                <th>Fecha</th>
-                <th>Concepto</th>
-                <th>Descripción</th>
-                <th>Recibo</th>
-                <th>Total</th>
-                <th colspan="2">Devolución</th>
-            </tr>
-            {% for i in data %}
-            <tr>
-                <td>{{i[0]}}</td>
-                <td>{{i[1]}}</td>
-                <td>{{i[2]}}</td>
-                <td>{{i[3]}}</td>
-                <td>{{i[4]}}</td>
-                <td>{{i[5]}}</td>
-                <td>Q. {{i[6]}}</td>
-                {% if i[8] == 0 %}
-                <td>No</td>
-                <td><a href="/devolucion/{{i[7]}}" style="color: black;">Devolver</a></td>
-                {% else %}
-                <td>Si</td>
-                <td><a href="/verdev/{{i[7]}}" target="_blank" style="color: black;">Ver Devolución</a></td>
-                {% endif %}
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
 
-            </tr>
-            {% endfor %}
-        </table>
-    </main>
-    <script>
-        function calcmostrar() {
-          var input, filter, table, tr, td, i, txtValue, numpag;
-          input = document.getElementById("myInput");
-          filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
-          tr = table.getElementsByTagName("tr");
-          numpag = document.getElementById("numpagina").value;
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/repdiario">
+							<span>Corte Diario</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgen">
+							<span>Listado General</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repi">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repauxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repini">
+							<span>Internet Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repir">
+							<span>Internet Reinscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repu">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repp">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replenq">
+							<span>Practica Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replbcq">
+							<span>Practica Química Biológica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repm">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+					<li>
+						<a href="/reppag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgrad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repextra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repparq">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+			</div>
+			<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content">
+		<div class="container">
+			<h2>Reporte general</h2>
+			<hr>
+			<form action="" method="POST">
+				<input type="date" id="fechaini" name="fechaini" class="inputtext3"
+					value="{{datafechaini}}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="date" id="fechafin" name="fechafin" class="inputtext3" value="{{datafechafin}}"><br>
+				<input type="text" id="carnet" name="carnet" placeholder="  Carnet" class="inputtext3"
+					value="{{datacarnet}}"> &nbsp;&nbsp;&nbsp;
+				<input type="text" id="nombre" name="nombre" placeholder="  Nombre" class="inputtext3"
+					value="{{datanombre}}">
+				<br>
+				<input type="text" id="descripcion" name="descripcion" placeholder="  Descripción" class="inputtext3"
+					value="{{datadescripcion}}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="concepto" name="concepto" placeholder="  Concepto" class="inputtext3"
+					value="{{dataconcepto}}">
+				<br>
+				<input type="text" id="recibo" name="recibo" placeholder="  Recibo" class="inputtext3"
+					value="{{datarecibo}}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+				<br>
+				<center><button onclick="submit" class="button">Buscar</button>
+			</form>
+			<h4>Resultados encontrados: {{conteo}}</h4>
+			<table class="sorttable" id="myTable" data-page-length="25">
+				<tr>
+					<th>Nombre</th>
+					<th>Carnet</th>
+					<th>Fecha</th>
+					<th>Concepto</th>
+					<th>Descripción</th>
+					<th>Recibo</th>
+					<th>Total</th>
+					<th colspan="2">Devolución</th>
+				</tr>
+				{% for i in data %}
+				<tr>
+					<td>{{i[0]}}</td>
+					<td>{{i[1]}}</td>
+					<td>{{i[2]}}</td>
+					<td>{{i[3]}}</td>
+					<td>{{i[4]}}</td>
+					<td>{{i[5]}}</td>
+					<td>Q. {{i[6]}}</td>
+					{% if i[8] == 0 %}
+					<td>No</td>
+					<td><a href="/devolucion/{{i[7]}}" style="color: black;">Devolver</a></td>
+					{% else %}
+					<td>Si</td>
+					<td><a href="/verdev/{{i[7]}}" target="_blank" style="color: black;">Ver Devolución</a></td>
+					{% endif %}
+				</tr>
+				{% endfor %}
+			</table>
+	</main>
+	<script>
+		function calcmostrar() {
+			var input, filter, table, tr, td, i, txtValue, numpag;
+			input = document.getElementById("myInput");
+			filter = input.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
+			numpag = document.getElementById("numpagina").value;
+		}
+		function myFunction() {
+			// Declare variables
+			var input, filter, table, tr, td, i, txtValue;
+			input = document.getElementById("myInput");
+			filter = input.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
+			// Loop through all table rows, and hide those who don't match the search query
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[0];
+				if (td) {
+					txtValue = td.textContent || td.innerText;
+					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+						tr[i].style.display = "";
+					} else {
+						tr[i].style.display = "none";
+					}
+				}
+			}
+		}
+		function myFunction2() {
+			// Declare variables
+			var input, filter, table, tr, td, i, txtValue;
+			input = document.getElementById("myInput2");
+			filter = input.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
 
-          
-        }
-        function myFunction() {
-          // Declare variables
-          var input, filter, table, tr, td, i, txtValue;
-          input = document.getElementById("myInput");
-          filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
-          tr = table.getElementsByTagName("tr");
-        
-          // Loop through all table rows, and hide those who don't match the search query
-          for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[0];
-            if (td) {
-              txtValue = td.textContent || td.innerText;
-              if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-              } else {
-                tr[i].style.display = "none";
-              }
-            }
-          }
-        }
-        function myFunction2() {
-          // Declare variables
-          var input, filter, table, tr, td, i, txtValue;
-          input = document.getElementById("myInput2");
-          filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
-          tr = table.getElementsByTagName("tr");
-        
-          // Loop through all table rows, and hide those who don't match the search query
-          for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[2];
-            if (td) {
-              txtValue = td.textContent || td.innerText;
-              if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-              } else {
-                tr[i].style.display = "none";
-              }
-            }
-          }
-        }
-        function myFunction3() {
-          // Declare variables
-          var input, filter, table, tr, td, i, txtValue;
-          input = document.getElementById("myInput3");
-          filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
-          tr = table.getElementsByTagName("tr");
-        
-          // Loop through all table rows, and hide those who don't match the search query
-          for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[3];
-            if (td) {
-              txtValue = td.textContent || td.innerText;
-              if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-              } else {
-                tr[i].style.display = "none";
-              }
-            }
-          }
-        }
-        function myFunction4() {
-        // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("carnet");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-      
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[1];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }
-        }
-      }
-      function myFunction5() {
-        // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("myInput4");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-      
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[4];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }
-        }
-      }
-        </script>
-    <!-- page-content" -->
-  </div>
-  <!-- page-wrapper -->
+			// Loop through all table rows, and hide those who don't match the search query
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[2];
+				if (td) {
+					txtValue = td.textContent || td.innerText;
+					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+						tr[i].style.display = "";
+					} else {
+						tr[i].style.display = "none";
+					}
+				}
+			}
+		}
+		function myFunction3() {
+			// Declare variables
+			var input, filter, table, tr, td, i, txtValue;
+			input = document.getElementById("myInput3");
+			filter = input.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
+
+			// Loop through all table rows, and hide those who don't match the search query
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[3];
+				if (td) {
+					txtValue = td.textContent || td.innerText;
+					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+						tr[i].style.display = "";
+					} else {
+						tr[i].style.display = "none";
+					}
+				}
+			}
+		}
+		function myFunction4() {
+			// Declare variables
+			var input, filter, table, tr, td, i, txtValue;
+			input = document.getElementById("carnet");
+			filter = input.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
+
+			// Loop through all table rows, and hide those who don't match the search query
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[1];
+				if (td) {
+					txtValue = td.textContent || td.innerText;
+					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+						tr[i].style.display = "";
+					} else {
+						tr[i].style.display = "none";
+					}
+				}
+			}
+		}
+		function myFunction5() {
+			// Declare variables
+			var input, filter, table, tr, td, i, txtValue;
+			input = document.getElementById("myInput4");
+			filter = input.value.toUpperCase();
+			table = document.getElementById("myTable");
+			tr = table.getElementsByTagName("tr");
+
+			// Loop through all table rows, and hide those who don't match the search query
+			for (i = 0; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[4];
+				if (td) {
+					txtValue = td.textContent || td.innerText;
+					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+						tr[i].style.display = "";
+					} else {
+						tr[i].style.display = "none";
+					}
+				}
+			}
+		}
+	</script>
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
 {% endblock %}
