@@ -206,7 +206,7 @@ def auxenf(mensaje = None):
 		datameses = ""
 		for i in range(cantidad):
 			aux = 'mes' + str(i)
-			mes = request.form[aux]
+			mes = request.form[aux] 
 			if len(mes) > 0:
 				if i > 0:
 					datameses = f'{datameses},{mes}'

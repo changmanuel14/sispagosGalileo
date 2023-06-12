@@ -1,5 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
+<!-- fancyTable Js -->
+<script src="{{ url_for('static', filename='fancyTable.js') }}"></script>
+
 <div class="page-wrapper chiller-theme toggled">
 	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
 		<i class="fas fa-bars"></i>
@@ -12,7 +15,6 @@
 				</div>
 			</div>
 			<!-- sidebar-header  -->
-
 			<div class="sidebar-menu">
 				<ul>
 					<li class="header-menu">
@@ -129,7 +131,7 @@
 				<center><button onclick="submit" class="button">Buscar</button>
 			</form>
 			<h4>Resultados encontrados: {{conteo}}</h4>
-			<table class="sorttable" id="myTable" data-page-length="25">
+			<table class="table table-striped sortable" id="sampleTable">
 				<tr>
 					<th>Nombre</th>
 					<th>Carnet</th>
@@ -138,7 +140,7 @@
 					<th>Descripción</th>
 					<th>Recibo</th>
 					<th>Total</th>
-					<th colspan="2">Devolución</th>
+					<th>Devolución</th>
 				</tr>
 				{% for i in data %}
 				<tr>
@@ -150,131 +152,25 @@
 					<td>{{i[5]}}</td>
 					<td>Q. {{i[6]}}</td>
 					{% if i[8] == 0 %}
-					<td>No</td>
-					<td><a href="/devolucion/{{i[7]}}" style="color: black;">Devolver</a></td>
+					<td><a href="/devolucion/{{i[7]}}" style="color: black;">No - Devolver</a></td>
 					{% else %}
-					<td>Si</td>
-					<td><a href="/verdev/{{i[7]}}" target="_blank" style="color: black;">Ver Devolución</a></td>
+					<td><a href="/verdev/{{i[7]}}" target="_blank" style="color: black;">Si - Ver Devolución</a></td>
 					{% endif %}
 				</tr>
 				{% endfor %}
 			</table>
 	</main>
-	<script>
-		function calcmostrar() {
-			var input, filter, table, tr, td, i, txtValue, numpag;
-			input = document.getElementById("myInput");
-			filter = input.value.toUpperCase();
-			table = document.getElementById("myTable");
-			tr = table.getElementsByTagName("tr");
-			numpag = document.getElementById("numpagina").value;
-		}
-		function myFunction() {
-			// Declare variables
-			var input, filter, table, tr, td, i, txtValue;
-			input = document.getElementById("myInput");
-			filter = input.value.toUpperCase();
-			table = document.getElementById("myTable");
-			tr = table.getElementsByTagName("tr");
-			// Loop through all table rows, and hide those who don't match the search query
-			for (i = 0; i < tr.length; i++) {
-				td = tr[i].getElementsByTagName("td")[0];
-				if (td) {
-					txtValue = td.textContent || td.innerText;
-					if (txtValue.toUpperCase().indexOf(filter) > -1) {
-						tr[i].style.display = "";
-					} else {
-						tr[i].style.display = "none";
-					}
-				}
-			}
-		}
-		function myFunction2() {
-			// Declare variables
-			var input, filter, table, tr, td, i, txtValue;
-			input = document.getElementById("myInput2");
-			filter = input.value.toUpperCase();
-			table = document.getElementById("myTable");
-			tr = table.getElementsByTagName("tr");
-
-			// Loop through all table rows, and hide those who don't match the search query
-			for (i = 0; i < tr.length; i++) {
-				td = tr[i].getElementsByTagName("td")[2];
-				if (td) {
-					txtValue = td.textContent || td.innerText;
-					if (txtValue.toUpperCase().indexOf(filter) > -1) {
-						tr[i].style.display = "";
-					} else {
-						tr[i].style.display = "none";
-					}
-				}
-			}
-		}
-		function myFunction3() {
-			// Declare variables
-			var input, filter, table, tr, td, i, txtValue;
-			input = document.getElementById("myInput3");
-			filter = input.value.toUpperCase();
-			table = document.getElementById("myTable");
-			tr = table.getElementsByTagName("tr");
-
-			// Loop through all table rows, and hide those who don't match the search query
-			for (i = 0; i < tr.length; i++) {
-				td = tr[i].getElementsByTagName("td")[3];
-				if (td) {
-					txtValue = td.textContent || td.innerText;
-					if (txtValue.toUpperCase().indexOf(filter) > -1) {
-						tr[i].style.display = "";
-					} else {
-						tr[i].style.display = "none";
-					}
-				}
-			}
-		}
-		function myFunction4() {
-			// Declare variables
-			var input, filter, table, tr, td, i, txtValue;
-			input = document.getElementById("carnet");
-			filter = input.value.toUpperCase();
-			table = document.getElementById("myTable");
-			tr = table.getElementsByTagName("tr");
-
-			// Loop through all table rows, and hide those who don't match the search query
-			for (i = 0; i < tr.length; i++) {
-				td = tr[i].getElementsByTagName("td")[1];
-				if (td) {
-					txtValue = td.textContent || td.innerText;
-					if (txtValue.toUpperCase().indexOf(filter) > -1) {
-						tr[i].style.display = "";
-					} else {
-						tr[i].style.display = "none";
-					}
-				}
-			}
-		}
-		function myFunction5() {
-			// Declare variables
-			var input, filter, table, tr, td, i, txtValue;
-			input = document.getElementById("myInput4");
-			filter = input.value.toUpperCase();
-			table = document.getElementById("myTable");
-			tr = table.getElementsByTagName("tr");
-
-			// Loop through all table rows, and hide those who don't match the search query
-			for (i = 0; i < tr.length; i++) {
-				td = tr[i].getElementsByTagName("td")[4];
-				if (td) {
-					txtValue = td.textContent || td.innerText;
-					if (txtValue.toUpperCase().indexOf(filter) > -1) {
-						tr[i].style.display = "";
-					} else {
-						tr[i].style.display = "none";
-					}
-				}
-			}
-		}
-	</script>
+	
 	<!-- page-content" -->
 </div>
 <!-- page-wrapper -->
+<script>
+	$(document).ready(function () {
+		$("#sampleTable").fancyTable({
+			inputPlaceholder: 'Buscar',
+			pagination: true,
+			perPage:20
+		});
+	});
+</script>
 {% endblock %}

@@ -1,251 +1,160 @@
 {% extends "layout.html" %}
 {% block content %}
+<script src="{{ url_for('static', filename='fancyTable.js') }}"></script>
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li  >
-            <a href="/repdiario">
-                <span>Corte Diario</span>
-            </a>
-        </li>
-        <li  >
-          <a href="/repgen">
-              <span>Listado General</span>
-          </a>
-      </li>
-          <li >
-            <a href="/repi">
-              <span>Inscripciones</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repauxenf">
-              <span>Auxiliar de Enfermeria</span>
-            </a>
-          </li>
-          <li >
-              <a href="/repini">
-                  <span>Internet Inscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repir">
-                  <span>Internet Reinscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repu">
-                  <span>Uniformes</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repp">
-                  <span>Practica</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/replenq">
-				<span>Practica Enfermeria</span>
-			</a>
-		</li>
-		<li  >
-			<a href="/replbcq">
-				<span>Practica Química Biológica</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/repm">
-                  <span>Manuales</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/repingles">
-				<span>Ingles</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/reppag">
-                  <span>Pagos</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repgrad">
-                  <span>Graduacion</span>
-              </a>
-          </li>
-          <li >
-            <a href="/repextra">
-              <span>Pagos Extra</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repparq">
-              <span>Parqueo</span>
-            </a>
-          </li>
-      <!-- sidebar-menu  -->
-    </div>
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content">
-    <div class="container">
-        <h2>Práctica</h2>
-        <hr>
-        <form action="" method="POST">
-        <input type="date" id="defecha" name="defecha" onchange="myFunction2()" class="inputtext3" required>&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="date" id="afecha" name="afecha" class="inputtext3" required>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button class="button">Filtrar</button>
-      </form>
-        <input type="text" id="carnet" onkeyup="myFunction4()" placeholder="  Carnet" class="inputtext3">   &nbsp;&nbsp;&nbsp;
-        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="  Nombre" class="inputtext3">&nbsp;&nbsp;&nbsp;&nbsp;
-        <select name="carrera" id="myInput3" class="inputtext3" onchange="myFunction3()">
-                <option value="">Seleccione carrera</option>
-                {% for i in carreras %}
-                <option value="{{i[1]}}">{{i[1]}}</option>
-                {% endfor %}
-        </select>
-        <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-              <table id="myTable" class="sortable">
-            <tr>
-                <th>Nombre</th>
-                <th>Carnet</th>
-                <th>Fecha</th>
-                <th>Codigo</th>
-                <th>Descripción</th>
-                <th>Total</th>
-				<th>imprimir</th>
-            </tr>
-            {% for i in data %}
-            <tr>
-                <td>{{i[0]}}</td>
-                <td>{{i[1]}}</td>
-                <td>{{i[2]}}</td>
-                <td>{{i[3]}}</td>
-                <td>{{i[4]}}</td>
-                <td>Q. {{i[5]}}</td>
-				<td>
-					{% if 'THDQ' in i[3] %}
-					<a href="/hojathdq/{{i[6]}}">Imprimir</a>
-					{% elif 'PREPTRAD' in i[3] %}
-					<a href="/prepracticatradq/{{i[6]}}">Imprimir</a>
-					{% elif  'TLCQ' in i[3] %}
-					<a href="/hojatlcq/{{i[6]}}">Imprimir</a>
-          {% elif  'TOPTQ' in i[3] %}
-					<a href="/practicatoptq/{{i[6]}}">Imprimir</a>
-					{% else %}
-					No Aplica
-					{% endif %}
-				</td>
-            </tr>
-            {% endfor %}
-            
-        </table>
-    </form>
-    </main>
-    <script>
-      function myFunction() {
-        // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("myInput");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-      
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[0];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }
-        }
-      }
-      function myFunction2() {
-        // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("defecha");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-      
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[2];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }
-        }
-      }
-      function myFunction3() {
-        // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("myInput3");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-      
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[3];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }
-        }
-      }
-      function myFunction4() {
-        // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
-        input = document.getElementById("carnet");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("myTable");
-        tr = table.getElementsByTagName("tr");
-      
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 0; i < tr.length; i++) {
-          td = tr[i].getElementsByTagName("td")[1];
-          if (td) {
-            txtValue = td.textContent || td.innerText;
-            if (txtValue.toUpperCase().indexOf(filter) > -1) {
-              tr[i].style.display = "";
-            } else {
-              tr[i].style.display = "none";
-            }
-          }
-        }
-      }
-      </script>
-    <!-- page-content" -->
-  </div>
-  <!-- page-wrapper -->
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/repdiario">
+							<span>Corte Diario</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgen">
+							<span>Listado General</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repi">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repauxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repini">
+							<span>Internet Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repir">
+							<span>Internet Reinscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repu">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repp">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replenq">
+							<span>Practica Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replbcq">
+							<span>Practica Química Biológica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repm">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+					<li>
+						<a href="/reppag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgrad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repextra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repparq">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+			</div>
+			<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content">
+		<div class="container">
+			<h2>Práctica</h2>
+			<hr>
+			<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+			<table id="sampleTable" class="sortable">
+				<tr>
+					<th>Nombre</th>
+					<th>Carnet</th>
+					<th>Fecha</th>
+					<th>Codigo</th>
+					<th>Descripción</th>
+					<th>Total</th>
+					<th>imprimir</th>
+				</tr>
+				{% for i in data %}
+				<tr>
+					<td>{{i[0]}}</td>
+					<td>{{i[1]}}</td>
+					<td>{{i[2]}}</td>
+					<td>{{i[3]}}</td>
+					<td>{{i[4]}}</td>
+					<td>Q. {{i[5]}}</td>
+					<td>
+						{% if 'THDQ' in i[3] %}
+						<a href="/hojathdq/{{i[6]}}">Imprimir</a>
+						{% elif 'PREPTRAD' in i[3] %}
+						<a href="/prepracticatradq/{{i[6]}}">Imprimir</a>
+						{% elif 'TLCQ' in i[3] %}
+						<a href="/hojatlcq/{{i[6]}}">Imprimir</a>
+						{% elif 'TOPTQ' in i[3] %}
+						<a href="/practicatoptq/{{i[6]}}">Imprimir</a>
+						{% else %}
+						No Aplica
+						{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+			</form>
+	</main>
+	<script>
+		$(document).ready(function () {
+			$("#sampleTable").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage:20
+			});
+		});
+	</script>
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
 {% endblock %}
