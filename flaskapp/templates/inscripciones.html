@@ -1,250 +1,252 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
 
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li>
-			<a href="/i">
-				<span>Inscripciones</span>
-			</a>
-		</li>
-		<li>
-			<a href="/auxenf">
-				<span>Auxiliar de Enfermeria</span>
-			</a>
-		</li>
-		<li>
-			<a href="/optica">
-				<span>Óptica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/laboratorio">
-				<span>Laboratorio</span>
-			</a>
-		</li>
-		<li>
-			<a href="/academia">
-				<span>Academia</span>
-			</a>
-		</li>
-		<li>
-			<a href="/p">
-				<span>Practica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/m">
-				<span>Manuales</span>
-			</a>
-		</li>
-		<li>
-			<a href="/pag">
-				<span>Pagos</span>
-			</a>
-		</li>
-		<li>
-			<a href="/ingles">
-				<span>Ingles</span>
-			</a>
-		</li>
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/i">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/auxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/optica">
+							<span>Óptica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/laboratorio">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<li>
+						<a href="/academia">
+							<span>Academia</span>
+						</a>
+					</li>
+					<li>
+						<a href="/p">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/m">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/pag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/ingles">
+							<span>Ingles</span>
+						</a>
+					</li>
 
-		<li>
-			<a href="/extra">
-				<span>Pagos Extra</span>
-			</a>
-		</li>
-		<li>
-			<a href="/parqueo">
-				<span>Parqueo</span>
-			</a>
-		</li>
-		<li>
-			<a href="/u">
-				<span>Uniformes</span>
-			</a>
-		</li>
-		<li>
-			<a href="/grad">
-				<span>Graduacion</span>
-			</a>
-		</li>
-          <!-- sidebar-menu  -->
-      </div>
-      <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content" id="main">
-    <div class="container">
-      <center>
-        <h1>Inscripciones</h1>
-      </center>
-      <hr>
-      <form action="" method="POST">
-        <center> <label for="carrera" style="color: black;"> <strong>
-              <h4>Seleccione la carrera:</h4>
-            </strong></label>
+					<li>
+						<a href="/extra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/parqueo">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<li>
+						<a href="/u">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/grad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+			</div>
+			<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<div class="container">
+			<center>
+				<h1>Inscripciones</h1>
+			</center>
+			<hr>
+			<form action="" method="POST">
+				<center> <label for="carrera" style="color: black;"> <strong>
+							<h4>Seleccione la carrera:</h4>
+						</strong></label>
 
-          <select name="carrera" id="carrera" class="inputtext" onchange="actprecios()" required>
-            <option value="">Seleccione carrera</option>
-            {% for i in carreras %}
-            <option value="{{i[0]}}">{{i[1]}}</option>
-            {% endfor %}
-          </select>
-        </center><br>
-        <center>
-          <input type="text" id="carnet" name="carnet" class="inputtext" required
-            placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"
-            onblur="mayusculas()"><br>
-        </center>
-        <br>
-        <table>
-          <tr>
-            <th>Inscripción</th>
-            <td>
-              <input type="checkbox" id="rinsc" name="rinsc" value="1" onclick="calctotal()">
-              <label for="rinsc">Q </label>
-              <label for="rinsc" id="rinscl">0.00</label>
-            </td>
-          </tr>
-          <tr>
-            <th>Internet</th>
-            <td>
-              <input type="checkbox" id="rint" name="rint" value="1" onclick="calctotal()">
-              <label for="rint">Q </label>
-              <label for="rint" id="rintl">0.00</label>
-            </td>
-          </tr>
-          <tr>
-            <th>Reinscripcion</th>
-            <td>
-              <input type="checkbox" id="rrein" name="rrein" value="1" onclick="calctotal()">
-              <label for="rrein">Q </label>
-              <label for="rrein" id="rreinl">100.00</label>
-            </td>
-          </tr>
-          <tr>
-            <th>Examen de la Vista</th>
-            <td>
-              <input type="checkbox" id="exavis" name="exavis" value="1" onclick="calctotal()">
-              <label for="exavis">Q </label>
-              <label for="exavis" id="exavisl">50.00</label>
-            </td>
-          </tr>
-          <tr>
-            <th>Mensualidad Extra</th>
-            <td>
-              <input type="number" step="0.01" id="mesextra" name="mesextra" class="inputtext3" onchange="calctotal()">
-            </td>
-          </tr>
-          <tr>
-            <th>Propedeutico</th>
-            <td>
-              <input type="checkbox" id="prope" name="prope" value="1" onclick="calctotal()">
-              <label for="prope">Q </label>
-              <label for="prope" id="propel">1000.00</label>
-            </td>
-          </tr>
-          <tr>
-            <th>
-              <h3>Total</h3>
-            </th>
-            <td>
-              <input type="text" id="total" name="total" class="inputtext3" readonly>
-            </td>
-          </tr>
-        </table>
-        <center><button onclick="submit" class="button">Aceptar</button></center>
-        <br>
-        <hr>
-      </form>
-    </div>
-  </main>
-  <!-- page-content" -->
+					<select name="carrera" id="carrera" class="inputtext" onchange="actprecios()" required>
+						<option value="">Seleccione carrera</option>
+						{% for i in carreras %}
+						<option value="{{i[0]}}">{{i[1]}}</option>
+						{% endfor %}
+					</select>
+				</center><br>
+				<center>
+					<input type="text" id="carnet" name="carnet" class="inputtext" required
+						placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"
+						onblur="mayusculas()"><br>
+				</center>
+				<br>
+				<table>
+					<tr>
+						<th>Inscripción</th>
+						<td>
+							<input type="checkbox" id="rinsc" name="rinsc" value="1" onclick="calctotal()">
+							<label for="rinsc">Q </label>
+							<label for="rinsc" id="rinscl">0.00</label>
+						</td>
+					</tr>
+					<tr>
+						<th>Internet</th>
+						<td>
+							<input type="checkbox" id="rint" name="rint" value="1" onclick="calctotal()">
+							<label for="rint">Q </label>
+							<label for="rint" id="rintl">0.00</label>
+						</td>
+					</tr>
+					<tr>
+						<th>Reinscripcion</th>
+						<td>
+							<input type="checkbox" id="rrein" name="rrein" value="1" onclick="calctotal()">
+							<label for="rrein">Q </label>
+							<label for="rrein" id="rreinl">100.00</label>
+						</td>
+					</tr>
+					<tr>
+						<th>Examen de la Vista</th>
+						<td>
+							<input type="checkbox" id="exavis" name="exavis" value="1" onclick="calctotal()">
+							<label for="exavis">Q </label>
+							<label for="exavis" id="exavisl">50.00</label>
+						</td>
+					</tr>
+					<tr>
+						<th>Mensualidad Extra</th>
+						<td>
+							<input type="number" step="0.01" id="mesextra" name="mesextra" class="inputtext3"
+								onchange="calctotal()">
+						</td>
+					</tr>
+					<tr>
+						<th>Propedeutico</th>
+						<td>
+							<input type="checkbox" id="prope" name="prope" value="1" onclick="calctotal()">
+							<label for="prope">Q </label>
+							<label for="prope" id="propel">1000.00</label>
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<h3>Total</h3>
+						</th>
+						<td>
+							<input type="text" id="total" name="total" class="inputtext3" readonly>
+						</td>
+					</tr>
+				</table>
+				<center><button onclick="submit" class="button">Aceptar</button></center>
+				<br>
+				<hr>
+			</form>
+		</div>
+	</main>
+	<!-- page-content" -->
 </div>
 <script type="text/javascript">
-  function mayusculas() {
-    var nombre = document.getElementById('nombre').value
-    nombre = nombre.toUpperCase()
-    document.getElementById('nombre').value = nombre
-  }
+	function mayusculas() {
+		var nombre = document.getElementById('nombre').value
+		nombre = nombre.toUpperCase()
+		document.getElementById('nombre').value = nombre
+	}
 </script>
 <script type="text/javascript">
-  function calctotal() {
-    var insc = document.getElementById('rinscl')
-    var int = document.getElementById('rintl')
-    var rint = document.getElementById('rreinl')
-    var insc1 = document.getElementById('rinsc')
-    var int1 = document.getElementById('rint')
-    var rint1 = document.getElementById('rrein')
-    var exavis = document.getElementById('exavis')
-    var prope = document.getElementById('prope')
-    var mese = document.getElementById('mesextra').value
-    var tot = document.getElementById('total')
-    var total = 0
-    var aux = 0
-    if (insc1.checked == true) {
-      aux = insc.innerHTML
-      console.log(aux)
-      aux = parseFloat(aux)
-      total = total + aux
-    }
-    if (int1.checked == true) {
-      aux = int.innerHTML
-      console.log(aux)
-      aux = parseFloat(aux)
-      total = total + aux
-    }
-    if (rint1.checked == true) {
-      aux = rint.innerHTML
-      aux = parseFloat(aux)
-      total = total + aux
-    }
-    if (exavis.checked == true) {
-      aux = 50
-      total = total + aux
-    }
-    if (prope.checked == true) {
-      aux = 1000
-      total = total + aux
-    }
-    if (mese.length == 0) {
-      total = total + 0
-    } else {
-      total = total + parseFloat(mese)
-    }
-    tot.value = 'Q ' + total.toFixed(2)
+	function calctotal() {
+		var insc = document.getElementById('rinscl')
+		var int = document.getElementById('rintl')
+		var rint = document.getElementById('rreinl')
+		var insc1 = document.getElementById('rinsc')
+		var int1 = document.getElementById('rint')
+		var rint1 = document.getElementById('rrein')
+		var exavis = document.getElementById('exavis')
+		var prope = document.getElementById('prope')
+		var mese = document.getElementById('mesextra').value
+		var tot = document.getElementById('total')
+		var total = 0
+		var aux = 0
+		if (insc1.checked == true) {
+			aux = insc.innerHTML
+			console.log(aux)
+			aux = parseFloat(aux)
+			total = total + aux
+		}
+		if (int1.checked == true) {
+			aux = int.innerHTML
+			console.log(aux)
+			aux = parseFloat(aux)
+			total = total + aux
+		}
+		if (rint1.checked == true) {
+			aux = rint.innerHTML
+			aux = parseFloat(aux)
+			total = total + aux
+		}
+		if (exavis.checked == true) {
+			aux = 50
+			total = total + aux
+		}
+		if (prope.checked == true) {
+			aux = 1000
+			total = total + aux
+		}
+		if (mese.length == 0) {
+			total = total + 0
+		} else {
+			total = total + parseFloat(mese)
+		}
+		tot.value = 'Q ' + total.toFixed(2)
 
-  }
-  function actprecios() {
-    var idcarrera = document.getElementById("carrera").value
-    var arreglo = {{ carreras| tojson }};
-    var conteo = Object.keys(arreglo).length;
-    var labelinsc = document.getElementById("rinscl")
-    var labelint = document.getElementById("rintl")
-    if (idcarrera.length < 1) {
-      labelinsc.innerHTML = 'Q 0.00'
-      labelint.innerHTML = 'Q 0.00'
-    }
-    labelinsc.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][2]).toFixed(2)
-    labelint.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][3]).toFixed(2)
+	}
+	function actprecios() {
+		var idcarrera = document.getElementById("carrera").value
+		var arreglo = {{ carreras| tojson
+	}};
+	var conteo = Object.keys(arreglo).length;
+	var labelinsc = document.getElementById("rinscl")
+	var labelint = document.getElementById("rintl")
+	if (idcarrera.length < 1) {
+		labelinsc.innerHTML = 'Q 0.00'
+		labelint.innerHTML = 'Q 0.00'
+	}
+	labelinsc.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][2]).toFixed(2)
+	labelint.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][3]).toFixed(2)
       }
 </script>
 {% endblock %}

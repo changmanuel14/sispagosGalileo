@@ -650,10 +650,10 @@ def repinglesexcel():
 		logeado = session['logeadocaja']
 	except:
 		return redirect(url_for('login'))
-	meses1 = ["Febrero", "Marzo", "Abril"]
-	meses2 = ["Enero", "Febrero", "Marzo"]
-	meses3 = ["Mayo", "Junio", "Julio"]
-	meses4 = ["Enero", "Febrero", "Marzo"]
+	meses1 = ["Junio", "Julio", "Agosto"]
+	meses2 = ["Junio", "Julio", "Agosto"]
+	meses3 = ["Junio", "Julio", "Agosto"]
+	meses4 = ["Junio", "Julio", "Agosto"]
 	mesesbase = []
 	mesesbase.append(meses1)
 	mesesbase.append(meses2)
@@ -1344,7 +1344,7 @@ def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis,
 						conexion.commit()
 					if rrein != 0:
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (3, nombre, carnet, 100, date.today(), "Internet Reinscripcion" +str(data[0][3]),0, session['idusercaja']))
+						cursor.execute(consulta, (3, nombre, carnet, 100, date.today(), "Internet Reinscripcion " +str(data[0][3]),0, session['idusercaja']))
 						conexion.commit()
 					if mesextra != 0:
 						consulta = 'select idcodigos from codigos where cod = "MENE"'
@@ -2530,16 +2530,23 @@ def m():
 		cantidad = request.form["cant"]
 		cantidad = int(cantidad)
 		datacurso = []
+		datakit = 0
 		for i in range(cantidad):
 			aux1 = f'curso{i+1}'
 			aux = request.form[aux1]
 			if(len(aux) > 0):
 				datacurso.append(aux)
-		return redirect(url_for('confirmacionm', carnet = datacarnet, nombre = datanombre, curso= datacurso, mid = mid, mcod = mcod))
+			aux1 = f'kit{i+1}'
+			try:
+				aux = request.form[aux1]
+				datakit = datakit + 1
+			except:
+				pass
+		return redirect(url_for('confirmacionm', carnet = datacarnet, nombre = datanombre, curso= datacurso, mid = mid, mcod = mcod, datakit = datakit))
 	return render_template('manuales.html', title="Manuales",  carreras=carreras, logeado=logeado)
 
-@app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
-def confirmacionm(carnet, nombre, curso, mid, mcod):
+@app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>&<datakit>', methods=['GET', 'POST'])
+def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -2549,6 +2556,7 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 	mid = str(mid)
 	mcod = str(mcod)
 	curso = str(curso)
+	datakit = int(datakit)
 	cursos=curso.split(',')
 	cantidad = len(cursos)
 	for i in range(cantidad):
@@ -2568,6 +2576,26 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 					for i in range(cantidad):
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 						cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
+						conexion.commit()
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						idpago = cursor.fetchone()
+						idpago = idpago[0]
+						idpagos.append(idpago)
+					consulta = f'SELECT concepto FROM codigos WHERE idcodigos = "{mid}"'
+					cursor.execute(consulta)
+					concepto = cursor.fetchone()
+					if "TLCQ" in concepto[0]:
+						carrera = "TLCQ"
+					elif "LBCQ" in concepto[0]:
+						carrera = "LBCQ"
+					consulta = f'SELECT idcodigos, precio FROM codigos WHERE concepto like "%Kit individual {carrera}"'
+					cursor.execute(consulta)
+					preciokit = cursor.fetchone()
+					print(datakit)
+					for i in range(datakit):
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (preciokit[0], nombre, carnet, preciokit[1], date.today(), "Kit Individual "+carrera, 0,session['idusercaja']))
 						conexion.commit()
 						consulta = "Select MAX(idpagos) from pagos;"
 						cursor.execute(consulta)
