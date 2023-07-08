@@ -2530,7 +2530,7 @@ def m():
 		cantidad = request.form["cant"]
 		cantidad = int(cantidad)
 		datacurso = []
-		datakit = 0
+		datakit = ""
 		for i in range(cantidad):
 			aux1 = f'curso{i+1}'
 			aux = request.form[aux1]
@@ -2539,7 +2539,9 @@ def m():
 			aux1 = f'kit{i+1}'
 			try:
 				aux = request.form[aux1]
-				datakit = datakit + 1
+				aux = int(aux)
+				if aux > 0:
+					datakit = datakit + str(aux) + ","
 			except:
 				pass
 		return redirect(url_for('confirmacionm', carnet = datacarnet, nombre = datanombre, curso= datacurso, mid = mid, mcod = mcod, datakit = datakit))
@@ -2556,8 +2558,9 @@ def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
 	mid = str(mid)
 	mcod = str(mcod)
 	curso = str(curso)
-	datakit = int(datakit)
-	cursos=curso.split(',')
+	datakit = str(datakit)
+	kits = datakit.split(',')
+	cursos = curso.split(',')
 	cantidad = len(cursos)
 	for i in range(cantidad):
 		try:
@@ -2589,25 +2592,27 @@ def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
 						carrera = "TLCQ"
 					elif "LBCQ" in concepto[0]:
 						carrera = "LBCQ"
-					consulta = f'SELECT idcodigos, precio FROM codigos WHERE concepto like "%Kit individual {carrera}"'
+					consulta = f'SELECT idcodigos FROM codigos WHERE concepto like "%Kit individual {carrera}"'
 					cursor.execute(consulta)
 					preciokit = cursor.fetchone()
-					print(datakit)
-					for i in range(datakit):
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (preciokit[0], nombre, carnet, preciokit[1], date.today(), "Kit Individual "+carrera, 0,session['idusercaja']))
-						conexion.commit()
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						idpago = cursor.fetchone()
-						idpago = idpago[0]
-						idpagos.append(idpago)
+					for i in kits:
+						try:
+							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+							cursor.execute(consulta, (preciokit[0], nombre, carnet, str(i), date.today(), "Kit Individual "+carrera, 0,session['idusercaja']))
+							conexion.commit()
+							consulta = "Select MAX(idpagos) from pagos;"
+							cursor.execute(consulta)
+							idpago = cursor.fetchone()
+							idpago = idpago[0]
+							idpagos.append(idpago)
+						except:
+							pass
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('imprimir', idpagos=idpagos))
-	return render_template('confirmacionm.html', title="Confirmación", carnet = carnet, nombre = nombre, cursos = cursos, mid = mid, mcod = mcod, cantidad=cantidad, logeado=logeado)
+	return render_template('confirmacionm.html', title="Confirmación", carnet = carnet, nombre = nombre, cursos = cursos, mid = mid, mcod = mcod, cantidad=cantidad, logeado=logeado, kits=kits)
 
 @app.route('/repm', methods=['GET', 'POST'])
 def repm():

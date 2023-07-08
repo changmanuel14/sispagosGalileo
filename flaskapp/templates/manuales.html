@@ -115,8 +115,14 @@
 					<br>
 					<div id="myDiv">
 						<input type="text" id="curso1" name="curso1" class="inputtext1" required placeholder="  Curso">
-						<input type="checkbox" id="kit1" name="kit1" value="1">
-						<label for="kit1" id="kit1l">Kit de Insumos</label>
+						<input type="radio" id="1kit0" name="kit1" value="0">
+						<label for="1kit0">Sin Kit</label>
+						<input type="radio" id="1kit50" name="kit1" value="50">
+						<label for="1kit50">Kit Q 50.00</label>
+						<input type="radio" id="1kit100" name="kit1" value="100">
+						<label for="1kit100">Kit Q 100.00</label>
+						<input type="radio" id="1kit200" name="kit1" value="200">
+						<label for="1kit200">Kit Q 200.00</label>
 					</div>
 				</center>
 				<br>
@@ -164,21 +170,49 @@
 		input.name = 'curso' + String(num)
 		input.className = 'inputtext1'
 		input.placeholder = '  Curso'
-		var input1 = document.createElement('input')
-		input1.type = 'checkbox'
-		input1.id = 'kit' + String(num)
-		input1.name = 'kit' + String(num)
-		input1.value = 1
-		var label = document.createElement('label');
-		label.type = label
-		label.innerHTML = ' Kit de Insumos'
-		label.htmlFor = 'kit' + String(num)
-		label.id = 'kit' + String(num) + 'l'
+		var radio1 = document.createElement('input')
+		radio1.type = 'radio'
+		radio1.id = String(num) + 'kit0'
+		radio1.name = 'kit' + String(num)
+		radio1.value = 0
+		var label1 = document.createElement('label');
+		label1.innerHTML = 'Sin Kit'
+		label1.htmlFor = String(num) + 'kit0'
+		var radio2 = document.createElement('input')
+		radio2.type = 'radio'
+		radio2.id = String(num) + 'kit50'
+		radio2.name = 'kit' + String(num)
+		radio2.value = 50
+		var label2 = document.createElement('label');
+		label2.innerHTML = 'Kit Q 50.00'
+		label2.htmlFor = String(num) + 'kit50'
+		var radio3 = document.createElement('input')
+		radio3.type = 'radio'
+		radio3.id = String(num) + 'kit100'
+		radio3.name = 'kit' + String(num)
+		radio3.value = 100
+		var label3 = document.createElement('label');
+		label3.innerHTML = 'Kit Q 100.00'
+		label3.htmlFor = String(num) + 'kit100'
+		var radio4 = document.createElement('input')
+		radio4.type = 'radio'
+		radio4.id = String(num) + 'kit200'
+		radio4.name = 'kit' + String(num)
+		radio4.value = 200
+		var label4 = document.createElement('label');
+		label4.innerHTML = 'Kit Q 200.00'
+		label4.htmlFor = String(num) + 'kit200'
 		var br = document.createElement('br')
 		div.appendChild(br)
 		div.appendChild(input)
-		div.appendChild(input1)
-		div.appendChild(label)
+		div.appendChild(radio1)
+		div.appendChild(label1)
+		div.appendChild(radio2)
+		div.appendChild(label2)
+		div.appendChild(radio3)
+		div.appendChild(label3)
+		div.appendChild(radio4)
+		div.appendChild(label4)
 	}
 </script>
 <!-- page-wrapper -->
