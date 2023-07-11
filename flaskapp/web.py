@@ -2598,17 +2598,18 @@ def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
 					cursor.execute(consulta)
 					preciokit = cursor.fetchone()
 					for i in kits:
-						try:
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (preciokit[0], nombre, carnet, str(i), date.today(), "Kit Individual "+carrera, 0,session['idusercaja']))
-							conexion.commit()
-							consulta = "Select MAX(idpagos) from pagos;"
-							cursor.execute(consulta)
-							idpago = cursor.fetchone()
-							idpago = idpago[0]
-							idpagos.append(idpago)
-						except:
-							pass
+						if int(i) > 0:
+							try:
+								consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+								cursor.execute(consulta, (preciokit[0], nombre, carnet, str(i), date.today(), "Kit Individual "+carrera, 0,session['idusercaja']))
+								conexion.commit()
+								consulta = "Select MAX(idpagos) from pagos;"
+								cursor.execute(consulta)
+								idpago = cursor.fetchone()
+								idpago = idpago[0]
+								idpagos.append(idpago)
+							except:
+								pass
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
