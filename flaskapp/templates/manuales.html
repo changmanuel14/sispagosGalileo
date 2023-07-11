@@ -116,13 +116,13 @@
 					<div id="myDiv">
 						<input type="text" id="curso1" name="curso1" class="inputtext1" required placeholder="  Curso">
 						<input type="radio" id="1kit0" name="kit1" value="0">
-						<label for="1kit0">Sin Kit</label>
+						<label for="1kit0" id="1kit0l">Sin Kit</label>
 						<input type="radio" id="1kit50" name="kit1" value="50">
-						<label for="1kit50">Kit Q 50.00</label>
+						<label for="1kit50" id="1kit50l">Kit Q 50.00</label>
 						<input type="radio" id="1kit100" name="kit1" value="100">
-						<label for="1kit100">Kit Q 100.00</label>
+						<label for="1kit100" id="1kit100l">Kit Q 100.00</label>
 						<input type="radio" id="1kit200" name="kit1" value="200">
-						<label for="1kit200">Kit Q 200.00</label>
+						<label for="1kit200" id="1kit200l">Kit Q 200.00</label>
 					</div>
 				</center>
 				<br>
@@ -148,14 +148,26 @@
 		var num = parseInt(document.getElementById('cant').value)
 		if (num > 1) {
 			var input = document.getElementById('curso' + String(num))
-			var input1 = document.getElementById('kit' + String(num))
-			var label = document.getElementById('kit' + String(num) + 'l')
+			var radio1 = document.getElementById(String(num)+'kit0')
+			var radio2 = document.getElementById(String(num)+'kit50')
+			var radio3 = document.getElementById(String(num)+'kit100')
+			var radio4 = document.getElementById(String(num)+'kit200')
+			var label1 = document.getElementById(String(num)+'kit0l')
+			var label2 = document.getElementById(String(num)+'kit50l')
+			var label3 = document.getElementById(String(num)+'kit100l')
+			var label4 = document.getElementById(String(num)+'kit200l')
 			var div = document.getElementById('myDiv')
 			var brs = div.getElementsByTagName('br')
 			var largo = brs.length
 			input.remove()
-			input1.remove()
-			label.remove()
+			radio4.remove()
+			radio1.remove()
+			radio2.remove()
+			radio3.remove()
+			label1.remove()
+			label2.remove()
+			label3.remove()
+			label4.remove()
 			brs[largo - 1].remove()
 			document.getElementById('cant').value = num - 1
 		}
@@ -178,6 +190,7 @@
 		var label1 = document.createElement('label');
 		label1.innerHTML = 'Sin Kit'
 		label1.htmlFor = String(num) + 'kit0'
+		label1.id = String(num) + 'kit0l'
 		var radio2 = document.createElement('input')
 		radio2.type = 'radio'
 		radio2.id = String(num) + 'kit50'
@@ -186,6 +199,7 @@
 		var label2 = document.createElement('label');
 		label2.innerHTML = 'Kit Q 50.00'
 		label2.htmlFor = String(num) + 'kit50'
+		label2.id = String(num) + 'kit50l'
 		var radio3 = document.createElement('input')
 		radio3.type = 'radio'
 		radio3.id = String(num) + 'kit100'
@@ -194,6 +208,7 @@
 		var label3 = document.createElement('label');
 		label3.innerHTML = 'Kit Q 100.00'
 		label3.htmlFor = String(num) + 'kit100'
+		label3.id = String(num) + 'kit100l'
 		var radio4 = document.createElement('input')
 		radio4.type = 'radio'
 		radio4.id = String(num) + 'kit200'
@@ -202,6 +217,7 @@
 		var label4 = document.createElement('label');
 		label4.innerHTML = 'Kit Q 200.00'
 		label4.htmlFor = String(num) + 'kit200'
+		label4.id = String(num) + 'kit200l'
 		var br = document.createElement('br')
 		div.appendChild(br)
 		div.appendChild(input)
