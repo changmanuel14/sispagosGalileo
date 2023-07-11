@@ -1590,7 +1590,7 @@ def extra():
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				cursor.execute("SELECT idcodigos, cod, concepto FROM codigos WHERE pagose = 1 ORDER BY cod asc;")
+				cursor.execute("SELECT idcodigos, cod, concepto FROM codigos WHERE pagose = 1 ORDER BY concepto asc;")
 			# Con fetchall traemos todas las filas
 				data = cursor.fetchall()
 		finally:
@@ -2544,6 +2544,8 @@ def m():
 					datakit = datakit + str(aux) + ","
 			except:
 				pass
+		if datakit == "":
+			datakit = "0"
 		return redirect(url_for('confirmacionm', carnet = datacarnet, nombre = datanombre, curso= datacurso, mid = mid, mcod = mcod, datakit = datakit))
 	return render_template('manuales.html', title="Manuales",  carreras=carreras, logeado=logeado)
 
@@ -2616,62 +2618,44 @@ def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
 
 @app.route('/repm', methods=['GET', 'POST'])
 def repm():
-	try:
-		logeado = session['logeadocaja']
-	except:
-		return redirect(url_for('login'))
+	fechainicio = '2023-07-07'
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				cursor.execute("SELECT idcarreras, codigo FROM carreras;")
+				numsmanualeslbcq = [2,4,6,8]
+				numsmanualestlcq = [2,4]
+				nombremanualesindlbcq = ['BIOLOGIA GENERAL II', 'QUIMICA GENERAL II', 'MICROBIOLOGIA GENERAL', 'QUIMICA ORGANICA', 'BACTERIOLOGIA', 'BIOQUIMICA CLINICA', 'INMUNOLOGIA BASICA', 'INTERPRETACION DE PRUEBAS BIOQUIMICAS', 'MICOLOGIA', 'MICROBIOLOGIA APLICADA I']
+				nombremanualesindtlcq = ['HEMATOLOGIA Y COAGULACION', 'INMUNOLOGIA Y BANCO DE SANGRE', 'MICROBIOLOGIA', 'PRUEBAS ESPECIALES']
+				manualeslbcq = []
+				manualestlcq = []
+				manualesind = []
+				for i in numsmanualeslbcq:
+					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITLBCQ{i}'"
+					cursor.execute(consulta)
+					manuales = cursor.fetchall()
+					manualeslbcq.append(manuales)
+				for i in numsmanualestlcq:
+					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITTLCQ{i}'"
+					cursor.execute(consulta)
+					manuales = cursor.fetchall()
+					manualestlcq.append(manuales)
+				for i in nombremanualesindlbcq:
+					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i}%' and c.concepto like '%Manual LBCQ%'"
+					cursor.execute(consulta)
+					manuales = cursor.fetchall()
+					manualesind.append(manuales)
+				for i in nombremanualesindtlcq:
+					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i}%' and c.concepto like '%Manual TLCQ%'"
+					cursor.execute(consulta)
+					manuales = cursor.fetchall()
+					manualesind.append(manuales)
 			# Con fetchall traemos todas las filas
-				carreras = cursor.fetchall()
-				consulta = '''select p.nombre, p.carnet, p.fecha, c.codigo, p.extra, p.total, p.extra1, p.fechaextra1, p.idpagos from pagos p 
-				inner join codigos d on p.idcod = d.idcodigos
-				inner join carreras c on d.idcarrera = c.idcarreras
-				where d.concepto LIKE '%Manual%' and p.fecha > DATE_SUB(now(), INTERVAL 6 MONTH)
-				order by p.fecha desc, p.nombre asc'''
-				cursor.execute(consulta)
-			# Con fetchall traemos todas las filas
-				data = cursor.fetchall()
-				suma = 0
-				for i in data:
-					suma = suma + i[5]
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	if request.method == 'POST':
-		defecha = request.form["defecha"]
-		afecha = request.form["afecha"]
-		try:
-			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-			try:
-				with conexion.cursor() as cursor:
-					cursor.execute("SELECT idcarreras, codigo FROM carreras;")
-				# Con fetchall traemos todas las filas
-					carreras = cursor.fetchall()
-					consulta = '''select p.nombre, p.carnet, p.fecha, c.codigo, p.extra, p.total from pagos p 
-					inner join codigos d on p.idcod = d.idcodigos
-					inner join carreras c on d.idcarrera = c.idcarreras
-					where d.concepto LIKE "%Manual%" '''
-					if len(defecha) > 0:
-						consulta = consulta + f'and DATE(p.fecha) >= DATE("{defecha}") '
-					if len(afecha) > 0:
-						consulta = consulta + f'and DATE(p.fecha) <= DATE("{afecha}") '
-					consulta = consulta + 'order by p.fecha asc, c.codigo desc;'
-					cursor.execute(consulta)
-				# Con fetchall traemos todas las filas
-					data = cursor.fetchall()
-					suma = 0
-					for i in data:
-						suma = suma + i[5]
-			finally:
-				conexion.close()
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
-	return render_template('repm.html', title="Reporte Manuales", data = data, suma=suma, carreras=carreras, logeado=logeado)
+	return render_template('repm.html', title="Reporte Manuales", numsmanualeslbcq = numsmanualeslbcq, numsmanualestlcq=numsmanualestlcq, manualeslbcq=manualeslbcq, manualestlcq=manualestlcq, manualesind=manualesind)
 
 @app.route('/entregarm/<idpago>', methods=['GET', 'POST'])
 def entregarm(idpago):

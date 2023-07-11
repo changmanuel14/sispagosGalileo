@@ -1,158 +1,855 @@
-{% extends "layout.html" %}
-{% block content %}
-<script src="{{ url_for('static', filename='fancyTable.js') }}"></script>
-<div class="page-wrapper chiller-theme toggled">
-	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-		<i class="fas fa-bars"></i>
-	</a>
-	<nav id="sidebar" class="sidebar-wrapper">
-		<div class="sidebar-content">
-			<div class="sidebar-brand">
-				<div id="close-sidebar">
-					<i class="fas fa-times"></i>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<!-- Bootstrap CSS -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<!-- Bootstrap JS -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	<script src="{{ url_for('static', filename='fancyTable.js') }}"></script>
+	{% if title %}
+	<title>Sistema de caja - {{ title }}</title>
+	{% else %}
+	<title>Sistema de caja</title>
+	{% endif %}
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.clear {
+			clear: both;
+		}
+
+		#page-wrap {
+			width: 800px;
+			margin: 40px auto 60px;
+		}
+
+		#pic {
+			float: right;
+			margin: -30px 0 0 0;
+		}
+
+		#page-wrap h2 {
+			font-size: 20px;
+			margin: 0 0 6px 0;
+			position: relative;
+		}
+
+		#page-wrap h2 span {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			font-style: italic;
+			font-family: Georgia, Serif;
+			font-size: 16px;
+			color: #999;
+			font-weight: normal;
+		}
+
+		#page-wrap a:hover {
+			border-bottom-style: solid;
+			color: black;
+		}
+
+		#page-wrap ul {
+			margin: 0 0 32px 17px;
+		}
+
+		#page-wrap #objective {
+			width: 500px;
+			float: left;
+		}
+
+		#page-wrap #objective p {
+			font-family: Georgia, Serif;
+			font-style: italic;
+			color: #666;
+		}
+
+		#page-wrap dt {
+			font-style: italic;
+			font-weight: bold;
+			font-size: 18px;
+			text-align: right;
+			padding: 0 26px 0 0;
+			width: 150px;
+			float: left;
+			height: 200px;
+			border-right: 1px solid #999;
+		}
+
+		#page-wrap dd {
+			width: 600px;
+			float: right;
+		}
+
+		#page-wrap dd.clear {
+			float: none;
+			margin: 0;
+			height: 15px;
+		}
+	</style>
+	<style type="text/css">
+		body {
+			background: #ffffff;
+			color: #ffffff;
+			margin-top: 5rem;
+		}
+
+		table,
+		th,
+		td {
+			border: 1px solid black;
+			color: #000000;
+			border-collapse: collapse;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			border: 1px solid #000000;
+		}
+
+		td,
+		th {
+			font-size: 16px;
+			border: 1px solid #000000;
+			text-align: left;
+			padding: 8px;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			color: #000000;
+		}
+	</style>
+	<link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
+</head>
+
+<body>
+
+	<main role="main" class="container">
+		<div class="row">
+			<div class="col-md-12">
+				{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+				{% for category, message in messages %}
+				<div class="alert alert-{{ category }}">
+					{{ message }}
 				</div>
+				{% endfor %}
+				{% endif %}
+				{% endwith %}
+				<div class="page-wrapper chiller-theme toggled">
+					<!-- sidebar-wrapper  -->
+					<main class="page-content">
+						<div class="container">
+							<h2>Manuales</h2>
+							<hr>
+							<ul class="nav nav-tabs">
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#lbcq2">LBCQ II</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#lbcq4">LBCQ IV</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#lbcq6">LBCQ VI</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#lbcq8">LBCQ VIII</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#tlcq2">TLCQ II</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#tlcq4">TLCQ IV</a>
+								</li>
+							</ul>
+							<div class="tab-content">
+								<div id="lbcq2" class="tab-pane fade">
+									<br>
+									<h3>LBCQ II</h3>
+									<br>
+									<hr>
+									<h4>Kit Completo</h4>
+									<table class="table table-striped sortable" id="tlbcq2">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualeslbcq[0] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br>
+									<br>
+									<h4>Biología General II</h4>
+									<table class="table table-striped sortable" id="tlbcq2a">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[0] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br>
+									<br>
+									<h4>Química General II</h4>
+									<table class="table table-striped sortable" id="tlbcq2b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[1] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+								<div id="lbcq4" class="tab-pane fade">
+									<br>
+									<h3>LBCQ IV</h3>
+									<br>
+									<hr>
+									<h4>Kit Completo</h4>
+									<table class="table table-striped sortable" id="tlbcq4">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualeslbcq[1] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Microbiología General</h4>
+									<table class="table table-striped sortable" id="tlbcq4a">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[2] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Química Orgánica</h4>
+									<table class="table table-striped sortable" id="tlbcq4b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[3] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+								<div id="lbcq6" class="tab-pane fade">
+									<br>
+									<h3>LBCQ VI</h3>
+									<br>
+									<hr>
+									<h4>Kit Completo</h4>
+									<table class="table table-striped sortable" id="tlbcq6">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualeslbcq[2] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Bacteriología</h4>
+									<table class="table table-striped sortable" id="tlbcq6a">
+										<thead>
+											<tr>
+												<th>No.</th>
+												<th>Nombre</th>
+												<th>Carnet</th>
+												<th>Fecha</th>
+												<th>Codigo</th>
+												<th>Descripción</th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for i in manualesind[4] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Bioquímica Clínica</h4>
+									<table class="table table-striped sortable" id="tlbcq6b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[5] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Inmunología Básica</h4>
+									<table class="table table-striped sortable" id="tlbcq6c">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[6] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+								<div id="lbcq8" class="tab-pane fade">
+									<br>
+									<h3>LBCQ VIII</h3>
+									<br>
+									<hr>
+									<h4>Kit Completo</h4>
+									<table class="table table-striped sortable" id="tlbcq8">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualeslbcq[3] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Interpretación de Pruebas Bioquímicas</h4>
+									<table class="table table-striped sortable" id="tlbcq8a">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[7] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Micología</h4>
+									<table class="table table-striped sortable" id="tlbcq8b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[8] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Microbiología Aplicada I</h4>
+									<table class="table table-striped sortable" id="tlbcq8c">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[9] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+								<div id="tlcq2" class="tab-pane fade">
+									<br>
+									<h3>TLCQ II</h3>
+									<br>
+									<hr>
+									<h4>Kit Completo</h4>
+									<table class="table table-striped sortable" id="ttlcq2">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualestlcq[0] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+								<div id="tlcq4" class="tab-pane fade">
+									<br>
+									<h3>TLCQ IV</h3>
+									<br>
+									<hr>
+									<h4>Kit Completo</h4>
+									<table class="table table-striped sortable" id="ttlcq4">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualestlcq[1] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Hematología y Coagulación</h4>
+									<table class="table table-striped sortable" id="ttlcq4a">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[10] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Inmunología y Banco de Sangre</h4>
+									<table class="table table-striped sortable" id="ttlcq4b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[11] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Microbiología</h4>
+									<table class="table table-striped sortable" id="ttlcq4c">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[12] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Pruebas Especiales</h4>
+									<table class="table table-striped sortable" id="ttlcq4d">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesind[13] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+							</div>
+					</main>
+					<!-- page-content" -->
+				</div>
+				<!-- page-wrapper -->
 			</div>
-			<!-- sidebar-header  -->
-			<div class="sidebar-menu">
-				<ul>
-					<li class="header-menu">
-						<span>Opciones</span>
-					</li>
-					<br>
-					<li>
-						<a href="/repdiario">
-							<span>Corte Diario</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repgen">
-							<span>Listado General</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repi">
-							<span>Inscripciones</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repauxenf">
-							<span>Auxiliar de Enfermeria</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repini">
-							<span>Internet Inscripciones</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repir">
-							<span>Internet Reinscripciones</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repu">
-							<span>Uniformes</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repp">
-							<span>Practica</span>
-						</a>
-					</li>
-					<li>
-						<a href="/replenq">
-							<span>Practica Enfermeria</span>
-						</a>
-					</li>
-					<li>
-						<a href="/replbcq">
-							<span>Practica Química Biológica</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repm">
-							<span>Manuales</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repingles">
-							<span>Ingles</span>
-						</a>
-					</li>
-					<li>
-						<a href="/reppag">
-							<span>Pagos</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repgrad">
-							<span>Graduacion</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repextra">
-							<span>Pagos Extra</span>
-						</a>
-					</li>
-					<li>
-						<a href="/repparq">
-							<span>Parqueo</span>
-						</a>
-					</li>
-					<!-- sidebar-menu  -->
-			</div>
-			<!-- sidebar-content  -->
-	</nav>
-	<!-- sidebar-wrapper  -->
-	<main class="page-content">
-		<div class="container">
-			<h2>Manuales</h2>
-			<hr>
-			<table id="sampleTable">
-				<thead>
-					<tr>
-						<th>Nombre</th>
-						<th>Carnet</th>
-						<th>Fecha</th>
-						<th>Codigo</th>
-						<th>Descripción</th>
-						<th>Total</th>
-						<th>Entregado</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for i in data %}
-					{% if i[6] == 0 %}
-					<tr style="background-color: lightgoldenrodyellow;">
-						{% else %}
-					<tr>
-						{% endif %}
-						<td>{{i[0]}}</td>
-						<td>{{i[1]}}</td>
-						<td>{{i[2]}}</td>
-						<td>{{i[3]}}</td>
-						<td>{{i[4]}}</td>
-						<td>Q. {{i[5]}}</td>
-						{% if i[6] == 0 %}
-						<td><a href="/entregarm/{{i[8]}}">No - Entregar</a></td>
-						{% else %}
-						<td>Si - {{i[7]}}</td>
-						{% endif %}
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
+		</div>
 	</main>
 	<script>
 		$(document).ready(function () {
-			$("#sampleTable").fancyTable({
+			$("#tlbcq2").fancyTable({
 				inputPlaceholder: 'Buscar',
 				pagination: true,
-				perPage: 20
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq2a").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq2b").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq4").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq4a").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq4b").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq6").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq6a").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq6b").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq6c").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq8").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq8a").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq8b").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#tlbcq8c").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#ttlcq2").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#ttlcq4").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#ttlcq4a").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#ttlcq4b").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#ttlcq4c").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
+			});
+		});
+		$(document).ready(function () {
+			$("#ttlcq4d").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+				perPage: 50
 			});
 		});
 	</script>
-	<!-- page-content" -->
-</div>
-<!-- page-wrapper -->
-{% endblock %}
+	<br><br><br><br>
+	<footer class="page-footer font-small bg-steel">
+
+	</footer>
+	<script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
