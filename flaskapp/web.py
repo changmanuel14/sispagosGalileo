@@ -604,10 +604,10 @@ def repingles():
 		logeado = session['logeadocaja']
 	except:
 		return redirect(url_for('login'))
-	meses1 = ["Junio", "Julio", "Agosto"]
-	meses2 = ["Junio", "Julio", "Agosto"]
+	meses1 = ["Agosto", "Septiembre", "Octubre"]
+	meses2 = ["Julio", "Agosto", "Septiembre"]
 	meses3 = ["Junio", "Julio", "Agosto"]
-	meses4 = ["Junio", "Julio", "Agosto"]
+	meses4 = ["Septiembre", "Octubre", "Noviembre"]
 	mesesbase = []
 	mesesbase.append(meses1)
 	mesesbase.append(meses2)
