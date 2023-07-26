@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/pagosadmin">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/carreras">
+							<span>Carreras</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/laboratorioadmin">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/usuarios">
+							<span>Usuarios</span>
+						</a>
+					</li>
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<h2>Nuevo Código</h2>
+		<br>
+		<form action="" method="POST">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="nombre">Concepto</label>
+					<input type="text" class="form-control" id="concepto" name="concepto" placeholder="Concepto" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="codigo">Código</label>
+					<input type="text" class="form-control" id="codigo" name="codigo" placeholder="Código" required>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="carrera">Carrera</label>
+					<select id="carrera" name="carrera" class="form-control">
+						<option selected>Seleccione carrera</option>
+						{% for i in carreras %}
+						<option value="{{i[0]}}">{{i[1]}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="precio">Precio</label>
+					<input type="number" step="0.01" class="form-control" id="precio" name="precio" placeholder="Precio">
+				</div>
+			</div>
+			<center>
+			<div class="form-row">
+				<div class="form-group col-md-2">
+					<input type="checkbox" class="form-check-input" id="manual" name="manual" value="1">
+					<label for="manual">Manual</label>
+				</div>
+				<div class="form-group col-md-2">
+					<input type="checkbox" class="form-check-input" id="practica" name="practica" value="1">
+					<label for="practica">Práctica</label>
+				</div>
+				<div class="form-group col-md-2">
+					<input type="checkbox" class="form-check-input" id="pagos" name="pagos" value="1">
+					<label for="pagos">Pagos</label>
+				</div>
+				<div class="form-group col-md-2">
+					<input type="checkbox" class="form-check-input" id="pagose" name="pagose" value="1">
+					<label for="pagose">Pagos Extra</label>
+				</div>
+			</div>
+		</center>
+		</form>
+	</main>
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
+{% endblock %}

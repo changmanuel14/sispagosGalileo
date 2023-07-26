@@ -1,151 +1,154 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li>
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/i">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/auxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/optica">
+							<span>Óptica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/laboratorio">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<li>
+						<a href="/academia">
+							<span>Academia</span>
+						</a>
+					</li>
+					<li>
+						<a href="/p">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/m">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/pag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/ingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+					<li>
+						<a href="/extra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/parqueo">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<li>
+						<a href="/u">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/grad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<h2>Pagos</h2>
+		<div class="mitad">
 			<a href="/i">
-				<span>Inscripciones</span>
-			</a>
-		</li>
-		<li>
-			<a href="/auxenf">
-				<span>Auxiliar de Enfermeria</span>
-			</a>
-		</li>
-		<li>
-			<a href="/optica">
-				<span>Óptica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/laboratorio">
-				<span>Laboratorio</span>
-			</a>
-		</li>
-		<li>
-			<a href="/academia">
-				<span>Academia</span>
-			</a>
-		</li>
-		<li>
-			<a href="/p">
-				<span>Practica</span>
-			</a>
-		</li>
-		<li>
+				<button class="button1"><strong>Inscripciones</strong> <i class="iconos fas fa-pen"></i></button>
+			</a><br>
 			<a href="/m">
-				<span>Manuales</span>
+				<button class="button1"><strong> Manuales</strong> <i class="iconos fas fa-book-open"></i></button>
 			</a>
-		</li>
-		<li>
+			<br>
+			<a href="/p">
+				<button class="button1"><strong> Práctica</strong> <i class="iconos fas fa-user-md"></i></button>
+			</a>
+			<br>
 			<a href="/pag">
-				<span>Pagos</span>
+				<button class="button1"><strong> Pagos</strong> <i class="iconos fas fa-coins"></i></button>
 			</a>
-		</li>
-		<li>
 			<a href="/ingles">
-				<span>Ingles</span>
+				<button class="button1"><strong> Ingles</strong> <i
+						class="fas fa-solid fa-language iconos"></i></button>
 			</a>
-		</li>
-
-		<li>
+			<br>
 			<a href="/extra">
-				<span>Pagos Extra</span>
+				<button class="button1"><strong> Pagos Extra</strong> <i
+						class="fa-solid fa-cart-plus iconos"></i></button>
 			</a>
-		</li>
-		<li>
-			<a href="/parqueo">
-				<span>Parqueo</span>
+			<br>
+			<a href="/auxenf">
+				<button class="button1"><strong> Auxiliares de Enfermeria</strong> <i
+						class="fa-solid fa-user-nurse iconos"></i></button>
 			</a>
-		</li>
-		<li>
-			<a href="/u">
-				<span>Uniformes</span>
+			<br>
+			<a href="/optica">
+				<button class="button1"><strong> Óptica</strong> <i class="fas fa-glasses iconos"></i></button>
 			</a>
-		</li>
-		<li>
-			<a href="/grad">
-				<span>Graduacion</span>
+			<br>
+			<a href="/academia">
+				<button class="button1"><strong> Academia</strong> <i
+						class="fas fa-solid fa-chalkboard iconos"></i></button>
 			</a>
-		</li>
-      <!-- sidebar-menu  -->
-    
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content" id="main">
-    <h2>Pagos</h2>  
-    <div class="mitad">
-      <a href="/i">
-        <button class="button1"><strong>Inscripciones</strong>  <i class="iconos fas fa-pen"></i></button>
-      </a><br>
-      <a href="/m">
-        <button class="button1"><strong> Manuales</strong>  <i class="iconos fas fa-book-open"></i></button>
-      </a>
-      <br>
-      <a href="/p">
-        <button class="button1"><strong> Práctica</strong>  <i class="iconos fas fa-user-md"></i></button>
-      </a>
-      <br>
-      <a href="/pag">
-        <button class="button1"><strong> Pagos</strong>  <i class="iconos fas fa-coins"></i></button>
-      </a>
-      <a href="/ingles">
-        <button class="button1"><strong> Ingles</strong>  <i class="fas fa-solid fa-language iconos"></i></button>
-      </a>
-      <br>
-      <a href="/extra">
-        <button class="button1"><strong> Pagos Extra</strong>  <i class="fa-solid fa-cart-plus iconos"></i></button>
-      </a>
-      <br>
-      <a href="/auxenf">
-        <button class="button1"><strong> Auxiliares de Enfermeria</strong>  <i class="fa-solid fa-user-nurse iconos"></i></button>
-      </a>
-      <br>
-      <a href="/optica">
-        <button class="button1"><strong> Óptica</strong>  <i class="fas fa-glasses iconos"></i></button>
-      </a>
-      <br>
-      <a href="/academia">
-        <button class="button1"><strong> Academia</strong>  <i class="fas fa-solid fa-chalkboard iconos"></i></button>
-      </a>
-      <br>
-      <a href="/laboratorio">
-        <button class="button1"><strong> Laboratorio</strong>  <i class="fas fa-solid fa-flask iconos"></i></button>
-      </a>
-      
-      
-      <br>
-    </div>
-    <div class="mitad">
-      <img src="http://www.galileo.edu/wp-content/uploads/2010/12/logo-ug.png" style="width: 100%;"> <br><br><br>
-	  <a href="/repdiario">
-        <button class="button1"><strong> Corte Diario</strong>  <i class="fas fa-file-invoice iconos"></i></button>
-      </a><br>
-	  <a href="/transferencias">
-        <button class="button1"><strong> Transferencias</strong>  <i class="fab fa-cc-visa iconos"></i></button>
-      </a>
-    </div>
-    <br>
-  </main>
-    <!-- page-content" -->
+			<br>
+			<a href="/laboratorio">
+				<button class="button1"><strong> Laboratorio</strong> <i
+						class="fas fa-solid fa-flask iconos"></i></button>
+			</a>
+
+
+			<br>
+		</div>
+		<div class="mitad">
+			<img src="http://www.galileo.edu/wp-content/uploads/2010/12/logo-ug.png" style="width: 100%;"> <br><br><br>
+			<a href="/repdiario">
+				<button class="button1"><strong> Corte Diario</strong> <i
+						class="fas fa-file-invoice iconos"></i></button>
+			</a><br>
+			<a href="/transferencias">
+				<button class="button1"><strong> Transferencias</strong> <i class="fab fa-cc-visa iconos"></i></button>
+			</a>
+		</div>
+		<br>
+	</main>
+	<!-- page-content" -->
 </div>
-  <!-- page-wrapper -->
+<!-- page-wrapper -->
 {% endblock %}

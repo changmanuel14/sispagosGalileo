@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/pagosadmin">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/carreras">
+							<span>Carreras</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/laboratorioadmin">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/usuarios">
+							<span>Usuarios</span>
+						</a>
+					</li>
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<h2>Códigos de Pagos</h2>
+		<br>
+		<a href="/nuevocodigo"><button type="button" class="btn btn-success">Nuevo Código</button></a>
+		<br>
+		<table class="table table-striped sortable" id="tablacodigos">
+			<thead>
+				<tr>
+					<th>No.</th>
+					<th>Concepto</th>
+					<th>Código</th>
+					<th>Carrera</th>
+					<th>Precio</th>
+					<th>Manual</th>
+					<th>Práctica</th>
+					<th>Pagos</th>
+					<th>Pagos Extra</th>
+					<th>Uniformes</th>
+					<th>Editar</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for i in codigos %}
+				<tr>
+					<td>{{ loop.index }}</td>
+					<td>{{ i[1] }}</td>
+					<td>{{ i[2] }}</td>
+					<td>{{ i[3] }}</td>
+					<td>Q {{ i[4] }}</td>
+					{% if i[5] | int == 1 %}
+					<td><i class="fas fa-check"></i></td>
+					{% else %}
+					<td><i class="fas fa-times"></i></td>
+					{% endif %}
+					{% if i[6] | int == 1 %}
+					<td><i class="fas fa-check"></i></td>
+					{% else %}
+					<td><i class="fas fa-times"></i></td>
+					{% endif %}
+					{% if i[7] | int == 1 %}
+					<td><i class="fas fa-check"></i></td>
+					{% else %}
+					<td><i class="fas fa-times"></i></td>
+					{% endif %}
+					{% if i[8] | int == 1 %}
+					<td><i class="fas fa-check"></i></td>
+					{% else %}
+					<td><i class="fas fa-times"></i></td>
+					{% endif %}
+					{% if i[9] | int == 1 %}
+					<td><i class="fas fa-check"></i></td>
+					{% else %}
+					<td><i class="fas fa-times"></i></td>
+					{% endif %}
+					<td><a href="/editarcodigo/{{i[0]}}"><button type="button" class="btn btn-primary">Editar</button></a></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</main>
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
+{% endblock %}

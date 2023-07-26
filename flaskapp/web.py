@@ -650,10 +650,10 @@ def repinglesexcel():
 		logeado = session['logeadocaja']
 	except:
 		return redirect(url_for('login'))
-	meses1 = ["Junio", "Julio", "Agosto"]
-	meses2 = ["Junio", "Julio", "Agosto"]
+	meses1 = ["Agosto", "Septiembre", "Octubre"]
+	meses2 = ["Julio", "Agosto", "Septiembre"]
 	meses3 = ["Junio", "Julio", "Agosto"]
-	meses4 = ["Junio", "Julio", "Agosto"]
+	meses4 = ["Septiembre", "Octubre", "Noviembre"]
 	mesesbase = []
 	mesesbase.append(meses1)
 	mesesbase.append(meses2)
@@ -3289,6 +3289,73 @@ def imprimir(idpagos):
 	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
 	print(response)
 	return response
+
+@app.route('/admin')
+def admin():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	return render_template('admin.html', title="Panel Administrativo", logeado=logeado)
+
+@app.route('/pagosadmin')
+def pagosadmin():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT p.idcodigos, p.cod, p.concepto, c.codigo, p.precio, p.manual, p.practica, p.pagos, p.pagose, p.uniformes from codigos p inner join carreras c on p.idcarrera = c.idcarreras ORDER by p.concepto asc'
+				cursor.execute(consulta)
+				codigos = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('pagosadmin.html', title="Admin Pagos", logeado=logeado, codigos = codigos)
+
+@app.route('/nuevocodigo', methods=['GET', 'POST'])
+def nuevocodigo():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT idcarreras, carrera from carreras ORDER by carrera asc'
+				cursor.execute(consulta)
+				carreras = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == "POST":
+		concepto = request.form["concepto"]
+		codigo = request.form["codigo"]
+		carrera = request.form["carrera"]
+		precio = request.form["precio"]
+		try:
+			manual = request.form["manual"]
+		except:
+			manual = 0
+		try:
+			practica = request.form["practica"]
+		except:
+			practica = 0
+		try:
+			pagos = request.form["pagos"]
+		except:
+			pagos = 0
+		try:
+			pagose = request.form["pagose"]
+		except:
+			pagose = 0
+	return render_template('nuevocodigo.html', title="Nuevo Código", logeado=logeado, carreras = carreras)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
