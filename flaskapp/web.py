@@ -3308,7 +3308,7 @@ def pagosadmin():
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'SELECT p.idcodigos, p.cod, p.concepto, c.codigo, p.precio, p.manual, p.practica, p.pagos, p.pagose, p.uniformes from codigos p inner join carreras c on p.idcarrera = c.idcarreras ORDER by p.concepto asc'
+				consulta = 'SELECT p.idcodigos, p.cod, p.concepto, c.codigo, p.precio, p.manual, p.practica, p.pagos, p.pagose, p.uniformes from codigos p left join carreras c on p.idcarrera = c.idcarreras ORDER by p.concepto asc'
 				cursor.execute(consulta)
 				codigos = cursor.fetchall()
 		finally:
@@ -3338,7 +3338,15 @@ def nuevocodigo():
 		concepto = request.form["concepto"]
 		codigo = request.form["codigo"]
 		carrera = request.form["carrera"]
+		if len(carrera) > 0:
+			pass
+		else:
+			carrera = 'null'
 		precio = request.form["precio"]
+		if len(precio) > 0:
+			pass
+		else:
+			precio = 0
 		try:
 			manual = request.form["manual"]
 		except:
@@ -3355,7 +3363,84 @@ def nuevocodigo():
 			pagose = request.form["pagose"]
 		except:
 			pagose = 0
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = f"insert into codigos(concepto, cod, idcarrera, precio, activo, manual, practica, pagos, pagose, uniformes) values('{concepto}', '{codigo}', {carrera}, {precio}, 1, {manual}, {practica},{pagos}, {pagose}, null);"
+					print(consulta)
+					cursor.execute(consulta)
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('pagosadmin'))
 	return render_template('nuevocodigo.html', title="Nuevo Código", logeado=logeado, carreras = carreras)
+
+@app.route('/editarcodigo/<id>', methods=['GET', 'POST'])
+def editarcodigo(id):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT idcarreras, carrera from carreras ORDER by carrera asc'
+				cursor.execute(consulta)
+				carreras = cursor.fetchall()
+				consulta = f'select * from codigos where idcodigos = {id}'
+				cursor.execute(consulta)
+				datacodigo = cursor.fetchone()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == "POST":
+		concepto = request.form["concepto"]
+		codigo = request.form["codigo"]
+		carrera = request.form["carrera"]
+		if len(carrera) > 0:
+			pass
+		else:
+			carrera = 'null'
+		precio = request.form["precio"]
+		if len(precio) > 0:
+			pass
+		else:
+			precio = 0
+		try:
+			manual = request.form["manual"]
+		except:
+			manual = 0
+		try:
+			practica = request.form["practica"]
+		except:
+			practica = 0
+		try:
+			pagos = request.form["pagos"]
+		except:
+			pagos = 0
+		try:
+			pagose = request.form["pagose"]
+		except:
+			pagose = 0
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = f"update codigos set concepto = '{concepto}', cod = '{codigo}', idcarrera = {carrera}, precio = {precio}, manual = {manual}, practica = {practica}, pagos = {pagos}, pagose = {pagose} where idcodigos = {id};"
+					print(consulta)
+					cursor.execute(consulta)
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('pagosadmin'))
+	return render_template('editarcodigo.html', title="Editar Código", logeado=logeado, carreras = carreras, datacodigo = datacodigo)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
