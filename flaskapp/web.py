@@ -1930,12 +1930,11 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 							idpagos.append(idpago)
 						else:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							if 'LENQ' in precios1[0][2] and '2)' in meses[i] or '4)' in meses[i] or '6)' in meses[i] or ('1)' in meses[i] and 'Pago 4' in meses[i]) or ('3)' in meses[i] and 'Pago 4' in meses[i]) or ('5)' in meses[i] and 'Pago 4' in meses[i]):
+							if 'LENQ' in precios1[0][2] and 'Pago 3' in meses[i]:
+								precioasig = 200
 								imprimir = True
 							else:
 								imprimir = False
-							if 'LENQ' in precios1[0][2] and ('1)' in meses[i] or '3)' in meses[i]  or '5)' in meses[i]):
-								precioasig = 200
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
 							if 'LENQ' in precios1[0][2]:
 								consulta = "INSERT INTO practicalenq(nombre,carnet,practica,lugar,fechainicio,fechafin,fecha) VALUES (%s,%s,%s,%s,%s,%s,CURDATE());"
@@ -3441,6 +3440,25 @@ def editarcodigo(id):
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('pagosadmin'))
 	return render_template('editarcodigo.html', title="Editar Código", logeado=logeado, carreras = carreras, datacodigo = datacodigo)
+
+@app.route('/carreras')
+def carreras():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT * from carreras order by carrera asc'
+				cursor.execute(consulta)
+				carreras = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('carreras.html', title="Admin Carreras", logeado=logeado, carreras = carreras)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)
