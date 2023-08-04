@@ -209,7 +209,7 @@
 					<th style="vertical-align: top; text-align: center;">Sello</th>
 				</tr>
 			</table>
-			<br><br><br>
+			<br>
 			{% endfor %}
 		{% endif %}
 		{% if 2 in numeros %}
@@ -222,7 +222,7 @@
 			<div style="width: 25%; float: right;">
 				<img src="https://eventos.galileo.edu/images/logo-noslogan.png" width="100%"> 
 			</div>
-			<table>
+			<table style="float: left;">
 				<tr>
 					<th style="width: 20%;">Centro de práctica: </th>
 					<td colspan="3"></td>
@@ -246,8 +246,8 @@
 					<td></td>
 				</tr>
 			</table>
-			<h6><strong>Instrucciones:</strong></h6>
-			<ol>
+			<h6 style="float: left;"><strong>Instrucciones:</strong></h6>
+			<ol style="float: left;">
 				<li style="text-align: justify;">Su evaluación es muy importante para calificar apropiadamente al estudiante de Técnico
 					en Radiología e Imágenes Diagnosticas por lo que se le ruega hacerlo a conciencia.
 				</li>
@@ -256,7 +256,7 @@
 				<li style="text-align: justify;">En la columna <strong><u>Resumen</u></strong>, coloque los puntos obtenidos en cada parámetro y súmelos para la calificación total.</li>
 				<li style="text-align: justify;">La evaluación sólo es válida si está completa y debidamente firmada y sellada por el evaluador.</li>
 			</ol>
-			<table class="tabla">
+			<table class="tabla" style="float: left;">
 				<tr>
 					<th class="tabla" style="width: 20%;" rowspan="3"></th>
 					<th class="tabla" colspan="4">EVALUACIÓN</th>
@@ -358,7 +358,7 @@
 				</tr>
 			</table>
 			<br>
-			<table>
+			<table style="float: left;">
 				<tr>
 					<th style="text-align: left; height: 30px; width: 15%;">Observaciones: </th>
 					<td></td>
@@ -366,14 +366,11 @@
 				<tr>
 					<td style="height: 30px;" colspan="2"></td>
 				</tr>
-				<tr>
-					<td style="height: 30px;" colspan="2"></td>
-				</tr>
 			</table>
-			<br><br><br><br>
-			<table>
+			<br><br>
+			<table style="float: left;">
 				<tr>
-					<td style="width: 30%;"></td>
+					<td style="width: 30%; height: 100px;"></td>
 					<th style="width: 5%;"></th>
 					<td style="width: 30%;"></td>
 					<th style="width: 5%;"></th>
@@ -387,9 +384,7 @@
 					<th style="vertical-align: top; text-align: center;">Sello</th>
 				</tr>
 			</table>
-			{% if i != 3 %}
-				<br>
-			{% endif %}
+			
 			{% endfor %}
 		{% endif %}
 		{% if 3 in numeros %}
@@ -403,7 +398,7 @@
 			<div style="width: 25%; float: right;">
 				<img src="https://eventos.galileo.edu/images/logo-noslogan.png" width="100%"> 
 			</div>
-			<table>
+			<table style="float: left;">
 				<tr>
 					<th style="width: 20%;">Centro de práctica: </th>
 					<td colspan="3"></td>
@@ -427,8 +422,8 @@
 					<td></td>
 				</tr>
 			</table>
-			<h6><strong>Instrucciones:</strong></h6>
-			<ol>
+			<h6 style="float: left;"><strong>Instrucciones:</strong></h6>
+			<ol style="float: left;">
 				<li style="text-align: justify;">Su evaluación es muy importante para calificar apropiadamente al estudiante de Técnico
 					en Radiología e Imágenes Diagnosticas por lo que se le ruega hacerlo a conciencia.
 				</li>
@@ -437,7 +432,7 @@
 				<li style="text-align: justify;">En la columna <strong><u>Resumen</u></strong>, coloque los puntos obtenidos en cada parámetro y súmelos para la calificación total.</li>
 				<li style="text-align: justify;">La evaluación sólo es válida si está completa y debidamente firmada y sellada por el evaluador.</li>
 			</ol>
-			<table class="tabla">
+			<table class="tabla" style="float: left;">
 				<tr>
 					<th class="tabla" style="width: 20%;" rowspan="3"></th>
 					<th class="tabla" colspan="4">EVALUACIÓN</th>
@@ -538,8 +533,7 @@
 					<th  class="tabla"></th>
 				</tr>
 			</table>
-			<br>
-			<table>
+			<table style="float: left;">
 				<tr>
 					<th style="text-align: left; height: 30px; width: 15%;">Observaciones: </th>
 					<td></td>
@@ -547,14 +541,10 @@
 				<tr>
 					<td style="height: 30px;" colspan="2"></td>
 				</tr>
-				<tr>
-					<td style="height: 30px;" colspan="2"></td>
-				</tr>
 			</table>
-			<br><br><br><br>
-			<table>
+			<table style="float: left;">
 				<tr>
-					<td style="width: 30%;"></td>
+					<td style="width: 30%; height: 78px;"></td>
 					<th style="width: 5%;"></th>
 					<td style="width: 30%;"></td>
 					<th style="width: 5%;"></th>
@@ -567,10 +557,10 @@
 					<th></th>
 					<th style="vertical-align: top; text-align: center;">Sello</th>
 				</tr>
+				<tr>
+					<th style="height: 12px;"></td>
+				</tr>
 			</table>
-			{% if i != 3 %}
-				<br>
-			{% endif %}
 			{% endfor %}
 		{% endif %}
 		{% if 4 in numeros %}
@@ -584,7 +574,7 @@
 			<div style="width: 25%; float: right;">
 				<img src="https://eventos.galileo.edu/images/logo-noslogan.png" width="100%"> 
 			</div>
-			<table>
+			<table style="float: left;">
 				<tr>
 					<th style="width: 20%;">Centro de práctica: </th>
 					<td colspan="3"></td>
@@ -608,8 +598,8 @@
 					<td></td>
 				</tr>
 			</table>
-			<h6><strong>Instrucciones:</strong></h6>
-			<ol>
+			<h6 style="float: left;"><strong>Instrucciones:</strong></h6>
+			<ol style="float: left;"
 				<li style="text-align: justify;">Su evaluación es muy importante para calificar apropiadamente al estudiante de Técnico
 					en Radiología e Imágenes Diagnosticas por lo que se le ruega hacerlo a conciencia.
 				</li>
@@ -618,7 +608,7 @@
 				<li style="text-align: justify;">En la columna <strong><u>Resumen</u></strong>, coloque los puntos obtenidos en cada parámetro y súmelos para la calificación total.</li>
 				<li style="text-align: justify;">La evaluación sólo es válida si está completa y debidamente firmada y sellada por el evaluador.</li>
 			</ol>
-			<table class="tabla">
+			<table class="tabla" style="float: left;">
 				<tr>
 					<th class="tabla" style="width: 20%;" rowspan="3"></th>
 					<th class="tabla" colspan="4">EVALUACIÓN</th>
@@ -719,8 +709,7 @@
 					<th  class="tabla"></th>
 				</tr>
 			</table>
-			<br>
-			<table>
+			<table style="float: left;">
 				<tr>
 					<th style="text-align: left; height: 30px; width: 15%;">Observaciones: </th>
 					<td></td>
@@ -728,14 +717,10 @@
 				<tr>
 					<td style="height: 30px;" colspan="2"></td>
 				</tr>
-				<tr>
-					<td style="height: 30px;" colspan="2"></td>
-				</tr>
 			</table>
-			<br><br><br><br>
-			<table>
+			<table style="float: left;">
 				<tr>
-					<td style="width: 30%;"></td>
+					<td style="width: 30%; height: 78px;"></td>
 					<th style="width: 5%;"></th>
 					<td style="width: 30%;"></td>
 					<th style="width: 5%;"></th>
@@ -748,11 +733,10 @@
 					<th></th>
 					<th style="vertical-align: top; text-align: center;">Sello</th>
 				</tr>
+				<tr>
+					<th style="height: 12px;"></td>
+				</tr>
 			</table>
-			{% if i != 3 %}
-				<br>
-			{% endif %}
-
 			{% endfor %}
 		{% endif %}
 		
