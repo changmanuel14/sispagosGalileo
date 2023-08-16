@@ -1,312 +1,325 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li  >
-            <a href="/repdiario">
-                <span>Corte Diario</span>
-            </a>
-        </li>
-        <li  >
-          <a href="/repgen">
-              <span>Listado General</span>
-          </a>
-      </li>
-          <li >
-            <a href="/repi">
-              <span>Inscripciones</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repauxenf">
-              <span>Auxiliar de Enfermeria</span>
-            </a>
-          </li>
-          <li >
-              <a href="/repini">
-                  <span>Internet Inscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repir">
-                  <span>Internet Reinscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repu">
-                  <span>Uniformes</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repp">
-                  <span>Practica</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/replenq">
-				<span>Practica Enfermeria</span>
-			</a>
-		</li>
-		<li  >
-			<a href="/replbcq">
-				<span>Practica Química Biológica</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/repm">
-                  <span>Manuales</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/repingles">
-				<span>Ingles</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/reppag">
-                  <span>Pagos</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repgrad">
-                  <span>Graduacion</span>
-              </a>
-          </li>
-          <li >
-            <a href="/repextra">
-              <span>Pagos Extra</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repparq">
-              <span>Parqueo</span>
-            </a>
-          </li>
-      <!-- sidebar-menu  -->
-    </div>
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content">
-    <div class="container">
-        <h2>Reportes</h2>
-        <div class="mitad">
-          <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-        <table class="sortable">
-            <tr>
-                <th>Código</th>
-                <th>Concepto</th>
-                <th>Cantidad</th>
-                <th>Suma</th>
-            </tr>
-            {% for i in sumas %}
-            <tr>
-                <td>{{i[0]}}</td>
-                <td>{{i[1]}}</td>
-                <td>{{i[2]}}</td>
-                <td>Q.{{i[3]}}</td>
-            </tr>
-            {% endfor %}
-            <tr>
-              <th colspan="3" style="text-align: center;">Suma</th>
-              <td>Q.{{sumtotal}}</td>
-          </tr>
-          <tr>
-            <th colspan="3" style="text-align: center;">Devoluciones</th>
-            <td>Q.{{totaldev}}</td>
-          </tr>
-          <tr>
-            <th colspan="3" style="text-align: center;">Total</th>
-            <td id="totalpagos">Q.{{totaltotal}}</td>
-          </tr>
-        </table><br><br>
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
 
-        </div>
-        <div class="mitad1">
-          <form action="" method="POST">
-          <table class="tablacuadre">
-            <tr>
-              <td>Q 1</td>
-              <td><input type="number" step="0.01" id="Q1" name="Q1" class="inputtextcuadre" min="0" value="{{efectivo[0]}}"  onchange="cuadre()"></td>
-            </tr>
-            <tr>
-              <td>Q 5</td>
-              <td><input type="number" id="Q5" name="Q5" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[1]}}"></td>
-            </tr>
-            <tr>
-              <td>Q 10</td>
-              <td><input type="number" id="Q10" name="Q10" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[2]}}"></td>
-            </tr>
-            <tr>
-              <td>Q 20</td>
-              <td><input type="number" id="Q20" name="Q20" class="inputtextcuadre" min="0" onchange="cuadre()" value="{{efectivo[3]}}"></td>
-            </tr>
-            <tr>
-              <td>Q 50</td>
-              <td><input type="number" id="Q50" name="Q50" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[4]}}"></td>
-            </tr>
-            <tr>
-              <td>Q 100</td>
-              <td><input type="number" id="Q100" name="Q100" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[5]}}"></td>
-            </tr>
-            <tr>
-              <td>Q 200</td>
-              <td><input type="number" id="Q200" name="Q200" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[6]}}"></td>
-            </tr>
-            <tr>
-              <td>Facturas</td>
-              <td><input type="text"  id="facturas" name="facturas" class="inputtextcuadre"  min="0" onchange="cuadre()" value="{{efectivo[7]}}"></td>
-            </tr>
-            <tr>
-              <td>Vales</td>
-              <td><input type="text"  id="vales" name="vales" class="inputtextcuadre" min="0" onchange="cuadre()" value="{{efectivo[8]}}"></td>
-            </tr>
-			<tr>
-				<td>Tarjeta</td>
-				<td><input type="text"  id="tarjeta" name="tarjeta" class="inputtextcuadre" min="0" onchange="cuadre()" value="{{efectivo[9]}}"></td>
-			  </tr>
-          </table><br>
-          <table class="tablacuadre">
-            <tr>
-              <td><h4>Efectivo</h4></td>
-              <td>Q</td>
-              <td id="tagefectivo" style="float: right;"></td>
-            </tr>
-            <tr>
-              <td><h4>Extras</h4></td>
-              <td>Q</td>
-              <td id="tagextras" style="float: right;"></td>
-            </tr>
-            <tr>
-              <td><h4>Diferencia</h4></td>
-              <td>Q</td>
-              <td id="tagdif" style="float: right;"></td>
-            </tr>
-          </table>
-          <center><button onclick="submit" class="button">Guardar datos</button>  <a style="color: white;" href="{{ url_for('repdiariopdf') }}" target="_blank"><button class="button">Ver PDF - Reporte Diario</button></a></center>
-        </form>
-        </div>
-        
-    </main>
-    <!-- page-content" -->
-  </div>
-  <script>
-    window.onload = function(){
-      cuadre()
-    }
-    function cuadre() {
-      var cant1, cant5, cant10, cant20, cant50, cant100, cant200, dif, sumadinero, sumapagos, efectivo, facturas, vales, extras, tarjeta;
-      cant1 = document.getElementById("Q1").value;
-      if (cant1.length == 0) {
-        cant1 = 0;
-      }else cant1 = parseFloat(cant1);
-      cant5 = document.getElementById("Q5").value;
-      if (cant5.length == 0) {
-        cant5 = 0;
-      }else cant5 = parseInt(cant5);
-      cant10 = document.getElementById("Q10").value;
-      if (cant10.length == 0) {
-        cant10 = 0;
-      }else cant10 = parseInt(cant10);
-      cant20 = document.getElementById("Q20").value;
-      if (cant20.length == 0) {
-        cant20 = 0;
-      }else cant20 = parseInt(cant20);
-      cant50 = document.getElementById("Q50").value;
-      if (cant50.length == 0) {
-        cant50 = 0;
-      }else cant50 = parseInt(cant50);
-      cant100 = document.getElementById("Q100").value;
-      if (cant100.length == 0) {
-        cant100 = 0;
-      }else cant100 = parseInt(cant100);
-      cant200 = document.getElementById("Q200").value;
-      if (cant200.length == 0) {
-        cant200 = 0;
-      }else cant200 = parseInt(cant200);
-      sumapagos = document.getElementById("totalpagos").innerHTML;
-      sumapagos = sumapagos.split('.')[1] + '.' + sumapagos.split('.')[2]
-      sumapagos = parseFloat(sumapagos)
-      facturas = document.getElementById("facturas").value;
-      if (facturas.length == 0) {
-        facturas = 0;
-      }else {
-        let facaux = facturas
-        if(facaux.includes('+')){
-          let arreglo = facaux.split('+')
-          let total = 0
-          for(var a = 0;a<arreglo.length;a++){
-            total = total + parseFloat(arreglo[a])
-          }
-          facturas = total
-        }else {
-          facturas = parseFloat(facturas);
-        }
-      }
-      vales = document.getElementById("vales").value;
-      if (vales.length == 0) {
-        vales = 0;
-      }else {
-        let valaux = vales
-        if(valaux.includes('+')){
-          let arreglo = valaux.split('+')
-          let total = 0
-          for(var a = 0;a<arreglo.length;a++){
-            total = total + parseFloat(arreglo[a])
-          }
-          vales = total
-        }else {
-          vales = parseFloat(vales);
-        }
-      }
-	  tarjeta = document.getElementById("tarjeta").value;
-      if (tarjeta.length == 0) {
-        tarjeta = 0;
-      }else {
-        let taraux = tarjeta
-        if(taraux.includes('+')){
-          let arreglo = taraux.split('+')
-          let total = 0
-          for(var a = 0;a<arreglo.length;a++){
-            total = total + parseFloat(arreglo[a])
-          }
-          tarjeta = total
-        }else {
-			tarjeta = parseFloat(tarjeta);
-        }
-      }
-      efectivo = cant1 + (cant5 * 5) + (cant10 * 10) + (cant20 * 20) + (cant50 * 50) + (cant100 * 100) + (cant200 * 200);
-      extras = facturas + vales + tarjeta; 
-      dif = efectivo + extras - sumapagos;
-      document.getElementById("tagefectivo").innerHTML = efectivo.toFixed(2).toString();
-      document.getElementById("tagextras").innerHTML = extras.toFixed(2).toString();
-      document.getElementById("tagdif").innerHTML = dif.toFixed(2).toString();
-      if (dif > 0) {
-        document.getElementById("tagdif").style.backgroundColor = "orange";
-      }else if (dif < 0) {
-        document.getElementById("tagdif").style.backgroundColor = "red";
-      }else if (dif == 0) {
-        document.getElementById("tagdif").style.backgroundColor = "green";
-      }
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/repdiario">
+							<span>Corte Diario</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgen">
+							<span>Listado General</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repi">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repauxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repini">
+							<span>Internet Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repir">
+							<span>Internet Reinscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repu">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repp">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replenq">
+							<span>Practica Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replbcq">
+							<span>Practica Química Biológica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repm">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+					<li>
+						<a href="/reppag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgrad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repextra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repparq">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+			</div>
+			<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content">
+		<div class="container">
+			<h2>Reportes</h2>
+			<div class="mitad">
+				<table class="table table-bordered">
+					<tr>
+						<th>Código</th>
+						<th>Concepto</th>
+						<th>Cantidad</th>
+						<th>Suma</th>
+					</tr>
+					{% for i in sumas %}
+					<tr>
+						<td>{{i[0]}}</td>
+						<td>{{i[1]}}</td>
+						<td>{{i[2]}}</td>
+						<td>Q{{i[3]}}</td>
+					</tr>
+					{% endfor %}
+					<tr>
+						<th colspan="3" style="text-align: center;">Suma</th>
+						<td>Q{{sumtotal}}</td>
+					</tr>
+					<tr>
+						<th colspan="3" style="text-align: center;">Devoluciones</th>
+						<td>Q{{totaldev}}</td>
+					</tr>
+					<tr>
+						<th colspan="3" style="text-align: center;">Total</th>
+						<td id="totalpagos">Q{{totaltotal}}</td>
+					</tr>
+				</table>
+			</div>
+			<div class="mitad1">
+				<form action="" method="POST">
+					<table class="tablacuadre">
+						<tr>
+							<td>Q 1</td>
+							<td><input type="number" step="0.01" id="Q1" name="Q1" class="inputtextcuadre" min="0"
+									value="{{efectivo[0]}}" onchange="cuadre()"></td>
+						</tr>
+						<tr>
+							<td>Q 5</td>
+							<td><input type="number" id="Q5" name="Q5" class="inputtextcuadre" min="0"
+									onchange="cuadre()" value="{{efectivo[1]}}"></td>
+						</tr>
+						<tr>
+							<td>Q 10</td>
+							<td><input type="number" id="Q10" name="Q10" class="inputtextcuadre" min="0"
+									onchange="cuadre()" value="{{efectivo[2]}}"></td>
+						</tr>
+						<tr>
+							<td>Q 20</td>
+							<td><input type="number" id="Q20" name="Q20" class="inputtextcuadre" min="0"
+									onchange="cuadre()" value="{{efectivo[3]}}"></td>
+						</tr>
+						<tr>
+							<td>Q 50</td>
+							<td><input type="number" id="Q50" name="Q50" class="inputtextcuadre" min="0"
+									onchange="cuadre()" value="{{efectivo[4]}}"></td>
+						</tr>
+						<tr>
+							<td>Q 100</td>
+							<td><input type="number" id="Q100" name="Q100" class="inputtextcuadre" min="0"
+									onchange="cuadre()" value="{{efectivo[5]}}"></td>
+						</tr>
+						<tr>
+							<td>Q 200</td>
+							<td><input type="number" id="Q200" name="Q200" class="inputtextcuadre" min="0"
+									onchange="cuadre()" value="{{efectivo[6]}}"></td>
+						</tr>
+						<tr>
+							<td>Facturas</td>
+							<td><input type="text" id="facturas" name="facturas" class="inputtextcuadre" min="0"
+									onchange="cuadre()" value="{{efectivo[7]}}"></td>
+						</tr>
+						<tr>
+							<td>Vales</td>
+							<td><input type="text" id="vales" name="vales" class="inputtextcuadre" min="0"
+									onchange="cuadre()" value="{{efectivo[8]}}"></td>
+						</tr>
+						<tr>
+							<td>Tarjeta</td>
+							<td><input type="text" id="tarjeta" name="tarjeta" class="inputtextcuadre" min="0"
+									onchange="cuadre()" value="{{efectivo[9]}}"></td>
+						</tr>
+					</table><br>
+					<table class="tablacuadre">
+						<tr>
+							<td>
+								<h4>Efectivo</h4>
+							</td>
+							<td id="tagefectivo" style="float: right;"></td>
+						</tr>
+						<tr>
+							<td>
+								<h4>Extras</h4>
+							</td>
+							<td id="tagextras" style="float: right;"></td>
+						</tr>
+						<tr>
+							<td>
+								<h4>Diferencia</h4>
+							</td>
+							<td id="tagdif" style="float: right;"></td>
+						</tr>
+					</table>
+					<center><button onclick="submit" class="button">Guardar datos</button> <a style="color: white;"
+							href="{{ url_for('repdiariopdf') }}" target="_blank"><button class="button">Ver PDF -
+								Reporte Diario</button></a></center>
+				</form>
+			</div>
 
-    }
-  </script>
-  <!-- page-wrapper -->
+	</main>
+	<!-- page-content" -->
+</div>
+<script>
+	window.onload = function () {
+		cuadre()
+	}
+	function cuadre() {
+		var cant1, cant5, cant10, cant20, cant50, cant100, cant200, dif, sumadinero, sumapagos, efectivo, facturas, vales, extras, tarjeta;
+		cant1 = document.getElementById("Q1").value;
+		if (cant1.length == 0) {
+			cant1 = 0;
+		} else cant1 = parseFloat(cant1);
+		cant5 = document.getElementById("Q5").value;
+		if (cant5.length == 0) {
+			cant5 = 0;
+		} else cant5 = parseInt(cant5);
+		cant10 = document.getElementById("Q10").value;
+		if (cant10.length == 0) {
+			cant10 = 0;
+		} else cant10 = parseInt(cant10);
+		cant20 = document.getElementById("Q20").value;
+		if (cant20.length == 0) {
+			cant20 = 0;
+		} else cant20 = parseInt(cant20);
+		cant50 = document.getElementById("Q50").value;
+		if (cant50.length == 0) {
+			cant50 = 0;
+		} else cant50 = parseInt(cant50);
+		cant100 = document.getElementById("Q100").value;
+		if (cant100.length == 0) {
+			cant100 = 0;
+		} else cant100 = parseInt(cant100);
+		cant200 = document.getElementById("Q200").value;
+		if (cant200.length == 0) {
+			cant200 = 0;
+		} else cant200 = parseInt(cant200);
+		sumapagos = document.getElementById("totalpagos").innerHTML;
+		sumapagos = sumapagos.split('Q')[1]
+		sumapagos = parseFloat(sumapagos)
+		facturas = document.getElementById("facturas").value;
+		if (facturas.length == 0) {
+			facturas = 0;
+		} else {
+			let facaux = facturas
+			if (facaux.includes('+')) {
+				let arreglo = facaux.split('+')
+				let total = 0
+				for (var a = 0; a < arreglo.length; a++) {
+					total = total + parseFloat(arreglo[a])
+				}
+				facturas = total
+			} else {
+				facturas = parseFloat(facturas);
+			}
+		}
+		vales = document.getElementById("vales").value;
+		if (vales.length == 0) {
+			vales = 0;
+		} else {
+			let valaux = vales
+			if (valaux.includes('+')) {
+				let arreglo = valaux.split('+')
+				let total = 0
+				for (var a = 0; a < arreglo.length; a++) {
+					total = total + parseFloat(arreglo[a])
+				}
+				vales = total
+			} else {
+				vales = parseFloat(vales);
+			}
+		}
+		tarjeta = document.getElementById("tarjeta").value;
+		if (tarjeta.length == 0) {
+			tarjeta = 0;
+		} else {
+			let taraux = tarjeta
+			if (taraux.includes('+')) {
+				let arreglo = taraux.split('+')
+				let total = 0
+				for (var a = 0; a < arreglo.length; a++) {
+					total = total + parseFloat(arreglo[a])
+				}
+				tarjeta = total
+			} else {
+				tarjeta = parseFloat(tarjeta);
+			}
+		}
+		efectivo = cant1 + (cant5 * 5) + (cant10 * 10) + (cant20 * 20) + (cant50 * 50) + (cant100 * 100) + (cant200 * 200);
+		extras = facturas + vales + tarjeta;
+		dif = efectivo + extras - sumapagos;
+		document.getElementById("tagefectivo").innerHTML = 'Q' + String(efectivo.toFixed(2).toString());
+		document.getElementById("tagextras").innerHTML = 'Q' + String(extras.toFixed(2).toString());
+		document.getElementById("tagdif").innerHTML = 'Q' + String(Math.abs(dif.toFixed(2).toString()));
+		if (dif > 0) {
+			document.getElementById("tagdif").style.backgroundColor = "orange";
+		} else if (dif < 0) {
+			document.getElementById("tagdif").style.backgroundColor = "red";
+		} else if (dif == 0) {
+			document.getElementById("tagdif").style.backgroundColor = "green";
+		}
+
+	}
+</script>
+<!-- page-wrapper -->
 {% endblock %}

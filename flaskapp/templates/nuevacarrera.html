@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<br><br>
+<center>
+	<h1>Nueva carrera</h1>
+</center>
+<hr>
+<form action="" method="POST">
+	<div class="form-row">
+		<div class="col-md-6">
+			<label for="carrera">Carrera</label>
+			<input type="text" class="form-control" name="carrera" id="carrera" placeholder="Carrera"
+				onchange="creariniciales()" required>
+		</div>
+		<div class="col-md-6">
+			<label for="codigo">Código</label>
+			<input type="text" class="form-control" name="codigo" id="codigo" placeholder="Código" required>
+		</div>
+	</div>
+	<div class="form-row">
+		<div class="col-md-12">
+			<label for="institucion">Institución</label>
+			<select class="form-control" id="institucion" name="institucion" onchange="cambioInstitucion()" required>
+				<option value="">Seleccione una Institución</option>
+				<option value="1">Universidad Galileo</option>
+				<option value="2">Technical Training Academy</option>
+			</select>
+		</div>
+	</div>
+	<div  id="dataGalileo" style="display: none;">
+		<div class="form-row">
+			<div class="col-md-6">
+				<label for="precio">Precio</label>
+				<input type="number" step="0.01" class="form-control" name="precio" id="precio" placeholder="Precio">
+			</div>
+			<div class="col-md-6">
+				<label for="internet">Internet</label>
+				<input type="number" step="0.01" class="form-control" name="internet" id="internet" placeholder="Internet">
+			</div>
+		</div>
+	</div>
+	<br>
+	<center><input class="btn btn-primary" type="submit" value="Aceptar"></center>
+</form>
+
+<script type="text/javascript">
+	function creariniciales() {
+		var carrera = document.getElementById('carrera')
+		var codigo = document.getElementById('codigo')
+		var elementos = carrera.value.split(' ')
+		var iniciales = ''
+		console.log(elementos)
+		if (carrera.value.length > 0) {
+			for (var i = 0; i < elementos.length; i++) {
+				iniciales = iniciales + elementos[i][0]
+			}
+		iniciales = iniciales + 'Q'
+		}
+		codigo.value = iniciales
+	}
+	function cambioInstitucion() {
+		var institucion = document.getElementById('institucion')
+		var data = institucion.value
+		console.log(data)
+		var dataGalileo = document.getElementById('dataGalileo')
+		if(data == 1) {
+			dataGalileo.style.display = 'block'
+		}else{
+			dataGalileo.style.display = 'none'
+		}
+	}
+</script>
+
+
+{% endblock %}

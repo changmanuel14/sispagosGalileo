@@ -1265,7 +1265,7 @@ def i():
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				cursor.execute("SELECT idinscripciones, inscripcion, precio, internet FROM inscripciones;")
+				cursor.execute("SELECT idinscripciones, inscripcion, precio, internet FROM inscripciones order by inscripcion asc;")
 				carreras = cursor.fetchall()
 		finally:
 			conexion.close()
@@ -1295,15 +1295,11 @@ def i():
 			exavis = request.form["exavis"]
 		except:
 			exavis = 0
-		try:
-			prope = request.form["prope"]
-		except:
-			prope = 0
-		return redirect(url_for('confirmacioni', carrera = datacarrera, carnet = datacarnet, nombre = datanombre, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra, exavis=exavis, prope=prope))
+		return redirect(url_for('confirmacioni', carrera = datacarrera, carnet = datacarnet, nombre = datanombre, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra, exavis=exavis))
 	return render_template('inscripciones.html', title="Inscripciones", carreras=carreras, logeado=logeado)
 
-@app.route('/confirmacioni/<carrera>&<carnet>&<nombre>&<rinsc>&<rint>&<rrein>&<mesextra>&<exavis>&<prope>', methods=['GET', 'POST'])
-def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis, prope):
+@app.route('/confirmacioni/<carrera>&<carnet>&<nombre>&<rinsc>&<rint>&<rrein>&<mesextra>&<exavis>', methods=['GET', 'POST'])
+def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -1316,7 +1312,6 @@ def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis,
 	rrein = int(rrein)
 	exavis = int(exavis)
 	mesextra = int(mesextra)
-	prope = int(prope)
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
@@ -1367,14 +1362,6 @@ def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis,
 						cursor.execute(consulta)
 						pagoexamen = cursor.fetchone()
 						pagoexamen = pagoexamen[0]
-					if prope != 0:
-						consulta = 'select idcodigos from codigos where cod = "PROP"'
-						cursor.execute(consulta)
-						datos = cursor.fetchall()
-						idprop = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idprop, nombre, carnet, 1000, date.today(), "Propedeutico THDQ",0, session['idusercaja']))
-						conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
@@ -3431,7 +3418,6 @@ def editarcodigo(id):
 			try:
 				with conexion.cursor() as cursor:
 					consulta = f"update codigos set concepto = '{concepto}', cod = '{codigo}', idcarrera = {carrera}, precio = {precio}, manual = {manual}, practica = {practica}, pagos = {pagos}, pagose = {pagose} where idcodigos = {id};"
-					print(consulta)
 					cursor.execute(consulta)
 				conexion.commit()
 			finally:
@@ -3459,6 +3445,40 @@ def carreras():
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 	return render_template('carreras.html', title="Admin Carreras", logeado=logeado, carreras = carreras)
+
+@app.route('/nuevacarrera', methods=['GET', 'POST'])
+def nuevacarrera():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	if request.method == 'POST':
+		codigo = request.form["codigo"]
+		carrera = request.form["carrera"]
+		institucion = request.form["institucion"]
+		if int(institucion) == 1:
+			precio = request.form["precio"]
+			internet = request.form["internet"]
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = f"insert into carreras(codigo, carrera, institucion) values('{codigo}', '{carrera}', {institucion});"
+					cursor.execute(consulta)
+					conexion.commit()
+					if int(institucion) == 1:
+						consulta = "Select MAX(idcarreras) from carreras;"
+						cursor.execute(consulta)
+						idcarrera = cursor.fetchone()[0]
+						consulta = f"insert into inscripciones(inscripcion, precio, internet, idcarrera) values('Inscripción {codigo}', {precio}, {internet}, {idcarrera})"
+						cursor.execute(consulta)
+						conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('carreras'))
+	return render_template('nuevacarrera.html', title="Nueva Carrera", logeado=logeado)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)

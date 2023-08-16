@@ -97,25 +97,29 @@
 			</center>
 			<hr>
 			<form action="" method="POST">
-				<center> <label for="carrera" style="color: black;"> <strong>
-							<h4>Seleccione la carrera:</h4>
-						</strong></label>
-
-					<select name="carrera" id="carrera" class="inputtext" onchange="actprecios()" required>
-						<option value="">Seleccione carrera</option>
-						{% for i in carreras %}
-						<option value="{{i[0]}}">{{i[1]}}</option>
-						{% endfor %}
-					</select>
-				</center><br>
-				<center>
-					<input type="text" id="carnet" name="carnet" class="inputtext" required
-						placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"
-						onblur="mayusculas()"><br>
-				</center>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label for="carrera">Carrera</label>
+						<select class="form-control" id="carrera" name="carrera" onchange="actprecios()" required>
+							<option value="">Seleccione carrera</option>
+							{% for i in carreras %}
+							<option value="{{i[0]}}">{{i[1]}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre" onblur="mayusculas()" required>
+					</div>
+				</div>
 				<br>
-				<table>
+				<table class="table table-bordered">
 					<tr>
 						<th>Inscripción</th>
 						<td>
@@ -151,16 +155,7 @@
 					<tr>
 						<th>Mensualidad Extra</th>
 						<td>
-							<input type="number" step="0.01" id="mesextra" name="mesextra" class="inputtext3"
-								onchange="calctotal()">
-						</td>
-					</tr>
-					<tr>
-						<th>Propedeutico</th>
-						<td>
-							<input type="checkbox" id="prope" name="prope" value="1" onclick="calctotal()">
-							<label for="prope">Q </label>
-							<label for="prope" id="propel">1000.00</label>
+							<input type="number" step="0.01" class="form-control" id="mesextra" name="mesextra" placeholder="Mensualidad Extra" onchange="calctotal()">
 						</td>
 					</tr>
 					<tr>
@@ -168,11 +163,11 @@
 							<h3>Total</h3>
 						</th>
 						<td>
-							<input type="text" id="total" name="total" class="inputtext3" readonly>
+							<input type="text" class="form-control" id="total" name="total" placeholder="Total" readonly>
 						</td>
 					</tr>
 				</table>
-				<center><button onclick="submit" class="button">Aceptar</button></center>
+				<center><input class="btn btn-primary" type="submit" value="Aceptar"></center>
 				<br>
 				<hr>
 			</form>
@@ -196,20 +191,17 @@
 		var int1 = document.getElementById('rint')
 		var rint1 = document.getElementById('rrein')
 		var exavis = document.getElementById('exavis')
-		var prope = document.getElementById('prope')
 		var mese = document.getElementById('mesextra').value
 		var tot = document.getElementById('total')
 		var total = 0
 		var aux = 0
 		if (insc1.checked == true) {
 			aux = insc.innerHTML
-			console.log(aux)
 			aux = parseFloat(aux)
 			total = total + aux
 		}
 		if (int1.checked == true) {
 			aux = int.innerHTML
-			console.log(aux)
 			aux = parseFloat(aux)
 			total = total + aux
 		}
@@ -222,10 +214,6 @@
 			aux = 50
 			total = total + aux
 		}
-		if (prope.checked == true) {
-			aux = 1000
-			total = total + aux
-		}
 		if (mese.length == 0) {
 			total = total + 0
 		} else {
@@ -236,17 +224,16 @@
 	}
 	function actprecios() {
 		var idcarrera = document.getElementById("carrera").value
-		var arreglo = {{ carreras| tojson
-	}};
-	var conteo = Object.keys(arreglo).length;
-	var labelinsc = document.getElementById("rinscl")
-	var labelint = document.getElementById("rintl")
-	if (idcarrera.length < 1) {
-		labelinsc.innerHTML = 'Q 0.00'
-		labelint.innerHTML = 'Q 0.00'
-	}
-	labelinsc.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][2]).toFixed(2)
-	labelint.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][3]).toFixed(2)
-      }
+		var arreglo = {{ carreras | tojson }};
+		var conteo = Object.keys(arreglo).length;
+		var labelinsc = document.getElementById("rinscl")
+		var labelint = document.getElementById("rintl")
+		if (idcarrera.length < 1) {
+			labelinsc.innerHTML = 'Q 0.00'
+			labelint.innerHTML = 'Q 0.00'
+		}
+		labelinsc.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][2]).toFixed(2)
+		labelint.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][3]).toFixed(2)
+    }
 </script>
 {% endblock %}

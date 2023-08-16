@@ -1,122 +1,150 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li>
-			<a href="/i">
-				<span>Inscripciones</span>
-			</a>
-		</li>
-		<li>
-			<a href="/auxenf">
-				<span>Auxiliar de Enfermeria</span>
-			</a>
-		</li>
-		<li>
-			<a href="/optica">
-				<span>Óptica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/laboratorio">
-				<span>Laboratorio</span>
-			</a>
-		</li>
-		<li>
-			<a href="/academia">
-				<span>Academia</span>
-			</a>
-		</li>
-		<li>
-			<a href="/p">
-				<span>Practica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/m">
-				<span>Manuales</span>
-			</a>
-		</li>
-		<li>
-			<a href="/pag">
-				<span>Pagos</span>
-			</a>
-		</li>
-		<li>
-			<a href="/ingles">
-				<span>Ingles</span>
-			</a>
-		</li>
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
 
-		<li>
-			<a href="/extra">
-				<span>Pagos Extra</span>
-			</a>
-		</li>
-		<li>
-			<a href="/parqueo">
-				<span>Parqueo</span>
-			</a>
-		</li>
-		<li>
-			<a href="/u">
-				<span>Uniformes</span>
-			</a>
-		</li>
-		<li>
-			<a href="/grad">
-				<span>Graduacion</span>
-			</a>
-		</li>
-      <!-- sidebar-menu  -->
-    </div>
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content" id="main">
-    <div class="container">
-      <h2>¿Está seguro de continuar?</h2>
-      <h5>Descripción: {{data[0][0]}}</h5>
-      {% if rinsc != 0 %}
-      <h5>Inscripción: Aplica</h5>
-      {% endif %}
-      {% if rint != 0 %}
-      <h5>Internet Inscripción: Aplica</h5>
-      {% endif %}
-      {% if rrein != 0 %}
-      <h5>Internet reinscripción: Aplica</h5>
-      {% endif %}
-      {% if exavis != 0 %}
-      <h5>Examen de la Vista: Aplica</h5>
-      {% endif %}
-      {% if prope != 0 %}
-      <h5>Propedeutico: Aplica</h5>
-      {% endif %}
-      <h5>Carnet: {{carnet}}</h5>
-      <h5>Nombre: {{nombre}}</h5>
-      <h5>Mes Extra: Q {{mesextra}}</h5>
-      <form action="" method="POST">
-        <center><button onclick="submit" class="button">Aceptar</button>   <a class="regresar" href="{{ url_for('i') }}">Regresar</a></center>
-      </form>
-    </main>
-    <!-- page-content" -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/i">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/auxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/optica">
+							<span>Óptica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/laboratorio">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<li>
+						<a href="/academia">
+							<span>Academia</span>
+						</a>
+					</li>
+					<li>
+						<a href="/p">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/m">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/pag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/ingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+
+					<li>
+						<a href="/extra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/parqueo">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<li>
+						<a href="/u">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/grad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+			</div>
+			<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<div class="container">
+			<center>
+				<h2>¿Está seguro de continuar?</h2>
+			</center>
+			<table class="table table-bordered">
+				<tr>
+					<th>Nombre</th>
+					<td>{{nombre}}</td>
+				</tr>
+				<tr>
+					<th>Carnet</th>
+					<td>{{carnet}}</td>
+				</tr>
+				<tr>
+					<th>Descripción</th>
+					<td>{{data[0][0]}}</td>
+				</tr>
+				{% if rinsc != 0 %}
+				<tr>
+					<th>Inscripción</th>
+					<td>Aplica</td>
+				</tr>
+				{% endif %}
+				{% if rint != 0 %}
+				<tr>
+					<th>Internet Inscripción</th>
+					<td>Aplica</td>
+				</tr>
+				{% endif %}
+				{% if rrein != 0 %}
+				<tr>
+					<th>Internet Reinscripción</th>
+					<td>Aplica</td>
+				</tr>
+				{% endif %}
+				{% if exavis != 0 %}
+				<tr>
+					<th>Examen de la Vista</th>
+					<td>Aplica</td>
+				</tr>
+				{% endif %}
+				<tr>
+					<th>Mensualidad Extra</th>
+					<td>Q {{mesextra}}</td>
+				</tr>
+			</table>
+			<form action="" method="POST">
+				<center>
+					<input class="btn btn-primary" type="submit" value="Aceptar">
+					<a class="btn btn-primary" href="{{ url_for('i') }}" role="button">Regresar</a>
+				</center>
+			</form>
+	</main>
+	<!-- page-content" -->
 </div>
-  <!-- page-wrapper -->
+<!-- page-wrapper -->
 {% endblock %}

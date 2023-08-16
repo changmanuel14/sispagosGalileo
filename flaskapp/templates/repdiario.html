@@ -112,7 +112,7 @@
 				<br><br>
 				<div class="mitad">
 					<h4>Resumen</h4>
-					<table>
+					<table class="table table-bordered">
 						<tr>
 							<th>Código</th>
 							<th>Concepto</th>
@@ -126,7 +126,7 @@
 							<td>{{i[1]}}</td>
 							<td>{{i[2]}}</td>
 							<td>Q.{{i[3]}}</td>
-							<td><input type="text" class="inputtyperecibo" name="resumen{{i[4]}}"> </td>
+							<td><input type="text" class="form-control" name="resumen{{i[4]}}" title="Recibo {{i[1]}}"></td>
 						</tr>
 						{% endfor %}
 						<tr>
@@ -136,7 +136,7 @@
 					</table>
 				</div>
 				<div class="mitad1">
-					<table>
+					<table class="table table-bordered">
 						<tr>
 							<th>Cuenta</th>
 							<th>Número</th>
@@ -173,7 +173,7 @@
 					<br><br>
 					<h4>Desplegado</h4>
 					<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-					<table class="sortable">
+					<table class="table table-bordered sortable">
 						<tr>
 							<th>Nombre</th>
 							<th>Carnet</th>
@@ -192,19 +192,20 @@
 							<td>{{i[2]}}</td>
 							<td>{{i[3]}}</td>
 							<td>{{i[4]}}</td>
-							<td>Q. {{i[5]}}</td>
+							<td>Q{{i[5]}}</td>
 							<td>{{i[7]}}</td>
-							<td><input type="text" class="inputtyperecibo" name="re{{i[6]}}"> </td>
-							<td><a href="/editarpago/{{i[6]}}" style="color: black;">Editar</a></td>
-							<td><a href="/eliminarpago/{{i[6]}}" style="color: black;">Eliminar</a></td>
-							<td><a href="/imprimir/{{i[6]}}" style="color: black;" target=”_blank”>Imprimir</a></td>
+							<td><input type="text" class="form-control" name="re{{i[6]}}" title="Recibo {{i[6]}}"></td>
+							<td><a class="btn btn-warning" href="/editarpago/{{i[6]}}" role="button">Editar</a></td>
+							<td><a class="btn btn-danger" href="/eliminarpago/{{i[6]}}" role="button">Eliminar</a></td>
+							<td><a class="btn btn-info" href="/imprimir/{{i[6]}}" role="button" target=”_blank”>Imprimir</a></td>
 						</tr>
 						{% endfor %}
 					</table>
 					<br>
-					<center><button onclick="submit" class="button"><a style="color: white;"
-								href="{{ url_for('repdiariopdf') }}" target="_blank">Ver PDF</a></button> <button
-							onclick="submit" class="button">Registrar</button></center>
+					<center>
+						<a class="btn btn-info" href="{{ url_for('repdiariopdf') }}" role="button" target=”_blank”>Ver PDF</a>
+						<input class="btn btn-primary" type="submit" value="Registrar">
+					</center>
 			</form>
 		</div>
 	</main>
