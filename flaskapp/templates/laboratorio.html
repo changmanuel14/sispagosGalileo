@@ -1,301 +1,313 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li>
-			<a href="/i">
-				<span>Inscripciones</span>
-			</a>
-		</li>
-		<li>
-			<a href="/auxenf">
-				<span>Auxiliar de Enfermeria</span>
-			</a>
-		</li>
-		<li>
-			<a href="/optica">
-				<span>Óptica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/laboratorio">
-				<span>Laboratorio</span>
-			</a>
-		</li>
-		<li>
-			<a href="/academia">
-				<span>Academia</span>
-			</a>
-		</li>
-		<li>
-			<a href="/p">
-				<span>Practica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/m">
-				<span>Manuales</span>
-			</a>
-		</li>
-		<li>
-			<a href="/pag">
-				<span>Pagos</span>
-			</a>
-		</li>
-		<li>
-			<a href="/ingles">
-				<span>Ingles</span>
-			</a>
-		</li>
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
 
-		<li>
-			<a href="/extra">
-				<span>Pagos Extra</span>
-			</a>
-		</li>
-		<li>
-			<a href="/parqueo">
-				<span>Parqueo</span>
-			</a>
-		</li>
-		<li>
-			<a href="/u">
-				<span>Uniformes</span>
-			</a>
-		</li>
-		<li>
-			<a href="/grad">
-				<span>Graduacion</span>
-			</a>
-		</li>
-      <!-- sidebar-menu  -->
-    
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content" id="main">
-    <div class="container">
-      <center><h1>Laboratorio</h1></center>
-      <hr>
-      <form action="" method="POST">
-        <center><select name="empresa" id="empresa" class="inputtext" onchange="aplicardescuento()">
-          <option value="0">Seleccione una empresa</option>
-          {% for i in empresas %}
-          <option value="{{i[1]}}">{{i[0]}}</option>
-          {% endfor %}
-        </select>
-        <input type="hidden" class="inputtext5" id="cant" name="cant" value="1" readonly>
-      </center><br>
-        <center>
-        <input type="text" id="carnet" name="carnet" class="inputtext" placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br>
-      </center>
-      <br>
-      <div style="width: 45%; position: relative;">
-        <h2 id="h1total">Total: Q 0.00</h2>
-      </div>
-      <hr>
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 35%;">Categoria</th>
-                <th style="width: 50%;">Examen</th>
-                <th style="width: 15%;">Precio</th>
-            </tr>
-        </thead>
-        <tbody id="container">
-            <tr id="row0">
-                <td><select id="tipoexamen0" name="tipoexamen0" class="inputtext6" onchange="funcion(0)" required>
-                  <option value="0">Seleccione una categoria</option>
-                  {% for i in tipoexamen %}
-                  <option value="{{i[1]}}">{{i[0]}}</option>
-                  {% endfor %}
-                </select></td>
-                <td><select id="examen0" name="examen0" class="inputtext6" onchange="funcion1(0)" required>
-                  <option value="0">Seleccione un examen</option>
-                </select></td></td>
-                <td><input type="text" id="precio0" name="precio0" class="inputtext6" placeholder="  Precio" readonly></td>
-            </tr>
-        </tbody>
-    </table><br>
-    <center><button type="button" class="button" onclick="agregar()"> Nueva fila</button>&nbsp;<button type="button" class="button" onclick="eliminar()"> Eliminar fila</button>&nbsp;<button onclick="submit" class="button">Aceptar</button></center>
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/i">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/auxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/optica">
+							<span>Óptica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/laboratorio">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<li>
+						<a href="/academia">
+							<span>Academia</span>
+						</a>
+					</li>
+					<li>
+						<a href="/p">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/m">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/pag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/ingles">
+							<span>Ingles</span>
+						</a>
+					</li>
 
-      
-        <br>
-        <hr>
-      </form>
-	</div>
-    </main>
-    <!-- page-content" -->
+					<li>
+						<a href="/extra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/parqueo">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<li>
+						<a href="/u">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/grad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<div class="container">
+			<center>
+				<h1>Laboratorio</h1>
+			</center>
+			<hr>
+			<form action="" method="POST">
+				<div class="form-row">
+					<div class="col-md-12">
+						<label for="empresa">Empresa</label>
+						<select class="form-control" id="empresa" name="empresa" onchange="aplicardescuento()">
+							<option value="0">Seleccione empresa</option>
+							{% for i in empresas %}
+						<option value="{{i[1]}}">{{i[0]}}</option>
+						{% endfor %}
+						</select>
+						<input type="hidden" id="cant" name="cant" value="1" readonly>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
+							onblur="mayusculas()" required>
+					</div>
+				</div>
+				<br>
+				<h4 id="h1total">Total: Q 0.00</h4>
+				<hr>
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th style="width: 35%;">Categoria</th>
+							<th style="width: 50%;">Examen</th>
+							<th style="width: 15%;">Precio</th>
+						</tr>
+					</thead>
+					<tbody id="container">
+						<tr id="row0">
+							<td><select id="tipoexamen0" name="tipoexamen0" class="form-control" onchange="funcion(0)"
+									required>
+									<option value="0">Seleccione una categoria</option>
+									{% for i in tipoexamen %}
+									<option value="{{i[1]}}">{{i[0]}}</option>
+									{% endfor %}
+								</select></td>
+							<td><select id="examen0" name="examen0" class="form-control" onchange="funcion1(0)" required>
+									<option value="0">Seleccione un examen</option>
+								</select></td>
+							</td>
+							<td><input type="text" id="precio0" name="precio0" class="form-control" placeholder="Precio" readonly></td>
+						</tr>
+					</tbody>
+				</table><br>
+				<center>
+					<input class="btn btn-primary" type="submit" value="Aceptar">
+					<button type="button" class="btn btn-success" onclick="agregar()">Agregar Campo</button> 
+					<button type="button" class="btn btn-danger" onclick="eliminar()">Eliminar Campo</button>
+				</center>
+				<hr>
+			</form>
+		</div>
+	</main>
+	<!-- page-content" -->
 </div>
 <script type="text/javascript">
-  function mayusculas(){
-        var nombre = document.getElementById('nombre').value
-        nombre = nombre.toUpperCase()
-        document.getElementById('nombre').value = nombre
-    }
-  function aplicardescuento(){
-    var arreglo = {{ examenes|tojson }};
-    var conteo = Object.keys(arreglo).length;
-    var descuento = document.getElementById('empresa').value;
-    var cantidad = document.getElementById('cant').value;
-
-
-    for (var i = 0; i<cantidad; i++){
-      var aux = 'precio' + String(i)
-      var aux1 = 'examen' + String(i)
-      var precioin = document.getElementById(aux)
-      var examen = document.getElementById(aux1)
-      for (var j = 0; j<conteo; j++){
-        if (parseInt(arreglo[j][3]) == parseInt(examen.value)){
-          var precio = arreglo[j][2]
-        }
-      }
-      var newprecio = precio - ((precio * descuento)/100)
-      newprecio = Math.ceil(newprecio)
-      precioin.value = newprecio;
-    }
-    calctotal()
-  }
-  function calctotal(){
-    var inputcantidad = document.getElementById('cant')
-    var cantidad = inputcantidad.value
-    var total = 0
-    for (var i = 0; i<parseInt(cantidad); i++){
-      var aux = 'precio' + String(i)
-      var input = document.getElementById(aux).value
-      total = total + parseFloat(input)
-    }
-    document.getElementById('h1total').innerHTML = 'Total: Q ' + String(total.toFixed(2))
-  }
-
-  function funcion(num) {
-    console.log(num)
-    var arreglo = {{ examenes|tojson }}
-    var conteo = Object.keys(arreglo).length;
-    var aux = 'examen' + String(num)
-    var menudesp = document.getElementById(aux)
-    menudesp.innerHTML = ""
-    var opt = document.createElement('option');
-    opt.value = "";
-    opt.innerHTML = "Seleccione un examen";
-    menudesp.appendChild(opt);
-    var aux1 = 'tipoexamen' + String(num)
-    var idtipo = document.getElementById(aux1).value
-    var aux2 = 'precio' + String(num)
-    document.getElementById(aux2).value = ""
-    for (var i = 0; i<conteo;i++){
-      if (String(arreglo[i][1]) == String(idtipo)){
-        opt = document.createElement('option');
-        opt.value = arreglo[i][3];
-        opt.innerHTML = arreglo[i][0];
-        menudesp.appendChild(opt);
-      }
-    }
-  }
-
-  function funcion1(num){
-    var arreglo = {{ examenes|tojson }}
-    var conteo = Object.keys(arreglo).length;
-    var aux = 'examen' + String(num)
-    var menudesp = document.getElementById(aux).value
-    var aux1 = 'precio' + String(num)
-    var inputprecio = document.getElementById(aux1)
-    for (var i = 0; i<conteo; i++){
-      if(String(arreglo[i][3]) == String(menudesp)){
-        inputprecio.value = arreglo[i][2]
-      }
-    }
-    calctotal()
-  }
-
-  function eliminar() {
-	var num = parseInt(document.getElementById('cant').value)
-	if (num > 0) {
-		var input = document.getElementById('row' + String(num - 1))
-		input.remove()
-		document.getElementById('cant').value = num - 1
+	function mayusculas() {
+		var nombre = document.getElementById('nombre').value
+		nombre = nombre.toUpperCase()
+		document.getElementById('nombre').value = nombre
 	}
-  }
-
-  function agregar(){
-    var arreglo = {{ tipoexamen|tojson }};
-    var conteo = Object.keys(arreglo).length;
-    var inputcantidad = document.getElementById('cant')
-    var cantidad = inputcantidad.value
-    cantidad1 = parseInt(cantidad) + 1
-    inputcantidad.value = cantidad1
-    var contenedor = document.getElementById('container')
-    var tr = document.createElement('tr');
-    tr.id = "row" + String(cantidad)
-	var auxant = 'tipoexamen' + String(cantidad-1)
-	var anttipoexamen = parseInt(document.getElementById(auxant).value)
-    var td1 = document.createElement('td');
-    var select1 = document.createElement('select');
-    select1.id = "tipoexamen" + String(cantidad)
-    select1.name = "tipoexamen" + String(cantidad)
-    select1.className = 'inputtext6'
-    select1.setAttribute('onchange', 'funcion('+String(cantidad)+')');
-    var opt = document.createElement('option');
-    opt.value = "";
-    opt.innerHTML = "Seleccione una categoria";
-	if (anttipoexamen == 0){
-		opt.selected = true
+	function aplicardescuento() {
+		var arreglo = {{ examenes| tojson }};
+		var conteo = Object.keys(arreglo).length;
+		var descuento = document.getElementById('empresa').value;
+		var cantidad = document.getElementById('cant').value;
+		for (var i = 0; i < cantidad; i++) {
+			var aux = 'precio' + String(i)
+			var aux1 = 'examen' + String(i)
+			var precioin = document.getElementById(aux)
+			var examen = document.getElementById(aux1)
+			for (var j = 0; j < conteo; j++) {
+				if (parseInt(arreglo[j][3]) == parseInt(examen.value)) {
+					var precio = arreglo[j][2]
+				}
+			}
+			var newprecio = precio - ((precio * descuento) / 100)
+			newprecio = Math.ceil(newprecio)
+			precioin.value = newprecio;
+		}
+		calctotal()
 	}
-    select1.appendChild(opt)
-    for (var i = 0; i<conteo;i++){
-      opt = document.createElement('option');
-      opt.value = arreglo[i][1];
-      opt.innerHTML = arreglo[i][0];
-      select1.appendChild(opt)
-	  if( parseInt(opt.value) == anttipoexamen){
-		  opt.selected = true
-	  }
-    }
-    td1.appendChild(select1)
-    tr.appendChild(td1)
-    var td2 = document.createElement('td');
-    var select2 = document.createElement('select');
-    select2.id = "examen" + String(cantidad)
-    select2.name = "examen" + String(cantidad)
-    select2.className = 'inputtext6'
-    select2.setAttribute('onchange', 'funcion1('+String(cantidad)+')');
-    var opt = document.createElement('option');
-    opt.value = "";
-    opt.innerHTML = "Seleccione un examen";
-    select2.appendChild(opt)
-    td2.appendChild(select2)
-    tr.appendChild(td2)
-    td3 = document.createElement('td');
-    input3 = document.createElement('input');
-    input3.type = 'text';
-    input3.name = 'precio' + String(cantidad);
-    input3.id = 'precio' + String(cantidad);
-    input3.className = 'inputtext6';
-    input3.placeholder = "  Precio";
-    input3.required = true;
-    td3.appendChild(input3)
-    tr.appendChild(td3)
-    contenedor.appendChild(tr)
-	funcion(cantidad);
-  }
+	function calctotal() {
+		var inputcantidad = document.getElementById('cant')
+		var cantidad = inputcantidad.value
+		var total = 0
+		for (var i = 0; i < parseInt(cantidad); i++) {
+			var aux = 'precio' + String(i)
+			var input = document.getElementById(aux).value
+			total = total + parseFloat(input)
+		}
+		document.getElementById('h1total').innerHTML = 'Total: Q ' + String(total.toFixed(2))
+	}
+
+	function funcion(num) {
+		console.log(num)
+		var arreglo = {{ examenes| tojson }}
+		var conteo = Object.keys(arreglo).length;
+		var aux = 'examen' + String(num)
+		var menudesp = document.getElementById(aux)
+		menudesp.innerHTML = ""
+		var opt = document.createElement('option');
+		opt.value = "";
+		opt.innerHTML = "Seleccione un examen";
+		menudesp.appendChild(opt);
+		var aux1 = 'tipoexamen' + String(num)
+		var idtipo = document.getElementById(aux1).value
+		var aux2 = 'precio' + String(num)
+		document.getElementById(aux2).value = ""
+		for (var i = 0; i < conteo; i++) {
+			if (String(arreglo[i][1]) == String(idtipo)) {
+				opt = document.createElement('option');
+				opt.value = arreglo[i][3];
+				opt.innerHTML = arreglo[i][0];
+				menudesp.appendChild(opt);
+			}
+		}
+	}
+
+	function funcion1(num) {
+		var arreglo = {{ examenes| tojson }}
+		var conteo = Object.keys(arreglo).length;
+		var aux = 'examen' + String(num)
+		var menudesp = document.getElementById(aux).value
+		var aux1 = 'precio' + String(num)
+		var inputprecio = document.getElementById(aux1)
+		for (var i = 0; i < conteo; i++) {
+			if (String(arreglo[i][3]) == String(menudesp)) {
+				inputprecio.value = arreglo[i][2]
+			}
+		}
+		calctotal()
+	}
+
+	function eliminar() {
+		var num = parseInt(document.getElementById('cant').value)
+		if (num > 1) {
+			var input = document.getElementById('row' + String(num - 1))
+			input.remove()
+			document.getElementById('cant').value = num - 1
+		}
+	}
+
+	function agregar() {
+		var arreglo = {{ tipoexamen| tojson }};
+		var conteo = Object.keys(arreglo).length;
+		var inputcantidad = document.getElementById('cant')
+		var cantidad = inputcantidad.value
+		cantidad1 = parseInt(cantidad) + 1
+		inputcantidad.value = cantidad1
+		var contenedor = document.getElementById('container')
+		var tr = document.createElement('tr');
+		tr.id = "row" + String(cantidad)
+		var auxant = 'tipoexamen' + String(cantidad - 1)
+		var anttipoexamen = parseInt(document.getElementById(auxant).value)
+		var td1 = document.createElement('td');
+		var select1 = document.createElement('select');
+		select1.id = "tipoexamen" + String(cantidad)
+		select1.name = "tipoexamen" + String(cantidad)
+		select1.className = 'form-control'
+		select1.setAttribute('onchange', 'funcion(' + String(cantidad) + ')');
+		var opt = document.createElement('option');
+		opt.value = "";
+		opt.innerHTML = "Seleccione una categoria";
+		if (anttipoexamen == 0) {
+			opt.selected = true
+		}
+		select1.appendChild(opt)
+		for (var i = 0; i < conteo; i++) {
+			opt = document.createElement('option');
+			opt.value = arreglo[i][1];
+			opt.innerHTML = arreglo[i][0];
+			select1.appendChild(opt)
+			if (parseInt(opt.value) == anttipoexamen) {
+				opt.selected = true
+			}
+		}
+		td1.appendChild(select1)
+		tr.appendChild(td1)
+		var td2 = document.createElement('td');
+		var select2 = document.createElement('select');
+		select2.id = "examen" + String(cantidad)
+		select2.name = "examen" + String(cantidad)
+		select2.className = 'form-control'
+		select2.setAttribute('onchange', 'funcion1(' + String(cantidad) + ')');
+		var opt = document.createElement('option');
+		opt.value = "";
+		opt.innerHTML = "Seleccione un examen";
+		select2.appendChild(opt)
+		td2.appendChild(select2)
+		tr.appendChild(td2)
+		td3 = document.createElement('td');
+		input3 = document.createElement('input');
+		input3.type = 'text';
+		input3.name = 'precio' + String(cantidad);
+		input3.id = 'precio' + String(cantidad);
+		input3.className = 'form-control';
+		input3.placeholder = "Precio";
+		input3.readOnly = true;
+		td3.appendChild(input3)
+		tr.appendChild(td3)
+		contenedor.appendChild(tr)
+		funcion(cantidad);
+	}
 </script>
-  <!-- page-wrapper -->
+<!-- page-wrapper -->
 {% endblock %}

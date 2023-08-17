@@ -12,7 +12,6 @@
 				</div>
 			</div>
 			<!-- sidebar-header  -->
-
 			<div class="sidebar-menu">
 				<ul>
 					<li class="header-menu">
@@ -64,7 +63,6 @@
 							<span>Ingles</span>
 						</a>
 					</li>
-
 					<li>
 						<a href="/extra">
 							<span>Pagos Extra</span>
@@ -86,58 +84,52 @@
 						</a>
 					</li>
 					<!-- sidebar-menu  -->
-			</div>
-			<!-- sidebar-content  -->
 	</nav>
 	<!-- sidebar-wrapper  -->
 	<main class="page-content" id="main">
 		<div class="container">
 			<center>
-				<h2>¿Está seguro de continuar?</h2>
-			</center>
-			<table class="table table-bordered">
-				<tr>
-					<th>Nombre</th>
-					<td>{{nombre}}</td>
-				</tr>
-				<tr>
-					<th>Carnet</th>
-					<td>{{carnet}}</td>
-				</tr>
-				<tr>
-					<th>Pago</th>
-					<td>Auxiliar de Enfermeria</td>
-				</tr>
-				{% if insc == 1 %}
-				<tr>
-					<th>Inscripción</th>
-					<td>Aplica</td>
-				</tr>
+				{% if nuevo == 1 %}
+				<h1>Nueva Factura</h1>
+				{% else %}
+				<h1>Editar Factura</h1>
 				{% endif %}
-				<tr>
-					<th>Mes</th>
-					<td>{% for i in range(cantidad) %}
-						{{meses[i]}}<br>
-						{% endfor %}
-					</td>
-				</tr>
-				<tr>
-					<th>Mora</th>
-					<td>Q{{mora}}</td>
-				</tr>
-				<tr>
-					<th>Total</th>
-					<td>Q{{total}}</td>
-				</tr>
-			</table>
+			</center>
+			<hr>
 			<form action="" method="POST">
-				<center>
-					<input class="btn btn-primary" type="submit" value="Aceptar">
-					<a class="btn btn-primary" href="{{ url_for('auxenf') }}" role="button">Regresar</a>
-				</center>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="documento">No. Documento</label>
+						<input type="text" class="form-control" name="documento" id="documento" placeholder="Documento" value="{{factura[0]}}" required>
+					</div>
+					<div class="col-md-6">
+						<label for="proveedor">Proveedor</label>
+						<input type="text" class="form-control" name="proveedor" id="proveedor" placeholder="Proveedor" onblur="mayusculas()" value="{{factura[1]}}" required>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="documento">Descripción</label>
+						<input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" value="{{factura[2]}}" required>
+					</div>
+					<div class="col-md-6">
+						<label for="monto">Monto</label>
+						<input type="number" step="0.01" class="form-control" name="monto" id="monto" placeholder="Monto" value="{{factura[3]}}" required>
+					</div>
+				</div><br>
+				<center><input class="btn btn-primary" type="submit" value="Aceptar"></center>
 			</form>
+		</div>
 	</main>
 	<!-- page-content" -->
 </div>
+<script type="text/javascript">
+	function mayusculas() {
+		var proveedor = document.getElementById('proveedor')
+		var data = proveedor.value
+		data = data.toUpperCase()
+		proveedor.value = data
+	}
+</script>
 <!-- page-wrapper -->
 {% endblock %}

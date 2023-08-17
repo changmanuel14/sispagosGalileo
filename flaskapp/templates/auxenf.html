@@ -12,7 +12,6 @@
                 </div>
             </div>
             <!-- sidebar-header  -->
-
             <div class="sidebar-menu">
                 <ul>
                     <br>
@@ -61,7 +60,6 @@
                             <span>Ingles</span>
                         </a>
                     </li>
-            
                     <li>
                         <a href="/extra">
                             <span>Pagos Extra</span>
@@ -89,43 +87,51 @@
             <center>
                 <h1>Auxiliar de Enfermeria</h1>
             </center>
-
             <hr>
             <form action="" method="POST">
 				<input type="hidden" id="cant" name="cant" value="0" readonly>
-                <center>
-                    <input type="text" id="carnet" name="carnet" class="inputtext"
-                        placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br>
-                    <br>
-                    <table>
-                        <tr>
-                            <th>Inscripción</th>
-                            <td>
-                                <input type="checkbox" id="insc" name="insc" value="1">
-                                <label for="insc" id="linsc">Seleccione si se ingresa Inscripción al curso</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Mensualidades</th>
-                            <td>
-                                <div id="myDiv">
-                                    <input type="text" id="mes0" name="mes0" class="inputtext1" placeholder="  Mes" list="meses" onchange="calcularmora()">
-                                </div>
-                            </td>
-                        </tr>
-						<tr>
-							<th>Mora</th>
-                            <td>
-                                <input type="number" step="0.01" id="mora" name="mora" class="inputtext1" placeholder="  Mora">
-                            </td>
-						</tr>
-                    </table>
-                </center>
+                <div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
+							onblur="mayusculas()" required>
+					</div>
+				</div>
+				<table class="table table-bordered">
+					<tr>
+						<th>Inscripción</th>
+						<td>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="insc" name="insc" value="1">
+								<label class="form-check-label" for="insc" id="linsc">Seleccione si se ingresa Inscripción al curso</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Mensualidades</th>
+						<td>
+							<div id="myDiv">
+								<input type="text" id="mes0" name="mes0" class="form-control" placeholder="Mes" list="meses" onchange="calcularmora()">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Mora</th>
+						<td>
+							<input type="number" step="0.01" id="mora" name="mora" class="form-control" placeholder="Mora">
+						</td>
+					</tr>
+				</table>
                 <br>
-                <center><button onclick="submit" class="button">Aceptar</button> <button type="button" class="button"
-                        onclick="agregar('')">Agregar Campo</button> <button type="button" class="button"
-                        onclick="eliminar('')">Eliminar Campo</button></center>
+                <center>
+					<input class="btn btn-primary" type="submit" value="Aceptar">
+					<button type="button" class="btn btn-success" onclick="agregar()">Agregar Campo</button> 
+					<button type="button" class="btn btn-danger" onclick="eliminar()">Eliminar Campo</button>
+				</center>
                 <br>
                 <hr>
             </form>
@@ -139,14 +145,6 @@
     <!-- page-content" -->
 </div>
 <script type="text/javascript">
-	window.onload = function(){
-        var mensaje = {{ mensaje }}
-        if(mensaje.length > 0) {
-            return alert(mensaje);
-        }else {
-            return 0;
-        }
-    }
     function mayusculas() {
         var nombre = document.getElementById('nombre').value
         nombre = nombre.toUpperCase()
@@ -160,7 +158,6 @@
             var brs = div.getElementsByTagName('br')
             var largo = brs.length
             input.remove()
-            brs[largo - 1].remove()
             document.getElementById('cant').value = num - 1
         }
     }
@@ -172,12 +169,10 @@
         input.type = 'text'
         input.id = 'mes' + String(num)
         input.name = 'mes' + String(num)
-        input.className = 'inputtext1'
-        input.placeholder = '  Mes'
+        input.className = 'form-control'
+        input.placeholder = 'Mes'
         input.setAttribute('list', 'meses');
 		input.setAttribute('onchange', 'calcularmora()');
-        var br = document.createElement('br')
-        div.appendChild(br)
         div.appendChild(input)
     }
 	function calcularmora() {

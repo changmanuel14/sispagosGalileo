@@ -16,27 +16,22 @@
 			margin: 0;
 			padding: 0;
 		}
-
 		.clear {
 			clear: both;
 		}
-
 		#page-wrap {
 			width: 800px;
 			margin: 40px auto 60px;
 		}
-
 		#pic {
 			float: right;
 			margin: -30px 0 0 0;
 		}
-
 		#page-wrap h2 {
 			font-size: 20px;
 			margin: 0 0 6px 0;
 			position: relative;
 		}
-
 		#page-wrap h2 span {
 			position: absolute;
 			bottom: 0;
@@ -47,27 +42,22 @@
 			color: #999;
 			font-weight: normal;
 		}
-
 		#page-wrap a:hover {
 			border-bottom-style: solid;
 			color: black;
 		}
-
 		#page-wrap ul {
 			margin: 0 0 32px 17px;
 		}
-
 		#page-wrap #objective {
 			width: 500px;
 			float: left;
 		}
-
 		#page-wrap #objective p {
 			font-family: Georgia, Serif;
 			font-style: italic;
 			color: #666;
 		}
-
 		#page-wrap dt {
 			font-style: italic;
 			font-weight: bold;
@@ -79,12 +69,10 @@
 			height: 200px;
 			border-right: 1px solid #999;
 		}
-
 		#page-wrap dd {
 			width: 600px;
 			float: right;
 		}
-
 		#page-wrap dd.clear {
 			float: none;
 			margin: 0;
@@ -97,7 +85,6 @@
 			color: #ffffff;
 			margin-top: 5rem;
 		}
-
 		table,
 		th,
 		td {
@@ -105,13 +92,11 @@
 			color: #000000;
 			border-collapse: collapse;
 		}
-
 		table {
 			border-collapse: collapse;
 			width: 100%;
 			border: 1px solid #000000;
 		}
-
 		td,
 		th {
 			font-size: 16px;
@@ -119,7 +104,6 @@
 			text-align: left;
 			padding: 8px;
 		}
-
 		h1,
 		h2,
 		h3,
@@ -247,19 +231,48 @@
 								</tr>
 								<tr>
 									<th colspan="3">Facturas</th>
-									<td colspan="2">Q {{efectivo[1]}}</td>
+									<td colspan="2">Q {{totalfacturas}}</td>
 								</tr>
 								<tr>
 									<th colspan="3">Vales</th>
-									<td colspan="2">Q {{efectivo[2]}}</td>
+									<td colspan="2">Q {{efectivo[1]}}</td>
 								</tr>
 								<tr>
 									<th colspan="3">Tarjeta</th>
-									<td colspan="2">Q {{efectivo[3]}}</td>
+									<td colspan="2">Q {{efectivo[2]}}</td>
 								</tr>
 								<tr>
 									<th colspan="3">Total</th>
-									<th colspan="2">Q {{suma - sumadev}}</th>
+									<th colspan="2">Q{{suma - sumadev}}</th>
+								</tr>
+							</table>
+							<table>
+								<tr>
+									<th colspan="5">Facturas/Recibos</th>
+								</tr>
+								<tr>
+									<th>No. Documento</th>
+									<th>Proveedor</th>
+									<th>Descripción</th>
+									<th>Usuario</th>
+									<th>Monto</th>
+								</tr>
+								{% for i in facturas %}
+								<tr>
+									<td>{{i[0]}}</td>
+									<td>{{i[1]}}</td>
+									<td>{{i[2]}}</td>
+									<td>{{i[4]}}</td>
+									<td>Q{{i[3]}}</td>
+								</tr>
+								{% endfor %}
+								<tr>
+									<th colspan="4">Total</th>
+									<td>Q{{totalfacturas}}</td>
+								</tr>
+								<tr>
+									<th colspan="4">Diferencia</th>
+									<td>Q{{suma - sumadev - totalfacturas}}</td>
 								</tr>
 							</table>
 							<br>
@@ -286,7 +299,6 @@
 									<th colspan="3">Total</th>
 									<td>Q {{totaltransferencias[0]}}</td>
 								</tr>
-
 							</table>
 
 							<br>

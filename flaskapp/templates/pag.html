@@ -1,168 +1,171 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li>
-			<a href="/i">
-				<span>Inscripciones</span>
-			</a>
-		</li>
-		<li>
-			<a href="/auxenf">
-				<span>Auxiliar de Enfermeria</span>
-			</a>
-		</li>
-		<li>
-			<a href="/optica">
-				<span>Óptica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/laboratorio">
-				<span>Laboratorio</span>
-			</a>
-		</li>
-		<li>
-			<a href="/academia">
-				<span>Academia</span>
-			</a>
-		</li>
-		<li>
-			<a href="/p">
-				<span>Practica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/m">
-				<span>Manuales</span>
-			</a>
-		</li>
-		<li>
-			<a href="/pag">
-				<span>Pagos</span>
-			</a>
-		</li>
-		<li>
-			<a href="/ingles">
-				<span>Ingles</span>
-			</a>
-		</li>
-
-		<li>
-			<a href="/extra">
-				<span>Pagos Extra</span>
-			</a>
-		</li>
-		<li>
-			<a href="/parqueo">
-				<span>Parqueo</span>
-			</a>
-		</li>
-		<li>
-			<a href="/u">
-				<span>Uniformes</span>
-			</a>
-		</li>
-		<li>
-			<a href="/grad">
-				<span>Graduacion</span>
-			</a>
-		</li>
-      <!-- sidebar-menu  -->
-    
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content" id="main">
-    <div class="container">
-      <center><h1>Pagos</h1></center>
-      <hr>
-      <form action="" method="POST">
-        <center> <label for="carrera" style="color: black;"> <strong><h4>Seleccione el pago:</h4></strong></label>
-
-          <select name="carrera" id="carrera" class="inputtext" onchange="cambio()" required>
-            <option value="">Seleccione pago</option>
-            {% for i in carreras %}
-            <option value="{{i[0]}},{{i[2]}},{{i[3]}}">{{i[2]}}</option>
-            {% endfor %}
-          </select></center><br>
-        <center>
-          <input type="text" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br><br>
-          <div style="display: none;" id="camposextra">
-            <input type="number" id="total" name="total" class="inputtext" placeholder="  Total">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="descripcion" name="descripcion" class="inputtext1" placeholder="  Descripción"><br>
-          </div>
-          <div style="display: none;" id="camposextra1">
-            <input type="text" id="mes" name="mes" class="inputtext1" placeholder="  Opciones"><br>
-          </div>
-      </center>
-        <br>
-        <center><button onclick="submit" class="button">Aceptar</button></center>
-        <br>
-        <hr>
-      </form>
-	</div>
-    </main>
-    <!-- page-content" -->
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/i">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/auxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/optica">
+							<span>Óptica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/laboratorio">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<li>
+						<a href="/academia">
+							<span>Academia</span>
+						</a>
+					</li>
+					<li>
+						<a href="/p">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/m">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/pag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/ingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+					<li>
+						<a href="/extra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/parqueo">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<li>
+						<a href="/u">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/grad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<div class="container">
+			<center>
+				<h1>Pagos</h1>
+			</center>
+			<hr>
+			<form action="" method="POST">
+				<div class="form-row">
+					<div class="col-md-12">
+						<label for="carrera">Pago</label>
+						<select class="form-control" id="carrera" name="carrera" onchange="cambio()" required>
+							<option value="">Seleccione pago</option>
+							{% for i in carreras %}
+							<option value="{{i[0]}},{{i[2]}},{{i[3]}}">{{i[2]}}</option>
+							{% endfor %}
+						</select>
+						<input type="hidden" id="cant" name="cant" value="1" readonly>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
+							onblur="mayusculas()" required>
+					</div>
+				</div>
+				<div style="display: none;" id="camposextra">
+					<div class="form-row">
+						<div class="col-md-6">
+							<label for="total">Total</label>
+							<input type="number" step="0.01" class="form-control" name="total" id="total" placeholder="Total">
+						</div>
+						<div class="col-md-6">
+							<label for="descripcion">Descripción</label>
+							<input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción">
+						</div>
+					</div>
+				</div>
+				<br>
+				<center>
+					<input class="btn btn-primary" type="submit" value="Aceptar">
+				</center>
+				<hr>
+			</form>
+		</div>
+	</main>
+	<!-- page-content" -->
 </div>
 <datalist id="meses">
-  {% for i in meses %}
-  <option value="{{i}}">
-  {% endfor %}
+	{% for i in meses %}
+	<option value="{{i}}">
+		{% endfor %}
 </datalist>
 <datalist id="ciclos">
-  <option value="Ciclo 1"></option>
-  <option value="Ciclo 2"></option>
-  <option value="Ciclo 3"></option>
-  <option value="Ciclo 4"></option>
+	<option value="Ciclo 1"></option>
+	<option value="Ciclo 2"></option>
+	<option value="Ciclo 3"></option>
+	<option value="Ciclo 4"></option>
 </datalist>
 <script type="text/javascript">
-  function mayusculas(){
-        var nombre = document.getElementById('nombre').value
-        nombre = nombre.toUpperCase()
-        document.getElementById('nombre').value = nombre
-    }
+	function mayusculas() {
+		var nombre = document.getElementById('nombre').value
+		nombre = nombre.toUpperCase()
+		document.getElementById('nombre').value = nombre
+	}
 </script>
 <script type="text/javascript">
-  function cambio() {
-    var valores = document.getElementById('carrera').value
-    var data = valores.split(',')
-    if(data[1] == 'Pagos'){
-      document.getElementById('camposextra').style.display = 'block'
-      document.getElementById('camposextra1').style.display = 'none'
-    }else if (data[1] == 'Mensualidad Ingles Trimestral' || data[1] == 'Mensualidad Ingles Semestral') {
-      document.getElementById('camposextra').style.display = 'none'
-      document.getElementById('camposextra1').style.display = 'block'
-      document.getElementById('mes').placeholder = '  Mes'
-      document.getElementById('mes').setAttribute('list', 'meses')
-    }else if (data[1] == 'Inscripcion Ingles Trimestral' || data[1] == 'Inscripcion Ingles Semestral') {
-      document.getElementById('camposextra').style.display = 'none'
-      document.getElementById('camposextra1').style.display = 'block'
-      document.getElementById('mes').placeholder = '  Ciclo'
-      document.getElementById('mes').setAttribute('list', 'ciclos')
-    }else {
-      document.getElementById('camposextra').style.display = 'none'
-      document.getElementById('camposextra1').style.display = 'none'
-    }
-  }
+	function cambio() {
+		var valores = document.getElementById('carrera').value
+		var data = valores.split(',')
+		if (data[1] == 'Pagos') {
+			document.getElementById('camposextra').style.display = 'block'
+		} else {
+			document.getElementById('camposextra').style.display = 'none'
+		}
+	}
 </script>
-  <!-- page-wrapper -->
+<!-- page-wrapper -->
 {% endblock %}

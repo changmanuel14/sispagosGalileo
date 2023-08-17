@@ -94,41 +94,57 @@
 			</center>
 			<hr>
 			<form action="" method="POST">
-				<center> <label for="carrera" style="color: black;"> <strong>
-							<h4>Seleccione la carrera:</h4>
-						</strong></label>
-
-					<select name="carrera" id="carrera" class="inputtext" onchange="cambio()" required>
-						<option value="">Seleccione carrera</option>
-						{% for i in carreras %}
-						<option value="{{i[0]}},{{i[2]}}">{{i[2]}}</option>
-						{% endfor %}
-					</select><input type="number" class="inputtext5" id="cant" name="cant" value="1" readonly>
-				</center>
-				<center>
-					<input type="text" id="carnet" name="carnet" class="inputtext" required
-						placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"
-						onblur="mayusculas()"><br>
-					<br>
-					<div id="myDiv">
-						<input type="text" id="mes1" name="mes1" class="inputtext1" required
-							placeholder="  Descripción">
+				<div class="form-row">
+					<div class="col-md-12">
+						<label for="carrera">Carrera</label>
+						<select class="form-control" id="carrera" name="carrera" onchange="cambio()" required>
+							<option value="">Seleccione carrera</option>
+							{% for i in carreras %}
+							<option value="{{i[0]}},{{i[2]}}">{{i[2]}}</option>
+							{% endfor %}
+						</select>
+						<input type="hidden" id="cant" name="cant" value="1" readonly>
 					</div>
-					<br>
-					<div id="practicalenq" style="display: none;">
-						<center>
-							<input type="text" id="lugar" name="lugar" class="inputtext1" placeholder="  Lugar"><br><br>
-							<input type="date" id="fechainicio" name="fechainicio"
-								class="inputtext">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-							<input type="date" id="fechafin" name="fechafin" class="inputtext">
-						</center>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
 					</div>
-				</center>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
+							onblur="mayusculas()" required>
+					</div>
+				</div>
+				<div id="myDiv">
+					<label for="mes1">Descripción</label>
+					<input type="text" id="mes1" name="mes1" class="form-control" required placeholder="Descripción">
+				</div>
+				<div id="practicalenq" style="display: none;">
+					<div class="form-row">
+						<div class="col-md-12">
+							<label for="lugar">Lugar</label>
+							<input type="text" id="lugar" name="lugar" class="form-control" placeholder="Lugar">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-6">
+							<label for="fechainicio">Fecha Inicio</label>
+							<input type="date" class="form-control" name="fechainicio" id="fechainicio">
+						</div>
+						<div class="col-md-6">
+							<label for="fechafin">Fecha Fin</label>
+							<input type="date" class="form-control" name="fechafin" id="fechafin">
+						</div>
+					</div>
+				</div>
 				<br>
-				<center><button onclick="submit" class="button">Aceptar</button> <button type="button" class="button"
-						onclick="agregar()">Agregar Campo</button> <button type="button" class="button"
-						onclick="eliminar('')">Eliminar Campo</button></center>
+				<center>
+					<input class="btn btn-primary" type="submit" value="Aceptar">
+					<button type="button" class="btn btn-success" onclick="agregar()">Agregar Campo</button> 
+					<button type="button" class="btn btn-danger" onclick="eliminar()">Eliminar Campo</button>
+				</center>
 				<br>
 				<hr>
 			</form>
@@ -182,7 +198,6 @@
 			var brs = div.getElementsByTagName('br')
 			var largo = brs.length
 			input.remove()
-			brs[largo - 1].remove()
 			document.getElementById('cant').value = num - 1
 		}
 	}
@@ -194,9 +209,7 @@
 		input.type = 'text'
 		input.id = 'mes' + String(num)
 		input.name = 'mes' + String(num)
-		input.className = 'inputtext1'
-		var br = document.createElement('br')
-		div.appendChild(br)
+		input.className = 'form-control'
 		div.appendChild(input)
 		cambio();
 	}
@@ -239,9 +252,6 @@
 				datalenq.style.display = 'none'
 			}
 		}
-
 	}
-
 </script>
-<!-- page-wrapper -->
 {% endblock %}

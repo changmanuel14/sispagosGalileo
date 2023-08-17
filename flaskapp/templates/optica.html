@@ -1,178 +1,194 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li>
-			<a href="/i">
-				<span>Inscripciones</span>
-			</a>
-		</li>
-		<li>
-			<a href="/auxenf">
-				<span>Auxiliar de Enfermeria</span>
-			</a>
-		</li>
-		<li>
-			<a href="/optica">
-				<span>Óptica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/laboratorio">
-				<span>Laboratorio</span>
-			</a>
-		</li>
-		<li>
-			<a href="/academia">
-				<span>Academia</span>
-			</a>
-		</li>
-		<li>
-			<a href="/p">
-				<span>Practica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/m">
-				<span>Manuales</span>
-			</a>
-		</li>
-		<li>
-			<a href="/pag">
-				<span>Pagos</span>
-			</a>
-		</li>
-		<li>
-			<a href="/ingles">
-				<span>Ingles</span>
-			</a>
-		</li>
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
 
-		<li>
-			<a href="/extra">
-				<span>Pagos Extra</span>
-			</a>
-		</li>
-		<li>
-			<a href="/parqueo">
-				<span>Parqueo</span>
-			</a>
-		</li>
-		<li>
-			<a href="/u">
-				<span>Uniformes</span>
-			</a>
-		</li>
-		<li>
-			<a href="/grad">
-				<span>Graduacion</span>
-			</a>
-		</li>
-      <!-- sidebar-menu  -->
-    </div>
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content" id="main">
-    <div class="container">
-      <center><h1>Servicio de Óptica</h1></center>
-      <hr>
-      <form action="" method="POST">
-        <center>
-        <input type="text" id="carnet" name="carnet" class="inputtext" required placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre" onblur="mayusculas()"><br>
-      </center>
-        <br>
-        <table>
-          <tr>
-            <th>Examen de la Vista</th>
-            <td>
-              <input type="checkbox" id="exavis" name="exavis" value="1" onclick="calctotal()">
-              <label for="exavis">Q </label>
-              <label for="exavis" id="exavisl">50.00</label>
-            </td>
-          </tr>
-		  <tr>
-            <th>Examen de la Vista (EPS)</th>
-            <td>
-              <input type="checkbox" id="exaviseps" name="exaviseps" value="1" onclick="calctotal()">
-              <label for="exaviseps">Q </label>
-              <label for="exaviseps" id="exaviseps1">40.00</label>
-            </td>
-          </tr>
-          <tr>
-            <th>Aro</th>
-            <td><input type="number" step="0.01" id="aro" name="aro" class="inputtext3" onchange="calctotal()"></td>
-          </tr>
-          <tr>
-            <th>Lente</th>
-            <td><input type="number" step="0.01" id="lente" name="lente" class="inputtext3" onchange="calctotal()"></td>
-          </tr>
-          <tr>
-            <th><h3>Total</h3></th>
-            <td>
-              <input type="text" id="total" name="total" class="inputtext3" readonly>
-            </td>
-          </tr> 
-        </table>
-        <center><button onclick="submit" class="button">Aceptar</button></center>
-        <br>
-        <hr>
-      </form>
-  </div>
-    </main>
-    <!-- page-content" -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/i">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/auxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/optica">
+							<span>Óptica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/laboratorio">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<li>
+						<a href="/academia">
+							<span>Academia</span>
+						</a>
+					</li>
+					<li>
+						<a href="/p">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/m">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/pag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/ingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+
+					<li>
+						<a href="/extra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/parqueo">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<li>
+						<a href="/u">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/grad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+			</div>
+			<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<div class="container">
+			<center>
+				<h1>Óptica</h1>
+			</center>
+			<hr>
+			<form action="" method="POST">
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
+							onblur="mayusculas()" required>
+					</div>
+				</div>
+				<table class="table table-bordered">
+					<tr>
+						<th>Examen de la Vista</th>
+						<td>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="exavis" name="exavis" value="1" onclick="calctotal()">
+								<label class="form-check-label" for="exavis">Q</label>
+								<label class="form-check-label" for="exavis" id="exavisl">50.00</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Examen de la Vista (EPS)</th>
+						<td>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="exaviseps" name="exaviseps" value="1" onclick="calctotal()">
+								<label class="form-check-label" for="exaviseps">Q</label>
+								<label class="form-check-label" for="exaviseps" id="exavisepsl">40.00</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Aro</th>
+						<td><input type="number" step="0.01" id="aro" name="aro" class="form-control"
+								onchange="calctotal()" placeholder="Aro"></td>
+					</tr>
+					<tr>
+						<th>Lente</th>
+						<td><input type="number" step="0.01" id="lente" name="lente" class="form-control"
+								onchange="calctotal()" placeholder="Lente"></td>
+					</tr>
+					<tr>
+						<th>Total</th>
+						<td>
+							<input type="text" id="total" name="total" class="form-control" placeholder="Total" readonly>
+						</td>
+					</tr>
+				</table>
+				<center>
+					<input class="btn btn-primary" type="submit" value="Aceptar">
+				</center>
+				<br>
+				<hr>
+			</form>
+		</div>
+	</main>
+	<!-- page-content" -->
 </div>
 <script type="text/javascript">
-  function mayusculas(){
-        var nombre = document.getElementById('nombre').value
-        nombre = nombre.toUpperCase()
-        document.getElementById('nombre').value = nombre
-    }
+	function mayusculas() {
+		var nombre = document.getElementById('nombre').value
+		nombre = nombre.toUpperCase()
+		document.getElementById('nombre').value = nombre
+	}
 </script>
 <script type="text/javascript">
-  function calctotal(){
-    var examenvista = document.getElementById('exavis')
-	var examenvistaeps = document.getElementById('exaviseps')
-    var aro = document.getElementById('aro').value
-    var lente = document.getElementById('lente').value
-    var tot = document.getElementById('total')
-    var total = 0
-    var aux = 0
-    if (examenvista.checked == true){
-      total = total + 50
-    }
-	if (examenvistaeps.checked == true){
-      total = total + 40
-    }
-    if (aro.length == 0){
-      total = total + 0
-    }else {
-      total = total + parseFloat(aro)
-    }
-    if (lente.length == 0){
-      total = total + 0
-    }else {
-      total = total + parseFloat(lente)
-    }
-    tot.value = 'Q ' + total.toFixed(2)
-  }
+	function calctotal() {
+		var examenvista = document.getElementById('exavis')
+		var examenvistaeps = document.getElementById('exaviseps')
+		var aro = document.getElementById('aro').value
+		var lente = document.getElementById('lente').value
+		var tot = document.getElementById('total')
+		var total = 0
+		var aux = 0
+		if (examenvista.checked == true) {
+			total = total + 50
+		}
+		if (examenvistaeps.checked == true) {
+			total = total + 40
+		}
+		if (aro.length == 0) {
+			total = total + 0
+		} else {
+			total = total + parseFloat(aro)
+		}
+		if (lente.length == 0) {
+			total = total + 0
+		} else {
+			total = total + parseFloat(lente)
+		}
+		tot.value = 'Q ' + total.toFixed(2)
+	}
 </script>
 {% endblock %}

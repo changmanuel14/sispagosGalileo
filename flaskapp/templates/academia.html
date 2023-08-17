@@ -12,7 +12,6 @@
 				</div>
 			</div>
 			<!-- sidebar-header  -->
-
 			<div class="sidebar-menu">
 				<ul>
 					<br>
@@ -61,7 +60,6 @@
 							<span>Ingles</span>
 						</a>
 					</li>
-
 					<li>
 						<a href="/extra">
 							<span>Pagos Extra</span>
@@ -89,48 +87,57 @@
 			<center>
 				<h1>Academia</h1>
 			</center>
-
 			<hr>
 			<form action="" method="POST">
-				<center> <label for="carrera" style="color: black;"> <strong>
-							<h4>Seleccione la carrera:</h4>
-						</strong></label>
-					<select name="carrera" id="carrera" class="inputtext" required>
-						<option value="">Seleccione carrera</option>
-						{% for i in carreras %}
-						<option value="{{i[2]}}">{{i[0]}}</option>
-						{% endfor %}
-					</select><input type="hidden" class="inputtext5" id="cant" name="cant" value="0" readonly><br>
-				</center>
-				<center>
-					<input type="text" id="carnet" name="carnet" class="inputtext" required
-						placeholder="  Carné">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<input type="text" id="nombre" name="nombre" class="inputtext1" required placeholder="  Nombre"
-						onblur="mayusculas()"><br>
-					<br>
-					<table>
-						<tr>
-							<th>Inscripción</th>
-							<td>
-								<input type="checkbox" id="insc" name="insc" value="1">
-								<label for="insc">Q 250.00</label>
-							</td>
-						</tr>
-						<tr>
-							<th>Mensualidades</th>
-							<td>
-								<div id="myDiv">
-									<input type="text" id="mes0" name="mes0" class="inputtext1" required
-										placeholder="  Mes" list="meses">
-								</div>
-							</td>
-						</tr>
-					</table>
-				</center>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label for="carrera">Carrera</label>
+						<select class="form-control" id="carrera" name="carrera" required>
+							<option value="">Seleccione carrera</option>
+							{% for i in carreras %}
+							<option value="{{i[2]}}">{{i[0]}}</option>
+							{% endfor %}
+						</select>
+						<input type="hidden" id="cant" name="cant" value="1" readonly>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
+							onblur="mayusculas()" required>
+					</div>
+				</div>
+				<table class="table table-bordered">
+					<tr>
+						<th>Inscripción</th>
+						<td>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="insc" name="insc" value="1">
+								<label class="form-check-label" for="insc">Q 250.00</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>Mensualidades</th>
+						<td>
+							<div id="myDiv">
+								<input type="text" id="mes1" name="mes1" class="form-control" required placeholder="Mes"
+									list="meses">
+							</div>
+						</td>
+					</tr>
+				</table>
 				<br>
-				<center><button onclick="submit" class="button">Aceptar</button> <button type="button" class="button"
-						onclick="agregar('')">Agregar Campo</button> <button type="button" class="button"
-						onclick="eliminar('')">Eliminar Campo</button></center>
+				<center>
+					<input class="btn btn-primary" type="submit" value="Aceptar">
+					<button type="button" class="btn btn-success" onclick="agregar()">Agregar Campo</button> 
+					<button type="button" class="btn btn-danger" onclick="eliminar()">Eliminar Campo</button>
+				</center>
 				<br>
 				<hr>
 			</form>
@@ -151,13 +158,12 @@
 	}
 	function eliminar() {
 		var num = parseInt(document.getElementById('cant').value)
-		if (num > 0) {
+		if (num > 1) {
 			var input = document.getElementById('mes' + String(num))
 			var div = document.getElementById('myDiv')
 			var brs = div.getElementsByTagName('br')
 			var largo = brs.length
 			input.remove()
-			brs[largo - 1].remove()
 			document.getElementById('cant').value = num - 1
 		}
 	}
@@ -169,11 +175,9 @@
 		input.type = 'text'
 		input.id = 'mes' + String(num)
 		input.name = 'mes' + String(num)
-		input.className = 'inputtext1'
-		input.placeholder = '  Mes'
+		input.className = 'form-control'
+		input.placeholder = 'Mes'
 		input.setAttribute('list', 'meses');
-		var br = document.createElement('br')
-		div.appendChild(br)
 		div.appendChild(input)
 	}
 </script>

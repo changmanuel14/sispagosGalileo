@@ -103,7 +103,7 @@ def academia():
 		if len(carnet) < 1:
 			carnet = 0
 		nombre = request.form["nombre"]
-		cantidad = int(request.form["cant"]) + 1
+		cantidad = int(request.form["cant"])
 		carrera = request.form["carrera"]
 		try:
 			insc = request.form["insc"]
@@ -111,7 +111,7 @@ def academia():
 			insc = 0
 		datameses = ""
 		for i in range(cantidad):
-			aux = f'mes{i}'
+			aux = f'mes{i + 1}'
 			mes = request.form[aux]
 			if i > 0:
 				datameses = f'{datameses},{mes}'
@@ -185,8 +185,7 @@ def confirmacionaca(nombre, carnet, datameses, carrera, insc):
 	return render_template('confirmacionaca.html', title='Confirmación Academia', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datacarrera=datacarrera, insc=insc, meses=meses)
 
 @app.route("/auxenf", methods=['GET', 'POST'])
-@app.route("/auxenf/<mensaje>", methods=['GET', 'POST'])
-def auxenf(mensaje = None):
+def auxenf():
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -215,7 +214,7 @@ def auxenf(mensaje = None):
 		if len(datameses) < 1:
 			datameses = 'None'
 		return redirect(url_for('confirmacionauxenf', nombre=nombre, carnet=carnet, insc=insc, datameses=datameses, mora=mora))
-	return render_template('auxenf.html', title='Auxiliares de Enfermeria', logeado=logeado, meses=meses, mensaje = mensaje)
+	return render_template('auxenf.html', title='Auxiliares de Enfermeria', logeado=logeado, meses=meses)
 
 @app.route("/confirmacionauxenf/<nombre>&<carnet>&<insc>&<datameses>&<mora>", methods=['GET', 'POST'])
 def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
@@ -260,7 +259,6 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
 		total = total + float(cuotas[1][1])
 	if mora > 0:
 		total = total + mora
-
 	if request.method == 'POST':
 		try:
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -293,7 +291,7 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
 		if imprimir:
 			return redirect(url_for('imprimir', idpagos=idpago))
 		else:
-			return redirect(url_for('auxenf', mensaje="Datos ingresados correctamente"))
+			return redirect(url_for('auxenf'))
 	return render_template('confirmacionauxenf.html', title='Confirmación Auxiliar de Enfermeria', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, insc=insc, meses=meses, mora = mora)
 
 @app.route('/repauxenf', methods=['GET', 'POST'])
@@ -2548,6 +2546,7 @@ def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
 	curso = str(curso)
 	datakit = str(datakit)
 	kits = datakit.split(',')
+	kits.pop()	
 	cursos = curso.split(',')
 	cantidad = len(cursos)
 	for i in range(cantidad):
@@ -2687,22 +2686,19 @@ def pag():
 		datatotal = request.form["total"]
 		datadescripcion = request.form["descripcion"]
 		datacarrera = request.form["carrera"]
-		datames = request.form["mes"]
-		if len(datadescripcion) < 1:
-			datadescripcion = 0
-		if len(datatotal) < 1:
-			datatotal = 0
-		if len(datames) < 1:
-			datames = 0
 		data = datacarrera.split(',')
+		if len(datadescripcion) < 1:
+			datadescripcion = data[1]
+		if len(datatotal) < 1:
+			datatotal = data[2]
 		pid = data[0]
 		pcod = data[1]
 		ptotal = data[2]
-		return redirect(url_for('confirmacionpag', carnet = datacarnet, nombre = datanombre, total = datatotal, descripcion= datadescripcion, pid = pid, pcod = pcod, ptotal = ptotal, datames=datames))
+		return redirect(url_for('confirmacionpag', carnet = datacarnet, nombre = datanombre, total = datatotal, descripcion= datadescripcion, pid = pid, pcod = pcod, ptotal = ptotal))
 	return render_template('pag.html', title="Pagos", carreras = carreras, logeado=logeado, meses=meses)
 
-@app.route('/confirmacionpag/<carnet>&<nombre>&<total>&<descripcion>&<pid>&<pcod>&<ptotal>&<datames>', methods=['GET', 'POST'])
-def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal, datames):
+@app.route('/confirmacionpag/<carnet>&<nombre>&<total>&<descripcion>&<pid>&<pcod>&<ptotal>', methods=['GET', 'POST'])
+def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -2714,7 +2710,6 @@ def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal, datam
 	pid = str(pid)
 	pcod = str(pcod)
 	ptotal = str(ptotal)
-	datames = str(datames)
 	if pcod != 'Pagos' and pcod != 'Curso Dirigido':
 		total = float(ptotal)
 		descripcion = pcod
@@ -2723,12 +2718,8 @@ def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal, datam
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
-					if datames == '0':
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion, 0,session['idusercaja']))
-					else:
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion + ' ' + datames, 0,session['idusercaja']))
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+					cursor.execute(consulta, (pid, nombre, carnet, total, date.today(), descripcion, 0,session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
@@ -2840,25 +2831,32 @@ def reportes():
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				consulta = f'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE() and iduser = {session["idusercaja"]};'
+				consulta = f'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE() and iduser = {session["idusercaja"]};'
 				cursor.execute(consulta)
 				efectivo = cursor.fetchall()
 				if len(efectivo) > 0:
 					efectivo = efectivo[0]
 				else:
-					consulta = f'INSERT INTO efectivo(billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, fecha, iduser) values (0,0,0,0,0,0,0,0,0,0,CURDATE(),{session["idusercaja"]});'
+					consulta = f'INSERT INTO efectivo(billete1, billete5, billete10, billete20, billete50, billete100, billete200, vales, tarjeta, fecha, iduser) values (0,0,0,0,0,0,0,0,0,CURDATE(),{session["idusercaja"]});'
 					cursor.execute(consulta)
 					conexion.commit()
-					consulta = f'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, facturas, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE() and iduser = {session["idusercaja"]};'
+					consulta = f'select billete1, billete5, billete10, billete20, billete50, billete100, billete200, vales, tarjeta, idefectivo from efectivo where fecha = CURDATE() and iduser = {session["idusercaja"]};'
 					cursor.execute(consulta)
 					efectivo = cursor.fetchone()
-				consulta = f'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = "{date.today()}" and p.recibo = 0 and p.user = {session["idusercaja"]} group by c.cod order by c.cod asc, p.nombre asc;'
+				consulta = f'SELECT SUM(monto), count(monto) FROM factura WHERE fecha = CURDATE() and usuario = {session["idusercaja"]};'
+				cursor.execute(consulta)
+				facturas = cursor.fetchone()
+				if int(facturas[1]) > 0:
+					facturas = float(facturas[0])
+				else:
+					facturas = 0
+				consulta = f'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = CURDATE() and p.recibo = 0 and p.user = {session["idusercaja"]} group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				sumas = cursor.fetchall()
 				sumtotal = 0
 				for i in sumas:
 					sumtotal = sumtotal + float(i[3])
-				consulta = f'SELECT p.fechadevuelto, c.cod, c.concepto, round(p.total,2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fechadevuelto = "{date.today()}" order by c.cod asc, p.nombre asc;'
+				consulta = f'SELECT p.fechadevuelto, c.cod, c.concepto, round(p.total,2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fechadevuelto = CURDATE() order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				datadev = cursor.fetchall()
 				totaldev = 0
@@ -2906,14 +2904,95 @@ def reportes():
 			try:
 				with conexion.cursor() as cursor:
 					consulta = "UPDATE efectivo set billete1=%s, billete5=%s, billete10=%s, billete20=%s, billete50=%s, billete100=%s, billete200=%s, facturas=%s, vales=%s, tarjeta=%s where idefectivo = %s and iduser = %s;"
-					cursor.execute(consulta, (q1, q5, q10, q20, q50, q100, q200, facturas, vales, tarjeta, efectivo[10], session['idusercaja']))
+					cursor.execute(consulta, (q1, q5, q10, q20, q50, q100, q200, facturas, vales, tarjeta, efectivo[9], session['idusercaja']))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('reportes'))
-	return render_template('reportes.html', title="Reportes", sumas = sumas, sumtotal=sumtotal, logeado=logeado, datadev=datadev, totaldev=totaldev, totaltotal=totaltotal, efectivo=efectivo)
+	return render_template('reportes.html', title="Reportes", sumas = sumas, sumtotal=sumtotal, logeado=logeado, datadev=datadev, totaldev=totaldev, totaltotal=totaltotal, efectivo=efectivo, facturas = facturas)
+
+@app.route('/nuevafactura', methods=['GET', 'POST'])
+def nuevafactura():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	factura = ["","","",""]
+	if request.method == 'POST':
+		documento = request.form["documento"]
+		proveedor = request.form["proveedor"]
+		descripcion = request.form["descripcion"]
+		monto = request.form["monto"]
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = 'INSERT INTO factura(documento, proveedor, descripcion, monto, fecha, usuario) values(%s,%s,%s,%s,CURDATE(),%s)'
+					cursor.execute(consulta, (documento, proveedor, descripcion, monto, session['idusercaja']))
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('reportes'))
+	return render_template('nuevafactura.html', title="Ingresar Factura", logeado=logeado, nuevo=1, factura=factura)
+
+@app.route('/editarfactura/<idfactura>', methods=['GET', 'POST'])
+def editarfactura(idfactura):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = f'SELECT documento, proveedor, descripcion, monto from factura where idfactura = {idfactura};'
+				cursor.execute(consulta)
+				factura = cursor.fetchone()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		documento = request.form["documento"]
+		proveedor = request.form["proveedor"]
+		descripcion = request.form["descripcion"]
+		monto = request.form["monto"]
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = f'update factura set documento = "{documento}", proveedor = "{proveedor}", descripcion = "{descripcion}", monto = {monto}, usuario = {session["idusercaja"]} where idfactura = {idfactura}'
+					cursor.execute(consulta)
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('reportes'))
+	return render_template('nuevafactura.html', title="Editar Factura", logeado=logeado, nuevo=0, factura=factura)
+
+@app.route("/eliminarfactura/<idfactura>", methods=['GET', 'POST'])
+def eliminarfactura(idfactura):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = f'DELETE from factura where idfactura = {idfactura};'
+				cursor.execute(consulta)
+				conexion.commit()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return redirect(url_for('repdiario'))
 
 @app.route('/repdiario', methods=['GET', 'POST'])
 def repdiario():
@@ -2928,6 +3007,9 @@ def repdiario():
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), c.idcodigos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = CURDATE() and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				resumen = cursor.fetchall()
+				consulta = "select f.documento, f.proveedor, f.descripcion, f.monto, u.iniciales, f.idfactura from factura f inner join user u on f.usuario = u.iduser where f.fecha = CURDATE();"
+				cursor.execute(consulta)
+				facturas = cursor.fetchall()
 				consulta = "Select fecha from pagos where recibo <> 0 and LENGTH(recibo) < 5 order by fecha desc"
 				cursor.execute(consulta)
 				fechasig = cursor.fetchone()
@@ -2981,7 +3063,7 @@ def repdiario():
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('repdiario'))
-	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev, resumen=resumen, boletasig = boletasig)
+	return render_template('repdiario.html', title="Reporte diario", data = data, suma=suma, logeado=logeado, datadev=datadev, resumen=resumen, boletasig = boletasig, facturas=facturas)
 
 @app.route('/repdiariopdf', methods=['GET', 'POST'])
 def repdiariopdf():
@@ -3013,6 +3095,12 @@ def repdiariopdf():
 				cursor.execute(consulta)
 				resumen = cursor.fetchall()
 				cantidadresumen = len(resumen)
+				consulta = "select f.documento, f.proveedor, f.descripcion, f.monto, u.iniciales, f.idfactura from factura f inner join user u on f.usuario = u.iduser where f.fecha = CURDATE();"
+				cursor.execute(consulta)
+				facturas = cursor.fetchall()
+				totalfacturas = 0
+				for i in facturas:
+					totalfacturas = totalfacturas + float(i[3])
 				consulta = "SELECT round(sum(total),2), recibo from pagos where fecha = CURDATE() group by recibo order by recibo"
 				cursor.execute(consulta)
 				totalrecibo = cursor.fetchall()
@@ -3023,29 +3111,26 @@ def repdiariopdf():
 				consulta = 'SELECT ROUND(SUM(total),2) from transferencias where fecha = CURDATE()'
 				cursor.execute(consulta)
 				totaltransferencias = cursor.fetchone()
-				consulta = 'SELECT SUM(ROUND(billete1 + (billete5 * 5)  + (billete10 * 10) + (billete20 * 20) + (billete50 * 50) + (billete100 * 100) + (billete200 * 200), 2)), facturas, vales, tarjeta from efectivo where fecha = CURDATE()'
+				consulta = 'SELECT SUM(ROUND(billete1 + (billete5 * 5)  + (billete10 * 10) + (billete20 * 20) + (billete50 * 50) + (billete100 * 100) + (billete200 * 200), 2)), vales, tarjeta from efectivo where fecha = CURDATE()'
 				cursor.execute(consulta)
 				efectivo = cursor.fetchall()
 				efectivo1 = []
-				totalfacturas = totalvales = totaltarjeta = 0
+				totalvales = totaltarjeta = 0
 				for i in efectivo:
 					totalefectivo = float(i[0])
 					arreglo = str(i[1]).split('+')
 					for j in arreglo:
-						totalfacturas = totalfacturas + float(j)
+						totalvales = totalvales + float(j)
 					arreglo = str(i[2]).split('+')
 					for j in arreglo:
-						totalvales = totalvales + float(j)
-					arreglo = str(i[3]).split('+')
-					for j in arreglo:
 						totaltarjeta = totaltarjeta + float(j)
-				efectivo1 = [totalefectivo, totalfacturas, totalvales, totaltarjeta]
+				efectivo1 = [totalefectivo, totalvales, totaltarjeta]
 				efectivo = efectivo1
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1, resumen = resumen, cantidadresumen = cantidadresumen, totalrecibo = totalrecibo, cantidadrecibo = cantidadrecibo, transferencias = transferencias, totaltransferencias=totaltransferencias, efectivo=efectivo)
+	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1, resumen = resumen, cantidadresumen = cantidadresumen, totalrecibo = totalrecibo, cantidadrecibo = cantidadrecibo, transferencias = transferencias, totaltransferencias=totaltransferencias, efectivo=efectivo, facturas=facturas, totalfacturas = totalfacturas)
 	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)

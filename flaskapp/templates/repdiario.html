@@ -108,68 +108,73 @@
 			<h2>Reporte diario</h2>
 			<hr>
 			<form action="" method="POST">
-				<input type="text" class="inputtext1" name="regen" placeholder="  Boleta General">
-				<br><br>
-				<div class="mitad">
-					<h4>Resumen</h4>
-					<table class="table table-bordered">
-						<tr>
-							<th>Código</th>
-							<th>Concepto</th>
-							<th>Cantidad</th>
-							<th>Total</th>
-							<th>Boleta</th>
-						</tr>
-						{% for i in resumen %}
-						<tr>
-							<td>{{i[0]}}</td>
-							<td>{{i[1]}}</td>
-							<td>{{i[2]}}</td>
-							<td>Q.{{i[3]}}</td>
-							<td><input type="text" class="form-control" name="resumen{{i[4]}}" title="Recibo {{i[1]}}"></td>
-						</tr>
-						{% endfor %}
-						<tr>
-							<th colspan="3"><center>Total</center></th>
-							<th colspan="2"><center>{{suma}}</center></th>
-						</tr>
-					</table>
+				<input type="text" class="form-control" name="regen" placeholder="Boleta General">
+				<br>
+				<div class="row">
+					<div class="col-md-6">
+						<h4>Resumen</h4>
+						<table class="table table-bordered">
+							<tr>
+								<th>Código</th>
+								<th>Concepto</th>
+								<th>Cantidad</th>
+								<th>Total</th>
+								<th>Boleta</th>
+							</tr>
+							{% for i in resumen %}
+							<tr>
+								<td>{{i[0]}}</td>
+								<td>{{i[1]}}</td>
+								<td>{{i[2]}}</td>
+								<td>Q.{{i[3]}}</td>
+								<td><input type="text" class="form-control" name="resumen{{i[4]}}"
+										title="Recibo {{i[1]}}"></td>
+							</tr>
+							{% endfor %}
+							<tr>
+								<th colspan="3">
+									<center>Total</center>
+								</th>
+								<th colspan="2">
+									<center>{{suma}}</center>
+								</th>
+							</tr>
+						</table>
+					</div>
+					<div class="col-md-6">
+						<table class="table table-bordered">
+							<tr>
+								<th>Cuenta</th>
+								<th>Número</th>
+							</tr>
+							<tr>
+								<td>Clínica Optométrica</td>
+								<td>399-007141-1</td>
+							</tr>
+							<tr>
+								<td>Lab. de Diagnóstico Galileo</td>
+								<td>399-007142-9</td>
+							</tr>
+							<tr>
+								<td>Technical Training Academy</td>
+								<td>399-007457-1</td>
+							</tr>
+							<tr>
+								<td>Escuela Privada "Los Altos"</td>
+								<td>399-009065-0</td>
+							</tr>
+							<tr>
+								<td>Rodolfo Juarez</td>
+								<td>233-500181-1</td>
+							</tr>
+							<tr>
+								<th>Boleta Anterior</th>
+								<th>{{boletasig}}</th>
+							</tr>
+						</table>
+					</div>
 				</div>
-				<div class="mitad1">
-					<table class="table table-bordered">
-						<tr>
-							<th>Cuenta</th>
-							<th>Número</th>
-						</tr>
-						<tr>
-							<td>Clínica Optométrica</td>
-							<td>399-007141-1</td>
-						</tr>
-						<tr>
-							<td>Lab. de Diagnóstico Galileo</td>
-							<td>399-007142-9</td>
-						</tr>
-						<tr>
-							<td>Technical Training Academy</td>
-							<td>399-007457-1</td>
-						</tr>
-						<tr>
-							<td>Escuela Privada "Los Altos"</td>
-							<td>399-009065-0</td>
-						</tr>
-						<tr>
-							<td>Rodolfo Juarez</td>
-							<td>233-500181-1</td>
-						</tr>
-						<tr>
-							<th>Boleta Anterior</th>
-							<th>{{boletasig}}</th>
-						</tr>
-					</table>
-				</div>
-				<br><br>
-
-				<div style="float: left">
+				<div>
 					<br><br>
 					<h4>Desplegado</h4>
 					<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
@@ -197,15 +202,40 @@
 							<td><input type="text" class="form-control" name="re{{i[6]}}" title="Recibo {{i[6]}}"></td>
 							<td><a class="btn btn-warning" href="/editarpago/{{i[6]}}" role="button">Editar</a></td>
 							<td><a class="btn btn-danger" href="/eliminarpago/{{i[6]}}" role="button">Eliminar</a></td>
-							<td><a class="btn btn-info" href="/imprimir/{{i[6]}}" role="button" target=”_blank”>Imprimir</a></td>
+							<td><a class="btn btn-info" href="/imprimir/{{i[6]}}" role="button"
+									target=”_blank”>Imprimir</a></td>
 						</tr>
 						{% endfor %}
 					</table>
 					<br>
 					<center>
-						<a class="btn btn-info" href="{{ url_for('repdiariopdf') }}" role="button" target=”_blank”>Ver PDF</a>
+						<a class="btn btn-info" href="{{ url_for('repdiariopdf') }}" role="button" target=”_blank”>Ver
+							PDF</a>
 						<input class="btn btn-primary" type="submit" value="Registrar">
 					</center>
+					<br>
+					<h4>Facturas/Recibos</h4>
+					<table class="table table-bordered sortable">
+						<tr>
+							<th>No. Documento</th>
+							<th>Proveedor</th>
+							<th>Descripción</th>
+							<th>Usuario</th>
+							<th>Monto</th>
+							<th colspan="2">Opciones</th>
+						</tr>
+						{% for i in facturas %}
+						<tr>
+							<td>{{i[0]}}</td>
+							<td>{{i[1]}}</td>
+							<td>{{i[2]}}</td>
+							<td>{{i[4]}}</td>
+							<td>Q{{i[3]}}</td>
+							<td><a class="btn btn-warning" href="/editarfactura/{{i[5]}}" role="button">Editar</a></td>
+							<td><a class="btn btn-danger" href="/eliminarfactura/{{i[5]}}" role="button">Eliminar</a></td>
+						</tr>
+						{% endfor %}
+					</table>
 			</form>
 		</div>
 	</main>

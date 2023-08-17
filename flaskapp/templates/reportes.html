@@ -107,116 +107,121 @@
 	<main class="page-content">
 		<div class="container">
 			<h2>Reportes</h2>
-			<div class="mitad">
-				<table class="table table-bordered">
-					<tr>
-						<th>Código</th>
-						<th>Concepto</th>
-						<th>Cantidad</th>
-						<th>Suma</th>
-					</tr>
-					{% for i in sumas %}
-					<tr>
-						<td>{{i[0]}}</td>
-						<td>{{i[1]}}</td>
-						<td>{{i[2]}}</td>
-						<td>Q{{i[3]}}</td>
-					</tr>
-					{% endfor %}
-					<tr>
-						<th colspan="3" style="text-align: center;">Suma</th>
-						<td>Q{{sumtotal}}</td>
-					</tr>
-					<tr>
-						<th colspan="3" style="text-align: center;">Devoluciones</th>
-						<td>Q{{totaldev}}</td>
-					</tr>
-					<tr>
-						<th colspan="3" style="text-align: center;">Total</th>
-						<td id="totalpagos">Q{{totaltotal}}</td>
-					</tr>
-				</table>
-			</div>
-			<div class="mitad1">
-				<form action="" method="POST">
-					<table class="tablacuadre">
+			<div class="row">
+				<div class="col-md-6">
+					<table class="table table-bordered">
 						<tr>
-							<td>Q 1</td>
-							<td><input type="number" step="0.01" id="Q1" name="Q1" class="inputtextcuadre" min="0"
-									value="{{efectivo[0]}}" onchange="cuadre()"></td>
+							<th>Código</th>
+							<th>Concepto</th>
+							<th>Cantidad</th>
+							<th>Suma</th>
+						</tr>
+						{% for i in sumas %}
+						<tr>
+							<td>{{i[0]}}</td>
+							<td>{{i[1]}}</td>
+							<td>{{i[2]}}</td>
+							<td>Q{{i[3]}}</td>
+						</tr>
+						{% endfor %}
+						<tr>
+							<th colspan="3" style="text-align: center;">Suma</th>
+							<td>Q{{sumtotal}}</td>
 						</tr>
 						<tr>
-							<td>Q 5</td>
-							<td><input type="number" id="Q5" name="Q5" class="inputtextcuadre" min="0"
-									onchange="cuadre()" value="{{efectivo[1]}}"></td>
+							<th colspan="3" style="text-align: center;">Devoluciones</th>
+							<td>Q{{totaldev}}</td>
 						</tr>
 						<tr>
-							<td>Q 10</td>
-							<td><input type="number" id="Q10" name="Q10" class="inputtextcuadre" min="0"
-									onchange="cuadre()" value="{{efectivo[2]}}"></td>
-						</tr>
-						<tr>
-							<td>Q 20</td>
-							<td><input type="number" id="Q20" name="Q20" class="inputtextcuadre" min="0"
-									onchange="cuadre()" value="{{efectivo[3]}}"></td>
-						</tr>
-						<tr>
-							<td>Q 50</td>
-							<td><input type="number" id="Q50" name="Q50" class="inputtextcuadre" min="0"
-									onchange="cuadre()" value="{{efectivo[4]}}"></td>
-						</tr>
-						<tr>
-							<td>Q 100</td>
-							<td><input type="number" id="Q100" name="Q100" class="inputtextcuadre" min="0"
-									onchange="cuadre()" value="{{efectivo[5]}}"></td>
-						</tr>
-						<tr>
-							<td>Q 200</td>
-							<td><input type="number" id="Q200" name="Q200" class="inputtextcuadre" min="0"
-									onchange="cuadre()" value="{{efectivo[6]}}"></td>
-						</tr>
-						<tr>
-							<td>Facturas</td>
-							<td><input type="text" id="facturas" name="facturas" class="inputtextcuadre" min="0"
-									onchange="cuadre()" value="{{efectivo[7]}}"></td>
-						</tr>
-						<tr>
-							<td>Vales</td>
-							<td><input type="text" id="vales" name="vales" class="inputtextcuadre" min="0"
-									onchange="cuadre()" value="{{efectivo[8]}}"></td>
-						</tr>
-						<tr>
-							<td>Tarjeta</td>
-							<td><input type="text" id="tarjeta" name="tarjeta" class="inputtextcuadre" min="0"
-									onchange="cuadre()" value="{{efectivo[9]}}"></td>
-						</tr>
-					</table><br>
-					<table class="tablacuadre">
-						<tr>
-							<td>
-								<h4>Efectivo</h4>
-							</td>
-							<td id="tagefectivo" style="float: right;"></td>
-						</tr>
-						<tr>
-							<td>
-								<h4>Extras</h4>
-							</td>
-							<td id="tagextras" style="float: right;"></td>
-						</tr>
-						<tr>
-							<td>
-								<h4>Diferencia</h4>
-							</td>
-							<td id="tagdif" style="float: right;"></td>
+							<th colspan="3" style="text-align: center;">Total</th>
+							<td id="totalpagos">Q{{totaltotal}}</td>
 						</tr>
 					</table>
-					<center><button onclick="submit" class="button">Guardar datos</button> <a style="color: white;"
-							href="{{ url_for('repdiariopdf') }}" target="_blank"><button class="button">Ver PDF -
-								Reporte Diario</button></a></center>
-				</form>
+				</div>
+				<div class="col-md-6">
+					<form action="" method="POST">
+						<table class="tablacuadre">
+							<tr>
+								<td>Q 1</td>
+								<td><input type="number" step="0.01" id="Q1" name="Q1" class="form-control" min="0"
+										value="{{efectivo[0]}}" onchange="cuadre()"></td>
+							</tr>
+							<tr>
+								<td>Q 5</td>
+								<td><input type="number" id="Q5" name="Q5" class="form-control" min="0"
+										onchange="cuadre()" value="{{efectivo[1]}}"></td>
+							</tr>
+							<tr>
+								<td>Q 10</td>
+								<td><input type="number" id="Q10" name="Q10" class="form-control" min="0"
+										onchange="cuadre()" value="{{efectivo[2]}}"></td>
+							</tr>
+							<tr>
+								<td>Q 20</td>
+								<td><input type="number" id="Q20" name="Q20" class="form-control" min="0"
+										onchange="cuadre()" value="{{efectivo[3]}}"></td>
+							</tr>
+							<tr>
+								<td>Q 50</td>
+								<td><input type="number" id="Q50" name="Q50" class="form-control" min="0"
+										onchange="cuadre()" value="{{efectivo[4]}}"></td>
+							</tr>
+							<tr>
+								<td>Q 100</td>
+								<td><input type="number" id="Q100" name="Q100" class="form-control" min="0"
+										onchange="cuadre()" value="{{efectivo[5]}}"></td>
+							</tr>
+							<tr>
+								<td>Q 200</td>
+								<td><input type="number" id="Q200" name="Q200" class="form-control" min="0"
+										onchange="cuadre()" value="{{efectivo[6]}}"></td>
+							</tr>
+							<tr>
+								<td>Facturas</td>
+								<td><input type="text" id="facturas" name="facturas" class="form-control" min="0"
+										value="{{facturas}}" readonly></td>
+							</tr>
+							<tr>
+								<td>Vales</td>
+								<td><input type="text" id="vales" name="vales" class="form-control" min="0"
+										onchange="cuadre()" value="{{efectivo[7]}}"></td>
+							</tr>
+							<tr>
+								<td>Tarjeta</td>
+								<td><input type="text" id="tarjeta" name="tarjeta" class="form-control" min="0"
+										onchange="cuadre()" value="{{efectivo[8]}}"></td>
+							</tr>
+						</table><br>
+						<table class="tablacuadre">
+							<tr>
+								<td>
+									<h4>Efectivo</h4>
+								</td>
+								<td id="tagefectivo" style="float: right;"></td>
+							</tr>
+							<tr>
+								<td>
+									<h4>Extras</h4>
+								</td>
+								<td id="tagextras" style="float: right;"></td>
+							</tr>
+							<tr>
+								<td>
+									<h4>Diferencia</h4>
+								</td>
+								<td id="tagdif" style="float: right;"></td>
+							</tr>
+						</table>
+						<center>
+							<input class="btn btn-primary" type="submit" value="Guardar Datos">
+							<a class="btn btn-info" href="{{ url_for('repdiariopdf') }}" role="button"
+								target=”_blank”>Ver PDF</a>
+							<a class="btn btn-info" href="{{ url_for('nuevafactura') }}" role="button">Ingresar
+								Factura</a>
+						</center>
+					</form>
+				</div>
 			</div>
-
 	</main>
 	<!-- page-content" -->
 </div>
@@ -318,7 +323,6 @@
 		} else if (dif == 0) {
 			document.getElementById("tagdif").style.backgroundColor = "green";
 		}
-
 	}
 </script>
 <!-- page-wrapper -->
