@@ -1,151 +1,176 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li  >
-            <a href="/repdiario">
-                <span>Corte Diario</span>
-            </a>
-        </li>
-        <li  >
-            <a href="/repgen">
-                <span>Listado General</span>
-            </a>
-        </li>
-          <li >
-            <a href="/repi">
-              <span>Inscripciones</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repauxenf">
-              <span>Auxiliar de Enfermeria</span>
-            </a>
-          </li>
-          <li >
-              <a href="/repini">
-                  <span>Internet Inscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repir">
-                  <span>Internet Reinscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repu">
-                  <span>Uniformes</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repp">
-                  <span>Practica</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/replenq">
-				<span>Practica Enfermeria</span>
-			</a>
-		</li>
-		<li  >
-			<a href="/replbcq">
-				<span>Practica Química Biológica</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/repm">
-                  <span>Manuales</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/repingles">
-				<span>Ingles</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/reppag">
-                  <span>Pagos</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repgrad">
-                  <span>Graduacion</span>
-              </a>
-          </li>
-          <li >
-            <a href="/repextra">
-              <span>Pagos Extra</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repparq">
-              <span>Parqueo</span>
-            </a>
-          </li>
-      <!-- sidebar-menu  -->
-    </div>
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content">
-    <div class="container">
-        <h2>Reporte Práctica de Química Biológica</h2>
-        <hr>
-        <form action="" method="POST">
-        <input type="text" id="carnet" name="carnet" placeholder="  Carnet" class="inputtext3" value="{{datacarnet}}">   &nbsp;&nbsp;&nbsp;
-        <input type="text" id="nombre" name="nombre" placeholder="  Nombre" class="inputtext3" value="{{datanombre}}">  
-        <br>
-        <input type="text" id="descripcion" name="descripcion" placeholder="  Descripción" class="inputtext3" value="{{datadescripcion}}">&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="date" id="fechapago" name="fechapago" class="inputtext3" value="{{datafechapago}}"><br>
-		<input type="text" id="concepto" name="concepto" placeholder="  Concepto" class="inputtext3" value="{{dataconcepto}}">&nbsp;&nbsp;&nbsp;&nbsp;
-        <script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-        <br>
-        <center><button onclick="submit" class="button">Buscar</button>
-      </form>
-        <table class="sorttable">
-            <tr>
-                <th>Nombre</th>
-                <th>Carnet</th>
-                <th>Fecha</th>
-				<th>Concepto</th>
-                <th>Descripción</th>
-				<th>Imprimir</th>
-            </tr>
-            {% for i in data %}
-            <tr>
-                <td>{{i[0]}}</td>
-                <td>{{i[1]}}</td>
-                <td>{{i[2]}}</td>
-				<td>{{i[5]}}</td>
-                <td>{{i[3]}}</td>
-				{% if 'EPS' in i[5] %}
-				<td><a href="/epslbcq/{{i[4]}}">Imprimir</a></td>
-				{% else %}
-				<td><a href="/hojalbcq/{{i[4]}}">Imprimir</a></td>
-				{% endif %}
-            </tr>
-            {% endfor %}
-        </table>
-    </main>
- 
-    <!-- page-content" -->
-  </div>
-  <!-- page-wrapper -->
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/repdiario">
+							<span>Corte Diario</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgen">
+							<span>Listado General</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repi">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repauxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repini">
+							<span>Internet Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repir">
+							<span>Internet Reinscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repu">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repp">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replenq">
+							<span>Practica Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replbcq">
+							<span>Practica Química Biológica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repm">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+					<li>
+						<a href="/reppag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgrad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repextra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repparq">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+			</div>
+			<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content">
+		<div class="container">
+			<center>
+				<h1>Reporte Práctica de Química Biológica</h1>
+			</center>
+			<hr>
+			<form action="" method="POST">
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" value="{{datacarnet}}">
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre" value="{{datanombre}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="concepto">Concepto</label>
+						<input type="text" id="concepto" name="concepto" placeholder="  Concepto" class="form-control"
+							value="{{dataconcepto}}">
+					</div>
+					<div class="col-md-6">
+						<label for="descripcion">Descripción</label>
+						<input type="text" id="descripcion" name="descripcion" placeholder="Descripción" class="form-control"
+							value="{{datadescripcion}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="fechapago">Fecha de Pago</label>
+						<input type="date" id="fechapago" name="fechapago" class="form-control" value="{{datafechapago}}"><br>
+					</div>
+				</div>
+				<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+				<br>
+				<center><button onclick="submit" class="button">Buscar</button>
+			</form>
+			<table class="sorttable table table-striped">
+				<tr>
+					<th>Nombre</th>
+					<th>Carnet</th>
+					<th>Fecha</th>
+					<th>Concepto</th>
+					<th>Descripción</th>
+					<th>Imprimir</th>
+				</tr>
+				{% for i in data %}
+				<tr>
+					<td>{{i[0]}}</td>
+					<td>{{i[1]}}</td>
+					<td>{{i[2]}}</td>
+					<td>{{i[5]}}</td>
+					<td>{{i[3]}}</td>
+					<td>
+					{% if 'EPS' in i[5] %}
+						<a class="btn btn-info" href="/epslbcq/{{i[4]}}" role="button" target=”_blank”>Ver PDF</a>
+					{% else %}
+						<a class="btn btn-info" href="/hojalbcq/{{i[4]}}" role="button" target=”_blank”>Ver PDF</a>
+					{% endif %}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+	</main>
+
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
 {% endblock %}

@@ -1,152 +1,152 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li  >
-            <a href="/repdiario">
-                <span>Corte Diario</span>
-            </a>
-        </li>
-        <li  >
-          <a href="/repgen">
-              <span>Listado General</span>
-          </a>
-      </li>
-          <li >
-            <a href="/repi">
-              <span>Inscripciones</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repauxenf">
-              <span>Auxiliar de Enfermeria</span>
-            </a>
-          </li>
-          <li >
-              <a href="/repini">
-                  <span>Internet Inscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repir">
-                  <span>Internet Reinscripciones</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repu">
-                  <span>Uniformes</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repp">
-                  <span>Practica</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/replenq">
-				<span>Practica Enfermeria</span>
-			</a>
-		</li>
-		<li  >
-			<a href="/replbcq">
-				<span>Practica Química Biológica</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/repm">
-                  <span>Manuales</span>
-              </a>
-          </li>
-		  <li  >
-			<a href="/repingles">
-				<span>Ingles</span>
-			</a>
-		</li>
-          <li  >
-              <a href="/reppag">
-                  <span>Pagos</span>
-              </a>
-          </li>
-          <li  >
-              <a href="/repgrad">
-                  <span>Graduacion</span>
-              </a>
-          </li>
-          <li >
-            <a href="/repextra">
-              <span>Pagos Extra</span>
-            </a>
-          </li>
-          <li >
-            <a href="/repparq">
-              <span>Parqueo</span>
-            </a>
-          </li>
-      <!-- sidebar-menu  -->
-    </div>
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content">
-    <div class="container">
-        <h2>Ingles</h2>
-		<h3>Pagos de ultimos 6 meses</h3>
-        <hr>
-		<a style="color: white;" href="{{ url_for('repinglesexcel') }}" target="_blank"><button class="button">Exportar Excel</button></a>
-		<hr>
-		<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-		{% for n in range(4) %}
-		<h4>Ciclo {{n+1}}</h4>
-        <table class="sortable">
-            <tr>
-                <th>Nombre</th>
-                <th>Carnet</th>
-                {% for i in meses[n] %}
-				<th>{{i}}</th>
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/repdiario">
+							<span>Corte Diario</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgen">
+							<span>Listado General</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repi">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repauxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repini">
+							<span>Internet Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repir">
+							<span>Internet Reinscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repu">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repp">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replenq">
+							<span>Practica Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replbcq">
+							<span>Practica Química Biológica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repm">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+					<li>
+						<a href="/reppag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgrad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repextra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repparq">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+			</div>
+			<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content">
+		<div class="container">
+			<h2>Ingles</h2>
+			<h3>Pagos de ultimos 6 meses</h3>
+			<hr>
+			<a class="btn btn-info" href="{{ url_for('repinglesexcel') }}" target="_blank" role="button">Exportar Excel</a>
+			<hr>
+			<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+			{% for n in range(4) %}
+			<h4>Ciclo {{n+1}}</h4>
+			<table class="sortable table table-striped">
+				<tr>
+					<th>Nombre</th>
+					<th>Carnet</th>
+					{% for i in meses[n] %}
+					<th>{{i}}</th>
+					{% endfor %}
+				</tr>
+				{% for i in datos[n] %}
+				<tr>
+					{% for j in i %}
+					<td>{{j}}</td>
+					{% endfor %}
+				</tr>
 				{% endfor %}
-            </tr>
-            {% for i in datos[n] %}
-            <tr>
-                {% for j in i %}
-				<td>{{j}}</td>
-				{% endfor %}
-            </tr>
-            {% endfor %}
-        </table>
-		{% endfor %}
-    </main>
+			</table>
+			{% endfor %}
+	</main>
 	<script>
-        window.onload = function menos() {
+		window.onload = function menos() {
 
 			myBody = document.getElementsByTagName("td");
 			cantidad = myBody.length;
-			for (i=0; i<cantidad;i++) {
-				if(myBody[i].innerHTML == "Pend") {
+			for (i = 0; i < cantidad; i++) {
+				if (myBody[i].innerHTML == "Pend") {
 					myBody[i].style.backgroundColor = "orange";
-				}else {
+				} else {
 					myBody[i].style.backgroundColor = "lightgreen";
 				}
 			}
-        }
-    </script>
-    <!-- page-content" -->
-  </div>
-  <!-- page-wrapper -->
+		}
+	</script>
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
 {% endblock %}

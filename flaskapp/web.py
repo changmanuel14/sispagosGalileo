@@ -360,7 +360,7 @@ def repauxenfexcel():
 		print("Ocurrió un error al conectar: ", e)
 	output = io.BytesIO()
 	workbook = xlwt.Workbook(encoding="utf-8")
-	sh1 = workbook.add_sheet("Ciclo 1")
+	sh1 = workbook.add_sheet("Auxiliares de Enfermeria")
 
 	xlwt.add_palette_colour("Orange", 0x21) # the second argument must be a number between 8 and 64
 	workbook.set_colour_RGB(0x21, 255, 165, 0) # Red — 79, Green — 129, Blue — 189

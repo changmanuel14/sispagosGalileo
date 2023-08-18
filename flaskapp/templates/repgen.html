@@ -108,28 +108,54 @@
 	<!-- sidebar-wrapper  -->
 	<main class="page-content">
 		<div class="container">
-			<h2>Reporte general</h2>
+			<center>
+				<h1>Reporte General</h1>
+			</center>
 			<hr>
 			<form action="" method="POST">
-				<input type="date" id="fechaini" name="fechaini" class="inputtext3"
-					value="{{datafechaini}}">&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="date" id="fechafin" name="fechafin" class="inputtext3" value="{{datafechafin}}"><br>
-				<input type="text" id="carnet" name="carnet" placeholder="  Carnet" class="inputtext3"
-					value="{{datacarnet}}"> &nbsp;&nbsp;&nbsp;
-				<input type="text" id="nombre" name="nombre" placeholder="  Nombre" class="inputtext3"
-					value="{{datanombre}}">
-				<br>
-				<input type="text" id="descripcion" name="descripcion" placeholder="  Descripción" class="inputtext3"
-					value="{{datadescripcion}}">&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="text" id="concepto" name="concepto" placeholder="  Concepto" class="inputtext3"
-					value="{{dataconcepto}}">
-				<br>
-				<input type="text" id="recibo" name="recibo" placeholder="  Recibo" class="inputtext3"
-					value="{{datarecibo}}">&nbsp;&nbsp;&nbsp;&nbsp;
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" value="{{datacarnet}}">
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre" value="{{datanombre}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="fechaini">Fecha Inicio</label>
+						<input type="date" class="form-control" name="fechaini" id="fechaini" value="{{datafechaini}}">
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Fecha Finalización</label>
+						<input type="date" class="form-control" id="fechafin" name="fechafin" value="{{datafechafin}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="concepto">Concepto</label>
+						<input type="text" class="form-control" name="concepto" id="concepto" placeholder="Concepto" value="{{dataconcepto}}">
+					</div>
+					<div class="col-md-6">
+						<label for="descripcion">Descripción</label>
+						<input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" value="{{datadescripcion}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label for="recibo">Recibo</label>
+						<input type="text" class="form-control" name="recibo" id="recibo" placeholder="Recibo" value="{{datarecibo}}">
+					</div>
+				</div>
 				<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 				<br>
-				<center><button onclick="submit" class="button">Buscar</button>
+				<center>
+					<input class="btn btn-primary" type="submit" value="Buscar">
+				</center>
 			</form>
+
 			<h4>Resultados encontrados: {{conteo}}</h4>
 			<table class="table table-striped sortable" id="sampleTable">
 				<tr>

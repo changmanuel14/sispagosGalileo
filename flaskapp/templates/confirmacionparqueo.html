@@ -1,106 +1,117 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="page-wrapper chiller-theme toggled">
-  <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-    <i class="fas fa-bars"></i>
-  </a>
-  <nav id="sidebar" class="sidebar-wrapper">
-    <div class="sidebar-content">
-      <div class="sidebar-brand">
-        <div id="close-sidebar">
-          <i class="fas fa-times"></i>
-        </div>
-      </div>
-      <!-- sidebar-header  -->
-      
-      <div class="sidebar-menu">
-        <ul>
-          <li class="header-menu">
-            <span>Opciones</span>
-          </li>
-          <br>
-          <li>
-			<a href="/i">
-				<span>Inscripciones</span>
-			</a>
-		</li>
-		<li>
-			<a href="/auxenf">
-				<span>Auxiliar de Enfermeria</span>
-			</a>
-		</li>
-		<li>
-			<a href="/optica">
-				<span>Óptica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/laboratorio">
-				<span>Laboratorio</span>
-			</a>
-		</li>
-		<li>
-			<a href="/academia">
-				<span>Academia</span>
-			</a>
-		</li>
-		<li>
-			<a href="/p">
-				<span>Practica</span>
-			</a>
-		</li>
-		<li>
-			<a href="/m">
-				<span>Manuales</span>
-			</a>
-		</li>
-		<li>
-			<a href="/pag">
-				<span>Pagos</span>
-			</a>
-		</li>
-		<li>
-			<a href="/ingles">
-				<span>Ingles</span>
-			</a>
-		</li>
-
-		<li>
-			<a href="/extra">
-				<span>Pagos Extra</span>
-			</a>
-		</li>
-		<li>
-			<a href="/parqueo">
-				<span>Parqueo</span>
-			</a>
-		</li>
-		<li>
-			<a href="/u">
-				<span>Uniformes</span>
-			</a>
-		</li>
-		<li>
-			<a href="/grad">
-				<span>Graduacion</span>
-			</a>
-		</li>
-      <!-- sidebar-menu  -->
-    
-    <!-- sidebar-content  -->
-  </nav>
-  <!-- sidebar-wrapper  -->
-  <main class="page-content" id="main">
-    <div class="container">
-      <h2>¿Está seguro de continuar?</h2>
-      <h5>Cantidad: {{cantidad}}</h5>
-      <h5>Total: {{total}}</h5>
-      <form action="" method="POST">
-        <center><button onclick="submit" class="button">Aceptar</button>   <a class="regresar" href="{{ url_for('parqueo') }}">Regresar</a></center>
-      </form>
-	</div>
-    </main>
-    <!-- page-content" -->
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/i">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/auxenf">
+							<span>Auxiliar de Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/optica">
+							<span>Óptica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/laboratorio">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<li>
+						<a href="/academia">
+							<span>Academia</span>
+						</a>
+					</li>
+					<li>
+						<a href="/p">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/m">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/pag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/ingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+					<li>
+						<a href="/extra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/parqueo">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<li>
+						<a href="/u">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/grad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<div class="container">
+			<center>
+				<h2>¿Está seguro de continuar?</h2>
+			</center>
+			<table class="table table-bordered">
+				<tr>
+					<th>Cantidad</th>
+					<td>{{cantidad}}</td>
+				</tr>
+				<tr>
+					<th>Total</th>
+					<td>Q{{total}}</td>
+				</tr>
+			</table>
+			<br>
+			<form action="" method="POST">
+				<center>
+					<input class="btn btn-primary" type="submit" value="Aceptar">
+					<a class="btn btn-primary" href="{{ url_for('parqueo') }}" role="button">Regresar</a>
+				</center>
+			</form>
+		</div>
+	</main>
+	<!-- page-content" -->
 </div>
-  <!-- page-wrapper -->
+<!-- page-wrapper -->
 {% endblock %}
