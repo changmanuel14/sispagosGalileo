@@ -32,15 +32,19 @@ def verdev(idpago):
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				consulta = f'SELECT urldevuelto from pagos where idpagos = {idpago};'
+				consulta = f'SELECT urldevuelto, userdev from pagos where idpagos = {idpago};'
 				cursor.execute(consulta)
 				acceso = cursor.fetchall()
+				idusuario = acceso[0][1]
 				acceso = acceso[0][0]
+				consulta = f"select nombre, apellido, user from user where iduser = {idusuario}"
+				cursor.execute(consulta)
+				user = cursor.fetchall()
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	return render_template('verdev.html', title='Devolución de Pago', logeado=logeado, acceso=acceso)
+	return render_template('verdev.html', title='Devolución de Pago', logeado=logeado, acceso=acceso, user=user)
 
 @app.route("/devolucion/<idpago>", methods=['GET', 'POST'])
 def devolucion(idpago):
@@ -3080,7 +3084,7 @@ def repdiariopdf():
 				suma = 0
 				for i in data:
 					suma = suma + float(i[5])
-				consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fechadevuelto,"%d/%m/%Y"), c.concepto, p.extra, round(p.total), p.idpagos, p.recibo, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fechadevuelto = CURDATE() order by c.cod asc, p.nombre asc;'
+				consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fechadevuelto,"%d/%m/%Y"), c.concepto, p.extra, round(p.total), p.idpagos, p.recibo, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.userdev WHERE fechadevuelto = CURDATE() order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				datadev = cursor.fetchall()
 				contdev = len(datadev)

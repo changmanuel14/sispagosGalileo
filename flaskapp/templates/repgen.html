@@ -178,9 +178,9 @@
 					<td>{{i[5]}}</td>
 					<td>Q. {{i[6]}}</td>
 					{% if i[8] == 0 %}
-					<td><a href="/devolucion/{{i[7]}}" style="color: black;">No - Devolver</a></td>
+					<td><a class="btn btn-danger" href="/devolucion/{{i[7]}}" role="button">No - Devolver</a></td>
 					{% else %}
-					<td><a href="/verdev/{{i[7]}}" target="_blank" style="color: black;">Si - Ver Devolución</a></td>
+					<td><a class="btn btn-warning" href="/verdev/{{i[7]}}" role="button">Si - Ver Devolución</a></td>
 					{% endif %}
 				</tr>
 				{% endfor %}
