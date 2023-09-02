@@ -62,17 +62,25 @@ def devolucion(idpago):
 		print("Ocurrió un error al conectar: ", e)
 	if request.method == 'POST':
 		file = request.files['file']
-		nombrearc = f'dev{idpago}.'
-		div = str(file.filename).split('.')
-		nombrearc = nombrearc + div[1]
-		file.save(os.path.join(app.config['UPLOAD_FOLDER'], nombrearc))
+		usuario = request.form["usuario"]
+		pwd = request.form["password"]
 		try:
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
-					consulta = f"UPDATE pagos set devuelto = 1, urldevuelto = '{nombrearc}', fechadevuelto='{date.today()}', user={session['idusercaja']} where idpagos = {idpago};"
+					consulta = f"SELECT iduser, nombre, apellido FROM user WHERE user = '{usuario}' and pwd = md5('{pwd}')"
 					cursor.execute(consulta)
-				conexion.commit()
+					data = cursor.fetchall()
+					if len(data) == 0:
+						return redirect(url_for('devolucion', idpago=idpago))
+					else:
+						nombrearc = f'dev{idpago}.'
+						div = str(file.filename).split('.')
+						nombrearc = nombrearc + div[1]
+						file.save(os.path.join(app.config['UPLOAD_FOLDER'], nombrearc))
+						consulta = f"UPDATE pagos set devuelto = 1, urldevuelto = '{nombrearc}', fechadevuelto='{date.today()}', user={session['idusercaja']}, userdev={data[0][0]} where idpagos = {idpago};"
+						cursor.execute(consulta)
+					conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
@@ -1043,7 +1051,7 @@ def editarpago(idpago):
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				consulta = f'SELECT p.idcod, p.nombre, p.carnet, p.total, DATE_FORMAT(p.fecha,"%d/%m/%Y"), p.extra from codigos c inner join pagos p on p.idcod = c.idcodigos where p.idpagos = {idpago};'
+				consulta = f'SELECT p.idcod, p.nombre, p.carnet, p.total, p.fecha, p.extra from codigos c inner join pagos p on p.idcod = c.idcodigos where p.idpagos = {idpago};'
 				cursor.execute(consulta)
 				datapago = cursor.fetchall()
 				datapago = datapago[0]
@@ -1067,18 +1075,6 @@ def editarpago(idpago):
 			nombre = datapago[1]
 		if len(extra) < 1:
 			extra = datapago[5]
-		if len(fecha) < 1:
-			datos=datapago[4].split('/')
-			try:
-				fecha = f"{datos[2]}-{datos[1]}-{datos[0]}"
-			except:
-				fecha = '0000-00-00'
-		else:
-			datos=fecha.split('/')
-			try:
-				fecha = f"{datos[2]}-{datos[1]}-{datos[0]}"
-			except:
-				fecha = '0000-00-00'
 		if len(total) < 1:
 			total = datapago[3]
 
