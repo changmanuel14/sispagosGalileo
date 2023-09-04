@@ -466,7 +466,7 @@ def repauxenfexcel():
 
 @app.route("/ingles", methods=['GET', 'POST'])
 @app.route("/ingles/<mensaje>", methods=['GET', 'POST'])
-def ingles(mensaje = None):
+def ingles(mensaje = 0):
 	try:
 		logeado = session['logeadocaja']
 	except:
