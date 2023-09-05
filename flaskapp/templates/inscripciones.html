@@ -229,11 +229,16 @@
 		var labelinsc = document.getElementById("rinscl")
 		var labelint = document.getElementById("rintl")
 		if (idcarrera.length < 1) {
-			labelinsc.innerHTML = 'Q 0.00'
-			labelint.innerHTML = 'Q 0.00'
+			labelinsc.innerHTML = '0.00'
+			labelint.innerHTML = '0.00'
+		}else {
+			for (var i = 0; i<conteo; i++) {
+				if (parseInt(idcarrera) == parseInt(arreglo[i][0])) {
+					labelinsc.innerHTML = parseFloat(arreglo[i][2]).toFixed(2)
+					labelint.innerHTML = parseFloat(arreglo[i][3]).toFixed(2)
+				}
+			}
 		}
-		labelinsc.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][2]).toFixed(2)
-		labelint.innerHTML = parseFloat(arreglo[parseInt(idcarrera) - 1][3]).toFixed(2)
     }
 </script>
 {% endblock %}
