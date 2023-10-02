@@ -3099,6 +3099,8 @@ def repdiariopdf():
 				sumas.append(aux)
 				#resumen optica, resumen lab, resumen academica, resumen auxiliares, resumen tarjeta opt, resumen tarjeta lab
 				resumenes = []
+				#total optica, lab, academia, auxiliares, tarjeta opt, tarjeta lab, facturas, vales
+				totales = []
 				#resumen optica
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha = CURDATE() and p.empresa = "Óptica" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
@@ -3106,6 +3108,7 @@ def repdiariopdf():
 				aux = 0
 				for i in resumenopt:
 					aux = aux + float(i[3])
+				totales.append(aux)
 				sumas.append(sumas[0] - aux)
 				resumenes.append(resumenopt)
 				#resumen laboratorio
@@ -3116,6 +3119,7 @@ def repdiariopdf():
 				for i in resumenlab:
 					aux = aux + float(i[3])
 				sumas.append(sumas[1] - aux)
+				totales.append(aux)
 				resumenes.append(resumenlab)
 				#resumen academia
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha = CURDATE() and p.empresa = "Academia" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
@@ -3125,6 +3129,7 @@ def repdiariopdf():
 				for i in resumenaca:
 					aux = aux + float(i[3])
 				sumas.append(sumas[2] - aux)
+				totales.append(aux)
 				resumenes.append(resumenaca)
 				#resumen Auxiliares de Enfermeria
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha = CURDATE() and p.empresa = "Auxiliares de Enfermeria" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
@@ -3134,6 +3139,7 @@ def repdiariopdf():
 				for i in resumenaux:
 					aux = aux + float(i[3])
 				sumas.append(sumas[3] - aux)
+				totales.append(aux)
 				resumenes.append(resumenaux)
 				#resumen Óptica Tarjeta
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha = CURDATE() and p.empresa = "Óptica Tarjeta" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
@@ -3143,6 +3149,7 @@ def repdiariopdf():
 				for i in resumenopttar:
 					aux = aux + float(i[3])
 				sumas.append(sumas[4] - aux)
+				totales.append(aux)
 				resumenes.append(resumenopttar)
 				#resumen Laboratorio Tarjeta
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha = CURDATE() and p.empresa = "Laboratorio Tarjeta" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
@@ -3152,6 +3159,7 @@ def repdiariopdf():
 				for i in resumenlabtar:
 					aux = aux + float(i[3])
 				sumas.append(sumas[5] - aux)
+				totales.append(aux)
 				resumenes.append(resumenlabtar)
 				#facturas
 				consulta = "select f.documento, f.proveedor, f.descripcion, f.monto, u.iniciales, f.idfactura from factura f inner join user u on f.usuario = u.iduser where f.fecha = CURDATE();"
@@ -3161,11 +3169,13 @@ def repdiariopdf():
 				for i in facturas:
 					totalfacturas = totalfacturas + float(i[3])
 				sumas.append(sumas[6] - totalfacturas)
+				totales.append(totalfacturas)
 				#vales
 				consulta = 'SELECT sum(vales) from efectivo where fecha = CURDATE()'
 				cursor.execute(consulta)
 				vales = cursor.fetchone()
 				sumas.append(sumas[7] - float(vales[0]))
+				totales.append(float(vales[0]))
 				#recibo Dr
 				consulta = 'SELECT recibo from pagos where fecha = CURDATE() and empresa = "Dr. Rodolfo Juarez"'
 				cursor.execute(consulta)
@@ -3174,7 +3184,7 @@ def repdiariopdf():
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1, resumenes = resumenes, sumas = sumas, vales = vales, facturas = facturas, recibodr = recibodr)
+	rendered = render_template('repdiariopdf.html', title="Reporte diario", data = data, suma=suma, datadev=datadev, sumadev=sumadev, contdev=contdev, d1=d1, resumenes = resumenes, sumas = sumas, vales = vales, facturas = facturas, recibodr = recibodr, totales = totales)
 	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
