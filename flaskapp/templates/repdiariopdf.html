@@ -157,7 +157,7 @@
 									<td>{{i[2]}}</td>
 									<td>{{i[3]}}</td>
 									<td>{{i[4]}}</td>
-									<td>Q.{{i[5]}}</td>
+									<td>Q{{i[5]}}</td>
 									<td>{{i[8]}}</td>
 									<td>{{i[7]}}</td>
 								</tr>
@@ -177,7 +177,7 @@
 									<td>{{i[2]}}</td>
 									<td>{{i[3]}}</td>
 									<td>{{i[4]}}</td>
-									<td>-Q.{{i[5]}}</td>
+									<td>-Q{{i[5]}}</td>
 									<td>{{i[8]}}</td>
 									<td>{{i[7]}}</td>
 								</tr>
@@ -189,9 +189,8 @@
 								</tr>
 								<tr>
 									<th colspan="5">Total General</th>
-									<th colspan="3">Q.{{suma - sumadev}}</th>
+									<th colspan="3">Q.{{sumas[0]}}</th>
 								</tr>
-
 							</table>
 							<br>
 							<br>
@@ -199,53 +198,163 @@
 								<tr>
 									<th colspan="5">Resumen Pagos</th>
 								</tr>
+								{% if resumenes[0]|length > 0 %}
 								<tr>
-									<th colspan="3">Boleta</th>
-									<th colspan="2">Total</th>
+									<th colspan="5"><center>Óptica</center></th>
 								</tr>
-								{% for i in range(cantidadrecibo) %}
-								<tr>
-									<td colspan="3">{{totalrecibo[i][1]}}</td>
-									<td colspan="2">Q {{totalrecibo[i][0]}}</td>
-								</tr>
-								{% endfor %}
 								<tr>
 									<th>Código</th>
 									<th>Concepto</th>
 									<th>Cantidad</th>
-									<th>Total</th>
 									<th>Recibo</th>
+									<th>Total</th>
 								</tr>
-								{% for i in range(cantidadresumen) %}
+								{% for i in resumenes[0] %}
 								<tr>
-									<td>{{resumen[i][0]}}</td>
-									<td>{{resumen[i][1]}}</td>
-									<td>{{resumen[i][2]}}</td>
-									<td>Q {{resumen[i][3]}}</td>
-									<td>{{resumen[i][4]}}</td>
+									<td>{{i[0]}}</td>
+									<td>{{i[1]}}</td>
+									<td>{{i[2]}}</td>
+									<td>{{i[4]}}</td>
+									<td>Q{{i[3]}}</td>
 								</tr>
 								{% endfor %}
 								<tr>
-									<th colspan="3">Efectivo</th>
-									<td colspan="2">Q {{efectivo[0]}}</td>
+									<th colspan="4" style="text-align: right;">Saldo</th>
+									<td>Q{{sumas[1]}}</td>
+								</tr>
+								{% endif %}
+
+								{% if resumenes[1]|length > 0 %}
+								<tr>
+									<th colspan="5"><center>Laboratorio</center></th>
 								</tr>
 								<tr>
-									<th colspan="3">Facturas</th>
-									<td colspan="2">Q {{totalfacturas}}</td>
+									<th>Código</th>
+									<th>Concepto</th>
+									<th>Cantidad</th>
+									<th>Recibo</th>
+									<th>Total</th>
+								</tr>
+								{% for i in resumenes[1] %}
+								<tr>
+									<td>{{i[0]}}</td>
+									<td>{{i[1]}}</td>
+									<td>{{i[2]}}</td>
+									<td>{{i[4]}}</td>
+									<td>Q{{i[3]}}</td>
+								</tr>
+								{% endfor %}
+								<tr>
+									<th colspan="4" style="text-align: right;">Saldo</th>
+									<td>Q{{sumas[2]}}</td>
+								</tr>
+								{% endif %}
+
+								{% if resumenes[2]|length > 0 %}
+								<tr>
+									<th colspan="5"><center>Academia</center></th>
 								</tr>
 								<tr>
-									<th colspan="3">Vales</th>
-									<td colspan="2">Q {{efectivo[1]}}</td>
+									<th>Código</th>
+									<th>Concepto</th>
+									<th>Cantidad</th>
+									<th>Recibo</th>
+									<th>Total</th>
+								</tr>
+								{% for i in resumenes[2] %}
+								<tr>
+									<td>{{i[0]}}</td>
+									<td>{{i[1]}}</td>
+									<td>{{i[2]}}</td>
+									<td>{{i[4]}}</td>
+									<td>Q{{i[3]}}</td>
+								</tr>
+								{% endfor %}
+								<tr>
+									<th colspan="4" style="text-align: right;">Saldo</th>
+									<td>Q{{sumas[3]}}</td>
+								</tr>
+								{% endif %}
+
+								{% if resumenes[3]|length > 0 %}
+								<tr>
+									<th colspan="5"><center>Auxiliares de Enfermeria</center></th>
 								</tr>
 								<tr>
-									<th colspan="3">Tarjeta</th>
-									<td colspan="2">Q {{efectivo[2]}}</td>
+									<th>Código</th>
+									<th>Concepto</th>
+									<th>Cantidad</th>
+									<th>Recibo</th>
+									<th>Total</th>
+								</tr>
+								{% for i in resumenes[3] %}
+								<tr>
+									<td>{{i[0]}}</td>
+									<td>{{i[1]}}</td>
+									<td>{{i[2]}}</td>
+									<td>{{i[4]}}</td>
+									<td>Q{{i[3]}}</td>
+								</tr>
+								{% endfor %}
+								<tr>
+									<th colspan="4" style="text-align: right;">Saldo</th>
+									<td>Q{{sumas[4]}}</td>
+								</tr>
+								{% endif %}
+
+								{% if resumenes[4]|length > 0 %}
+								<tr>
+									<th colspan="5"><center>Óptica Tarjeta</center></th>
 								</tr>
 								<tr>
-									<th colspan="3">Total</th>
-									<th colspan="2">Q{{suma - sumadev}}</th>
+									<th>Código</th>
+									<th>Concepto</th>
+									<th>Cantidad</th>
+									<th>Recibo</th>
+									<th>Total</th>
 								</tr>
+								{% for i in resumenes[4] %}
+								<tr>
+									<td>{{i[0]}}</td>
+									<td>{{i[1]}}</td>
+									<td>{{i[2]}}</td>
+									<td>{{i[4]}}</td>
+									<td>Q{{i[3]}}</td>
+								</tr>
+								{% endfor %}
+								<tr>
+									<th colspan="4" style="text-align: right;">Saldo</th>
+									<td>Q{{sumas[5]}}</td>
+								</tr>
+								{% endif %}
+
+								{% if resumenes[5]|length > 0 %}
+								<tr>
+									<th colspan="5"><center>Laboratorio Tarjeta</center></th>
+								</tr>
+								<tr>
+									<th>Código</th>
+									<th>Concepto</th>
+									<th>Cantidad</th>
+									<th>Recibo</th>
+									<th>Total</th>
+								</tr>
+								{% for i in resumenes[5] %}
+								<tr>
+									<td>{{i[0]}}</td>
+									<td>{{i[1]}}</td>
+									<td>{{i[2]}}</td>
+									<td>{{i[4]}}</td>
+									<td>Q{{i[3]}}</td>
+								</tr>
+								{% endfor %}
+								<tr>
+									<th colspan="4" style="text-align: right;">Saldo</th>
+									<td>Q{{sumas[6]}}</td>
+								</tr>
+								{% endif %}
 							</table>
+							{% if facturas|length > 0 %}
 							<table>
 								<tr>
 									<th colspan="5">Facturas/Recibos</th>
@@ -267,41 +376,28 @@
 								</tr>
 								{% endfor %}
 								<tr>
-									<th colspan="4">Total</th>
-									<td>Q{{totalfacturas}}</td>
-								</tr>
-								<tr>
-									<th colspan="4">Diferencia</th>
-									<td>Q{{suma - sumadev - totalfacturas}}</td>
+									<th colspan="4" style="text-align: right;">Saldo</th>
+									<td>Q{{sumas[7]}}</td>
 								</tr>
 							</table>
-							<br>
-							<br>
+							{% endif %}
 							<table>
+								{% if vales[0]|int > 0 %}
 								<tr>
-									<th colspan="4">Transferencias</th>
+									<th colspan="4">Vales</th>
+									<td>Q{{vales[0]}}</td>
 								</tr>
 								<tr>
-									<th>Nombre</th>
-									<th>Recibo</th>
-									<th>Factura</th>
-									<th>Total</th>
+									<th colspan="4" style="text-align: right;">Saldo</th>
+									<td>Q{{sumas[8]}}</td>
 								</tr>
-								{% for i in transferencias %}
+								{% endif %}
 								<tr>
-									<td>{{i[0]}}</td>
-									<td>{{i[2]}}</td>
-									<td>{{i[1]}}</td>
-									<td>Q {{i[3]}}</td>
-								</tr>
-								{% endfor %}
-								<tr>
-									<th colspan="3">Total</th>
-									<td>Q {{totaltransferencias[0]}}</td>
+									<th colspan="3">Dr. Rodolfo Juarez</th>
+									<td>Boleta: {{recibodr[0]}}</td>
+									<td>Q{{sumas[8]}}</td>
 								</tr>
 							</table>
-
-							<br>
 							<br>
 							<table>
 								<tr>
