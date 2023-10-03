@@ -196,11 +196,11 @@
 							<br>
 							<table>
 								<tr>
-									<th colspan="5">Resumen Pagos</th>
+									<th colspan="6">Resumen Pagos</th>
 								</tr>
 								{% if resumenes[0]|length > 0 %}
 								<tr>
-									<th colspan="5"><center>Óptica</center></th>
+									<th colspan="6"><center>Óptica</center></th>
 								</tr>
 								<tr>
 									<th>Código</th>
@@ -208,6 +208,7 @@
 									<th>Cantidad</th>
 									<th>Recibo</th>
 									<th>Total</th>
+									<th>Saldo</th>
 								</tr>
 								{% for i in resumenes[0] %}
 								<tr>
@@ -216,17 +217,19 @@
 									<td>{{i[2]}}</td>
 									<td>{{i[4]}}</td>
 									<td>Q{{i[3]}}</td>
+									<td></td>
 								</tr>
 								{% endfor %}
 								<tr>
 									<th colspan="4" style="text-align: right;">Total Óptica</th>
 									<td>Q{{totales[0]}}</td>
+									<td>Q{{sumas[1]}}</td>
 								</tr>
 								{% endif %}
 
 								{% if resumenes[1]|length > 0 %}
 								<tr>
-									<th colspan="5"><center>Laboratorio</center></th>
+									<th colspan="6"><center>Laboratorio</center></th>
 								</tr>
 								<tr>
 									<th>Código</th>
@@ -234,6 +237,7 @@
 									<th>Cantidad</th>
 									<th>Recibo</th>
 									<th>Total</th>
+									<th>Saldo</th>
 								</tr>
 								{% for i in resumenes[1] %}
 								<tr>
@@ -242,17 +246,19 @@
 									<td>{{i[2]}}</td>
 									<td>{{i[4]}}</td>
 									<td>Q{{i[3]}}</td>
+									<td></td>
 								</tr>
 								{% endfor %}
 								<tr>
 									<th colspan="4" style="text-align: right;">Total Laboratorio</th>
 									<td>Q{{totales[1]}}</td>
+									<td>Q{{sumas[2]}}</td>
 								</tr>
 								{% endif %}
 
 								{% if resumenes[2]|length > 0 %}
 								<tr>
-									<th colspan="5"><center>Academia</center></th>
+									<th colspan="6"><center>Academia</center></th>
 								</tr>
 								<tr>
 									<th>Código</th>
@@ -260,6 +266,7 @@
 									<th>Cantidad</th>
 									<th>Recibo</th>
 									<th>Total</th>
+									<th>Saldo</th>
 								</tr>
 								{% for i in resumenes[2] %}
 								<tr>
@@ -268,17 +275,19 @@
 									<td>{{i[2]}}</td>
 									<td>{{i[4]}}</td>
 									<td>Q{{i[3]}}</td>
+									<td></td>
 								</tr>
 								{% endfor %}
 								<tr>
 									<th colspan="4" style="text-align: right;">Total Academia</th>
 									<td>Q{{totales[2]}}</td>
+									<td>Q{{sumas[3]}}</td>
 								</tr>
 								{% endif %}
 
 								{% if resumenes[3]|length > 0 %}
 								<tr>
-									<th colspan="5"><center>Auxiliares de Enfermeria</center></th>
+									<th colspan="6"><center>Auxiliares de Enfermeria</center></th>
 								</tr>
 								<tr>
 									<th>Código</th>
@@ -286,6 +295,7 @@
 									<th>Cantidad</th>
 									<th>Recibo</th>
 									<th>Total</th>
+									<th>Saldo</th>
 								</tr>
 								{% for i in resumenes[3] %}
 								<tr>
@@ -294,17 +304,19 @@
 									<td>{{i[2]}}</td>
 									<td>{{i[4]}}</td>
 									<td>Q{{i[3]}}</td>
+									<td></td>
 								</tr>
 								{% endfor %}
 								<tr>
 									<th colspan="4" style="text-align: right;">Total Auxiliares de Enfermeria</th>
 									<td>Q{{totales[3]}}</td>
+									<td>Q{{sumas[4]}}</td>
 								</tr>
 								{% endif %}
 
 								{% if resumenes[4]|length > 0 %}
 								<tr>
-									<th colspan="5"><center>Óptica Tarjeta</center></th>
+									<th colspan="6"><center>Óptica Tarjeta</center></th>
 								</tr>
 								<tr>
 									<th>Código</th>
@@ -312,6 +324,7 @@
 									<th>Cantidad</th>
 									<th>Recibo</th>
 									<th>Total</th>
+									<th>Saldo</th>
 								</tr>
 								{% for i in resumenes[4] %}
 								<tr>
@@ -320,17 +333,19 @@
 									<td>{{i[2]}}</td>
 									<td>{{i[4]}}</td>
 									<td>Q{{i[3]}}</td>
+									<td></td>
 								</tr>
 								{% endfor %}
 								<tr>
 									<th colspan="4" style="text-align: right;">Total Óptica Tarjeta</th>
 									<td>Q{{totales[4]}}</td>
+									<td>Q{{sumas[5]}}</td>
 								</tr>
 								{% endif %}
 
 								{% if resumenes[5]|length > 0 %}
 								<tr>
-									<th colspan="5"><center>Laboratorio Tarjeta</center></th>
+									<th colspan="6"><center>Laboratorio Tarjeta</center></th>
 								</tr>
 								<tr>
 									<th>Código</th>
@@ -338,6 +353,7 @@
 									<th>Cantidad</th>
 									<th>Recibo</th>
 									<th>Total</th>
+									<th>Saldo</th>
 								</tr>
 								{% for i in resumenes[5] %}
 								<tr>
@@ -346,18 +362,20 @@
 									<td>{{i[2]}}</td>
 									<td>{{i[4]}}</td>
 									<td>Q{{i[3]}}</td>
+									<td></td>
 								</tr>
 								{% endfor %}
 								<tr>
 									<th colspan="4" style="text-align: right;">Total Laboratorio Tarjeta</th>
 									<td>Q{{totales[5]}}</td>
+									<td>Q{{sumas[6]}}</td>
 								</tr>
 								{% endif %}
 							</table>
 							{% if facturas|length > 0 %}
 							<table>
 								<tr>
-									<th colspan="5">Facturas/Recibos</th>
+									<th colspan="6">Facturas/Recibos</th>
 								</tr>
 								<tr>
 									<th>No. Documento</th>
@@ -365,6 +383,7 @@
 									<th>Descripción</th>
 									<th>Usuario</th>
 									<th>Monto</th>
+									<th>Saldo</th>
 								</tr>
 								{% for i in facturas %}
 								<tr>
@@ -373,11 +392,13 @@
 									<td>{{i[2]}}</td>
 									<td>{{i[4]}}</td>
 									<td>Q{{i[3]}}</td>
+									<td></td>
 								</tr>
 								{% endfor %}
 								<tr>
 									<th colspan="4" style="text-align: right;">Total Facturas</th>
 									<td>Q{{totales[6]}}</td>
+									<td>Q{{sumas[7]}}</td>
 								</tr>
 							</table>
 							{% endif %}
@@ -386,12 +407,13 @@
 								<tr>
 									<th colspan="4">Vales</th>
 									<td>Q{{vales[0]}}</td>
+									<td>Q{{sumas[8]}}</td>
 								</tr>
 								{% endif %}
 								<tr>
-									<th colspan="3">Dr. Rodolfo Juarez</th>
+									<th colspan="4">Dr. Rodolfo Juarez</th>
 									<td>Boleta: {{recibodr[0]}}</td>
-									<td>Q{{sumas[8]}}</td>
+									<th>Q{{sumas[8]}}</th>
 								</tr>
 							</table>
 							<br>
