@@ -2913,6 +2913,30 @@ def reportes():
 		return redirect(url_for('reportes'))
 	return render_template('reportes.html', title="Reportes", sumas = sumas, sumtotal=sumtotal, logeado=logeado, datadev=datadev, totaldev=totaldev, totaltotal=totaltotal, efectivo=efectivo, facturas = facturas)
 
+@app.route('/unificarcajas')
+def unificarcajas():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	idusuario = session['idusercaja']
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'update pagos set user = %s where fecha = CURDATE()'
+				cursor.execute(consulta, session['idusercaja'])
+				consulta = 'update factura set usuario = %s where fecha = CURDATE()'
+				cursor.execute(consulta, session['idusercaja'])
+				consulta = 'update efectivo set billete1 = 0, billete5 = 0, billete10 = 0, billete20 = 0, billete50 = 0, billete100 = 0, billete200 = 0, facturas = 0, vales = 0, tarjeta = 0 where fecha = CURDATE() and iduser != %s'
+				cursor.execute(consulta, session['idusercaja'])
+			conexion.commit()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return redirect(url_for('reportes'))
+
 @app.route('/nuevafactura', methods=['GET', 'POST'])
 def nuevafactura():
 	try:
