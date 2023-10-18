@@ -212,8 +212,10 @@ def auxenf():
 		mora = request.form["mora"]
 		try:
 			insc = request.form["insc"]
+			promocion = request.form["promocion"]
 		except:
 			insc = 0
+			promocion = 0
 		datameses = ""
 		for i in range(cantidad):
 			aux = 'mes' + str(i)
@@ -225,11 +227,11 @@ def auxenf():
 					datameses = f'{datameses}{mes}'
 		if len(datameses) < 1:
 			datameses = 'None'
-		return redirect(url_for('confirmacionauxenf', nombre=nombre, carnet=carnet, insc=insc, datameses=datameses, mora=mora))
+		return redirect(url_for('confirmacionauxenf', nombre=nombre, carnet=carnet, insc=insc, datameses=datameses, mora=mora, promocion = promocion))
 	return render_template('auxenf.html', title='Auxiliares de Enfermeria', logeado=logeado, meses=meses)
 
-@app.route("/confirmacionauxenf/<nombre>&<carnet>&<insc>&<datameses>&<mora>", methods=['GET', 'POST'])
-def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
+@app.route("/confirmacionauxenf/<nombre>&<carnet>&<insc>&<datameses>&<mora>&<promocion>", methods=['GET', 'POST'])
+def confirmacionauxenf(nombre, carnet, insc, datameses, mora, promocion):
 	try:
 		logeado = session['logeadocaja']
 	except:
@@ -238,6 +240,7 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
 	carnet = str(carnet)
 	insc = int(insc)
 	mora = float(mora)
+	promocion = int(promocion)
 	cantidad = 0
 	if datameses != 'None':
 		meses = datameses.split(",")
@@ -278,7 +281,7 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
 				with conexion.cursor() as cursor:
 					idpago = 0
 					if insc == 1:
-						consulta = f"INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES ({cuotas[0][0]},'{nombre}','{carnet}',{cuotas[0][1]},'{date.today()}','Inscripción Auxiliar de enfermeria',0, {session['idusercaja']});"
+						consulta = f"INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES ({cuotas[0][0]},'{nombre}','{carnet}',{cuotas[0][1]},'{date.today()}','Promoción {promocion}',0, {session['idusercaja']});"
 						cursor.execute(consulta)
 						conexion.commit()
 					for i in meses:
@@ -304,7 +307,7 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora):
 			return redirect(url_for('imprimir', idpagos=idpago))
 		else:
 			return redirect(url_for('auxenf'))
-	return render_template('confirmacionauxenf.html', title='Confirmación Auxiliar de Enfermeria', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, insc=insc, meses=meses, mora = mora)
+	return render_template('confirmacionauxenf.html', title='Confirmación Auxiliar de Enfermeria', logeado=logeado, nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, insc=insc, meses=meses, mora = mora, promocion = promocion)
 
 @app.route('/repauxenf', methods=['GET', 'POST'])
 def repauxenf():
@@ -318,7 +321,9 @@ def repauxenf():
 		try:
 			with conexion.cursor() as cursor:
 				datagen = []
-				consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Inscripción Auxiliar de enfermeria%' and p.extra not like '%Retirado%' group by p.nombre order by p.nombre;"
+				fechaact = date.today()
+				year = fechaact.year
+				consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Inscripción Auxiliar de enfermeria%' and p.extra not like '%Retirado%' and p.extra like '%{year}%' group by p.nombre order by p.nombre;"
 				cursor.execute(consulta)
 				nombres = cursor.fetchall()
 				datos = []
@@ -351,7 +356,9 @@ def repauxenfexcel():
 		try:
 			with conexion.cursor() as cursor:
 				datagen = []
-				consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Inscripción Auxiliar de enfermeria%' and p.extra not like '%Retirado%' group by p.nombre order by p.nombre;"
+				fechaact = date.today()
+				year = fechaact.year
+				consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Inscripción Auxiliar de enfermeria%' and p.extra not like '%Retirado%' and p.extra like '%{year}%' group by p.nombre order by p.nombre;"
 				cursor.execute(consulta)
 				nombres = cursor.fetchall()
 				datos = []
