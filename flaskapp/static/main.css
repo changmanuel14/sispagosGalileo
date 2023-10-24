@@ -57,12 +57,11 @@ td {
 
 table {
 	border-collapse: collapse;
-	width: 100%;
 	border: 1px solid #dddddd;
 }
 
 td {
-	font-size: 16px;
+	font-size: 14px;
 	border: 1px solid #dddddd;
 	text-align: left;
 	padding: 8px;
@@ -71,12 +70,12 @@ td {
 th {
 	text-align: center;
 	border: 1px solid #dddddd;
-	font-size: 16px;
+	font-size: 14px;
 }
 
 .tablacuadre td,
 th {
-	font-size: 16px;
+	font-size: 16	px;
 	border: 0px solid #dddddd;
 	text-align: left;
 	padding: 0px;
@@ -95,6 +94,7 @@ table {
 .tablacuadre {
 	border-spacing: 0px;
 	border: 0px solid #dddddd;
+	width: 100%;
 }
 
 .inputtyperecibo {
@@ -106,7 +106,6 @@ table {
 }
 
 .container1 {
-	width: 100%;
 	display: flex;
 }
 
