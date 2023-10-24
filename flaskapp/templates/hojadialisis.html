@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    {% if title %}
+        <title>Sistema de caja - {{ title }}</title>
+    {% else %}
+        <title>Sistema de caja</title>
+    {% endif %}
+         <link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
+	<style type="text/css">
+	body {
+		background: #ffffff;
+		margin-top: 5rem;
+	}
+	table {
+		border: 0px;
+		width: 100%;
+	}
+	td, th {
+		font-size: 14px;
+		padding-left: 8px;
+		padding-right: 8px;
+		padding-top: 0px;
+		padding-bottom: 0px;
+		height: 30px;
+	}
+
+	td {
+		border-bottom: #000000 1px solid;
+		text-align: center;
+		vertical-align: bottom;
+	}
+
+	th {
+		text-align: left;
+		vertical-align: bottom;
+	}
+	h1, h2, h3, h4, h5, h6 {
+		color: #000000;
+	}
+	p {
+		size: 12px;
+	}
+	.tabla {
+		border: #000000 1px solid;
+		text-align: center;
+		vertical-align: middle;
+		height: 20px;
+	}
+	.tdtabla {
+		border: #000000 1px solid;
+		text-align: left;
+		vertical-align: middle;
+		height: 35px;
+	}
+	.tdtablaev {
+		border: #000000 1px solid;
+		text-align: left;
+		vertical-align: middle;
+		height: 20px;
+	}
+</style>
+</head>
+<body>
+    <main role="main" class="container">
+		<div style="width: 70%; float: left;">
+			<h5>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>TÉCNICO UNIVERSITARIO EN HEMODIÁLISIS<br>ASISTENCIA A PRÁCTICA - DIÁLISIS PERITONEAL</h5>
+		</div>
+		<div style="width: 25%; float: right;">
+			<img src="https://eventos.galileo.edu/images/logo-noslogan.png" width="100%"> 
+		</div>
+		<br><br><br><br><br>
+		<table>
+			<tr>
+				<th style="width: 20%;">Nombre del estudiante: </th>
+				<td colspan="3">{{nombre}}</td>
+			</tr>
+			<tr>
+				<th>Centro de práctica: </th>
+				<td style="width: 50%;"></td>
+				<th>Carnet:</th>
+				<td style="width: 20%;">{{carnet}}</td>
+			</tr>
+		</table><br>
+		<h6><strong>Descripción:</strong></h6>
+		<p style="text-align: justify;">Práctica donde permite que el estudiante tenga la oportunidad de aplicar los conocimientos científicos en la realización del procedimiento de Diálisis Peritoneal de forma individualizada a pacientes y familia. </p>
+		<h6><strong>Objetivo:</strong></h6>
+		<ul>
+			<li style="text-align: justify;">Realizar los pasos correctamente de un recambio de Diálisis Peritoneal.</li>
+		</ul>
+		<table class="tabla">
+			<tr>
+				<th class="tabla" colspan="3">DESEMPEÑOS A REALIZAR EN LA PRÁCTICA</th>
+				<th class="tabla">PUNTEO</th>
+			</tr>
+			<tr>
+				<th class="tabla" rowspan="23" style="width: 5%;">1</th>
+				<th class="tabla" rowspan="23" style="width: 20%;">Habilidades técnicas a realizar en la práctica</th>
+				<td class="tdtablaev" style="width: 60%;">Se orienta en el área de práctica de la Unidad de Diálisis Peritoneal</td>
+				<td class="tdtablaev" style="width: 15%;"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Identifica al paciente y realiza entrevista sobre el diagnóstico clínico</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Brinda atención integral al paciente y lo orienta en cada tratamiento de D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Realiza el lavado de manos utilizando los pasos correctamente</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Realiza correctamente los tres pasos del procedimiento de D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Identifica correctamente la configuración de la bolsa gemela Ultra Bag</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Controla signos vitales pre y pos Diálisis y los anota en hoja correspondiente</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Controla el balance hídrico diario (Ingesta y excreta)</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Realiza control de PET Y Ktv para evaluar la efectividad del tx. De D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Realiza asepsia y antisepsia de la mesa, atril y equipo de D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Practica los cuatro lavados de manos utilizando los pasos correctamente durante el tx. De Diálisis Peritoneal</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Protege el equipo y materiales estéril durante el procedimiento a realizar</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Practica medidas de bioseguridad</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Realiza correctamente los recambios del tratamiento de D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Participa en la visita médica</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Reporta oportunamente alteraciones y/o complicaciones durante el tx. De Diálisis Peritoneal</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Administra medicamentos correctamente por las diferentes vías y en tx. De D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Protege el catéter del paciente durante el tx. De D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Descarta el material utilizado con el paciente según su clasificación</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Realiza desinfección correctamente de los materiales utilizados durante el tx. y los resguarda</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Busca oportunidad para adquirir habilidad sobre el manejo de las dos modalidades de Diálisis peritoneal DPCA y DPA</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Realiza las anotaciones correspondientes en hoja de protocolo de D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Brinda educación al pacte. Y familia sobre temas que le ayuden a mejorar la dieta y salud, tales como alimentación, inmunizaciones, apoyo psicológico, etc.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<th class="tabla" rowspan="5">2</th>
+				<th class="tabla" rowspan="5">Comportamientos profesionales</th>
+				<td class="tdtablaev">Se responsabiliza en el aprendizaje.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Busca oportunidades para adquirir habilidad en realizar tx. De D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Aplica las sugerencias que se le indican durante su práctica.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Demuestra interés por su progreso personal y profesional.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Fundamenta sus acciones con principios científicos.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<th class="tabla" rowspan="2">3</th>
+				<th class="tabla" rowspan="2">Presentación Personal</th>
+				<td class="tdtablaev">Porta el uniforme correctamente de acuerdo a las normas de la Unidad de D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Toma en consideración los principios de higiene personal en su presentación</td>
+				<td class="tdtablaev"></td>
+			</tr>
+		</table>
+		<br><br><br><br><br>
+		<table>
+			<tr>
+				<th class="tabla" rowspan="8" style="width: 5%;">4</th>
+				<th class="tabla" rowspan="8" style="width: 20%;">Es responsable en el cumplimiento de sus actividades</th>
+				<td class="tdtablaev" style="width: 60%;">Demuestra veracidad en la información que brinda</td>
+				<td class="tdtablaev" style="width: 15%;"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Es puntual para asistir a la practica</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Es puntual en la entrega de sus trabajos</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Permanece en el área de practica hasta concluir sus actividades</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Justifica sus ausencias del área de practica con 24 horas de anticipacion</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Establece una buena comunicación con usuarios, familiares y compañeros de la unidad de D.P.</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Demuestra amabilidad, cortesía, respeto al dar atención al usuario y familiares</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">El vocabulario y ademanes que utiliza son adecuados a su comportamiento</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<th class="tabla" rowspan="6">5</th>
+				<th class="tabla" rowspan="6">Demuestra actitud ético Profesional</th>
+				<td class="tdtablaev">Demuestra veracidad en la información que brinda</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Aplica el secreto profesional en la información que se le confía</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Protege al paciente de agentes externos y de posibles contaminaciones</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Realiza laboratorio sobre el procedimiento de diálisis peritoneal automatizada</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Realiza trifoliar sobre alimentos permitidos y no permitidos en pacientes con tratamiento de diálisis peritoneal</td>
+				<td class="tdtablaev"></td>
+			</tr>
+			<tr>
+				<td class="tdtablaev">Demuestra espíritu de servicio en la atención al usuario</td>
+				<td class="tdtablaev"></td>
+			</tr>
+		</table>
+		<table>
+			<tr>
+				<td class="tdtablaev" style="width: 55%;"><strong>Criterio de evaluación</strong><br>El punto minimo es 0 y el máximo 2.27 por cada reglón componente de la calificación</td>
+				<th class="tabla" style="width: 30%;">TOTAL</th>
+				<th class="tabla" style="width: 15%;"></th>
+			</tr>
+		</table>
+		<br><br>
+		<table>
+			<tr>
+				<th style="width: 20%;">PUNTEO FINAL</th>
+				<td style="width: 20%;"></td>
+				<th style="width: 20%;"></th>
+				<td style="width: 40%;"></td>
+			</tr>
+			<tr>
+				<th></th>
+				<th style="vertical-align: top; text-align: center;">Número</th>
+				<th></th>
+				<th style="vertical-align: top; text-align: center;">En letras</th>
+			</tr>
+		</table>
+		<br>
+		<table>
+			<tr>
+				<th style="width: 20%;">Nombre del estudiante: </th>
+				<td></td>
+			</tr>
+		</table>
+		<br>
+		<table>
+			<tr>
+				<th style="width: 5%;">Firma: </th>
+				<td style="width: 45%;"></td>
+				<th  style="width: 5%;">Carnet: </th>
+				<td style="width: 45%;"></td>
+			</tr>
+		</table>
+		<br>
+		<table>
+			<tr>
+				<th style="width: 25%;">Nombre del Paciente: </th>
+				<td></td>
+			</tr>
+		</table>
+		<br>
+		<table>
+			<tr>
+				<th style="width: 25%;">Dirección: </th>
+				<td></td>
+			</tr>
+		</table>
+		<br>
+		<table>
+			<tr>
+				<th style="width: 25%;">Firma: </th>
+				<td></td>
+			</tr>
+		</table>
+		<br>
+		<table>
+			<tr>
+				<th style="width: 30%;">Nombre del Supervisor de práctica: </th>
+				<td></td>
+			</tr>
+		</table>
+		<br>
+		<table>
+			<tr>
+				<th style="width: 5%;">Firma: </th>
+				<td style="width: 95%;"></td>
+			</tr>
+		</table>
+		<br><br><br>
+		<center><p>Quetzaltenango, {{year}}</p></center>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
+</body>
+</html>

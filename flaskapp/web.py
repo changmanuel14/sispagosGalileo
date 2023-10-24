@@ -1902,7 +1902,7 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 								idpago = cursor.fetchone()
 								idpago = idpago[0]
 								idpagos.append(idpago)
-						elif 'THDQ' in pcod or 'TLCQ' in pcod:
+						elif 'THDQ' in pcod or 'TLCQ' in pcod or 'Diálisis' in pcod:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
 							conexion.commit()
@@ -1958,6 +1958,8 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 				return redirect(url_for('imprimir', idpagos = idpagos))
 		elif 'THDQ' in pcod:
 			return redirect(url_for('hojathdq', idpagos = idpagos))
+		elif 'Diálisis' in pcod:
+			return redirect(url_for('hojadialisis', idpagos = idpagos))
 		elif 'TLCQ' in pcod:
 			return redirect(url_for('hojatlcq', idpagos = idpagos))
 		elif 'TRADQ' in pcod and 'Prepractica' in pcod:
@@ -2207,6 +2209,48 @@ def hojathdq(idpagos):
 	year = fechaact.year
 	#Se genera el PDF
 	rendered = render_template('hojathdq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year)
+	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
+	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+	response = make_response(pdf)
+	response.headers['Content-Type'] = 'application/pdf'
+	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
+	print(response)
+	return response
+
+@app.route('/hojadialisis/<idpagos>', methods=['GET', 'POST'])
+def hojadialisis(idpagos):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	array = idpagos.split(',')
+	newarray = []
+	cantidad = len(array)
+	for i in range(cantidad):
+		varaux = ''
+		for j in array[i]:
+			if j.isdigit():
+				varaux = varaux + str(j)
+		newarray.append(varaux)
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = f'SELECT nombre, carnet FROM pagos WHERE idpagos = {newarray[0]};'
+				cursor.execute(consulta)
+			# Con fetchall traemos todas las filas
+				data = cursor.fetchone()
+				nombre = data[0]
+				carnet = data[1]
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	fechaact = date.today()
+	year = fechaact.year
+	#Se genera el PDF
+	rendered = render_template('hojadialisis.html', title="Hoja de Práctica Dialisis Peritoneal", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year)
 	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)

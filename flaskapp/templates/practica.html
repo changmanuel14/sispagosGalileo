@@ -230,11 +230,12 @@
 				desc.placeholder = 'Tipo de Práctica'
 				desc.setAttribute('list', 'pracenf')
 				datalenq.style.display = 'block'
-			} else if (aux.includes('THDQ') || (aux.includes('TRADQ') && !(aux.includes('Prepractica'))) || aux.includes('Optometria') && aux.includes('EPS')) {
+			} else if (aux.includes('THDQ') || aux.includes('Peritoneal') || (aux.includes('TRADQ') && !(aux.includes('Prepractica'))) || aux.includes('Optometria') && aux.includes('EPS')) {
 				desc.placeholder = 'Descripción'
 				desc.setAttribute('list', '')
 				datalenq.style.display = 'none'
 				if (aux.includes('THDQ')) desc.value = 'Pago de Práctica THDQ';
+				if (aux.includes('Peritoneal')) desc.value = 'Pago de Práctica Diálisis Peritoneal';
 				else if (aux.includes('Optometria')) desc.value = 'Pago de EPS TOPTQ';
 				else desc.value = 'Pago de Práctica TRADQ';
 				datalenq.style.display = 'none'

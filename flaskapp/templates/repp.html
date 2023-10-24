@@ -128,7 +128,9 @@
 					<td>{{i[4]}}</td>
 					<td>Q. {{i[5]}}</td>
 					<td>
-						{% if 'THDQ' in i[3] %}
+						{% if 'THDQ1' in i[3] %}
+						<a href="/hojadialisis/{{i[6]}}">Imprimir</a>
+						{% elif 'THDQ' in i[3] %}
 						<a href="/hojathdq/{{i[6]}}">Imprimir</a>
 						{% elif 'PREPTRAD' in i[3] %}
 						<a href="/prepracticatradq/{{i[6]}}">Imprimir</a>
