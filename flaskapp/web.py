@@ -2664,9 +2664,11 @@ def repm():
 				numsmanualestlcq = [2,4]
 				nombremanualesindlbcq = ['BIOLOGIA GENERAL II', 'QUIMICA GENERAL II', 'MICROBIOLOGIA GENERAL', 'QUIMICA ORGANICA', 'BACTERIOLOGIA', 'BIOQUIMICA CLINICA', 'INMUNOLOGIA BASICA', 'INTERPRETACION DE PRUEBAS BIOQUIMICAS', 'MICOLOGIA', 'MICROBIOLOGIA APLICADA I']
 				nombremanualesindtlcq = ['HEMATOLOGIA Y COAGULACION', 'INMUNOLOGIA Y BANCO DE SANGRE', 'MICROBIOLOGIA', 'PRUEBAS ESPECIALES']
+				nombremanualespracticas = ['INTENSIVO HOSPITALARIAS', 'INTENSIVO COMUNITARIAS', 'REFORZAMIENTO EPS', 'INTENSIVO TLCQ']
 				manualeslbcq = []
 				manualestlcq = []
 				manualesind = []
+				manualespracticas = []
 				for i in numsmanualeslbcq:
 					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITLBCQ{i}'"
 					cursor.execute(consulta)
@@ -2687,12 +2689,18 @@ def repm():
 					cursor.execute(consulta)
 					manuales = cursor.fetchall()
 					manualesind.append(manuales)
+				for i in nombremanualespracticas:
+					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i}%' and c.concepto like '%Manual %'"
+					print(consulta)
+					cursor.execute(consulta)
+					manuales = cursor.fetchall()
+					manualespracticas.append(manuales)
 			# Con fetchall traemos todas las filas
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	return render_template('repm.html', title="Reporte Manuales", numsmanualeslbcq = numsmanualeslbcq, numsmanualestlcq=numsmanualestlcq, manualeslbcq=manualeslbcq, manualestlcq=manualestlcq, manualesind=manualesind)
+	return render_template('repm.html', title="Reporte Manuales", numsmanualeslbcq = numsmanualeslbcq, numsmanualestlcq=numsmanualestlcq, manualeslbcq=manualeslbcq, manualestlcq=manualestlcq, manualesind=manualesind, manualespracticas=manualespracticas)
 
 @app.route('/entregarm/<idpago>', methods=['GET', 'POST'])
 def entregarm(idpago):
