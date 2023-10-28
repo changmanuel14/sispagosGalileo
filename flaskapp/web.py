@@ -3180,9 +3180,9 @@ def repdiariopdf():
 					sumadev = sumadev + float(i[5])
 				aux = suma - sumadev
 				sumas.append(aux)
-				#resumen optica, resumen lab, resumen academica, resumen auxiliares, resumen tarjeta opt, resumen tarjeta lab
+				#resumen optica, resumen lab, resumen academica, resumen auxiliares, resumen tarjeta opt, resumen tarjeta lab, resumen Dr. Juarez
 				resumenes = []
-				#total optica, lab, academia, auxiliares, tarjeta opt, tarjeta lab, facturas, vales
+				#total optica, lab, academia, auxiliares, tarjeta opt, tarjeta lab, facturas, vales, Dr Juarez
 				totales = []
 				#resumen optica
 				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha = CURDATE() and p.empresa = "Óptica" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
@@ -3244,6 +3244,10 @@ def repdiariopdf():
 				sumas.append(sumas[5] - aux)
 				totales.append(aux)
 				resumenes.append(resumenlabtar)
+				#resumen Dr. Juarez
+				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), p.recibo FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha = CURDATE() and p.empresa = "Dr. Rodolfo Juarez" group by recibo, cod order by p.recibo asc, c.cod asc, p.nombre asc;'
+				cursor.execute(consulta)
+				resumendrjuarez = cursor.fetchall()
 				#facturas
 				consulta = "select f.documento, f.proveedor, f.descripcion, f.monto, u.iniciales, f.idfactura from factura f inner join user u on f.usuario = u.iduser where f.fecha = CURDATE();"
 				cursor.execute(consulta)
@@ -3263,6 +3267,11 @@ def repdiariopdf():
 				consulta = 'SELECT recibo from pagos where fecha = CURDATE() and empresa = "Dr. Rodolfo Juarez"'
 				cursor.execute(consulta)
 				recibodr = cursor.fetchone()
+				aux = 0
+				for i in resumendrjuarez:
+					aux = aux + float(i[3])
+				totales.append(aux)
+				resumenes.append(resumendrjuarez)
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:

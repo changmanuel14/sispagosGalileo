@@ -415,6 +415,22 @@
 									<td>Boleta: {{recibodr[0]}}</td>
 									<th>Q{{sumas[8]}}</th>
 								</tr>
+								<tr>
+									<th colspan="6">Desplegado Dr. Rodolfo Juarez</th>
+								</tr>
+								{% for i in resumenes[6] %}
+								<tr>
+									<td>{{i[0]}}</td>
+									<td colspan="2">{{i[1]}}</td>
+									<td>{{i[2]}}</td>
+									<td>{{i[4]}}</td>
+									<td>Q{{i[3]}}</td>
+								</tr>
+								{% endfor %}
+								<tr>
+									<th colspan="5" style="text-align: right;">Total Dr. Rodolfo Juarez</th>
+									<td>Q{{totales[8]}}</td>
+								</tr>
 							</table>
 							<br>
 							<table>
