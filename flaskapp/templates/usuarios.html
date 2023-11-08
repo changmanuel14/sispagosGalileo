@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/pagosadmin">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/carreras">
+							<span>Carreras</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/laboratorioadmin">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/usuarios">
+							<span>Usuarios</span>
+						</a>
+					</li>
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<h2>Usuarios</h2>
+		<br>
+		<a href="/crearusuario"><button type="button" class="btn btn-success">Nuevo Usuario</button></a>
+		<br>
+		<table class="table table-striped sortable" id="tablacodigos">
+			<thead>
+				<tr>
+					<th>No.</th>
+					<th>Nombre</th>
+					<th>Apellido</th>
+					<th>Usuario</th>
+					<th>Iniciales</th>
+					<th colspan="2">Editar</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for i in usuarios %}
+				<tr>
+					<td>{{ loop.index }}</td>
+					<td>{{ i[0] }}</td>
+					<td>{{ i[1] }}</td>
+					<td>{{ i[2] }}</td>
+					<td>{{ i[3] }}</td>
+					<td><a href="/editarusuario/{{i[4]}}"><button type="button" class="btn btn-primary">Editar Datos</button></a></td>
+					<td><a href="/restablecerclave/{{i[4]}}"><button type="button" class="btn btn-warning">Restablecer Contraseña</button></a></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</main>
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
+{% endblock %}

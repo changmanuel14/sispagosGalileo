@@ -3711,5 +3711,202 @@ def nuevacarrera():
 		return redirect(url_for('carreras'))
 	return render_template('nuevacarrera.html', title="Nueva Carrera", logeado=logeado)
 
+@app.route('/laboratorioadmin')
+def laboratorioadmin():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT t.nombre, e.nombre, e.precio, e.idexameneslab from tipoexamen t inner join exameneslab e on e.idtipoexamen = t.idtipoexamen order by t.nombre asc, e.nombre asc'
+				cursor.execute(consulta)
+				examenes = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('laboratorioadmin.html', title="Admin Laboratorio", logeado=logeado, examenes = examenes)
+
+@app.route('/nuevoexamenlab', methods=['GET', 'POST'])
+def nuevoexamenlab():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT idtipoexamen, nombre from tipoexamen ORDER by nombre asc'
+				cursor.execute(consulta)
+				tipos = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == "POST":
+		nombre = request.form["nombre"]
+		tipo = request.form["tipo"]
+		precio = request.form["precio"]
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = f"insert into exameneslab(nombre, idtipoexamen, precio, fechaactivo) values('{nombre}', '{tipo}', {precio}, '0000-00-00');"
+					print(consulta)
+					cursor.execute(consulta)
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('laboratorioadmin'))
+	return render_template('nuevoexamenlab.html', title="Nuevo Examen de Laboratorio", logeado=logeado, tipos = tipos)
+
+@app.route('/nuevacategorialab', methods=['GET', 'POST'])
+def nuevacategorialab():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	if request.method == "POST":
+		nombre = request.form["nombre"]
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = f"insert into tipoexamen(nombre) values('{nombre}');"
+					print(consulta)
+					cursor.execute(consulta)
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('laboratorioadmin'))
+	return render_template('nuevacategorialab.html', title="Nueva Categoria Examen de Laboratorio", logeado=logeado)
+
+@app.route('/editarexamenlab/<id>', methods=['GET', 'POST'])
+def editarexamenlab(id):
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT idtipoexamen, nombre from tipoexamen ORDER by nombre asc'
+				cursor.execute(consulta)
+				tipos = cursor.fetchall()
+				consulta = f'select * from exameneslab where idexameneslab = {id}'
+				cursor.execute(consulta)
+				dataexamen = cursor.fetchone()
+				print(dataexamen)
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == "POST":
+		nombre = request.form["nombre"]
+		tipo = request.form["tipo"]
+		precio = request.form["precio"]
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = f"update exameneslab set nombre = '{nombre}', idtipoexamen = '{tipo}', precio = {precio} where idexameneslab = {id};"
+					cursor.execute(consulta)
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('laboratorioadmin'))
+	return render_template('editarexamenlab.html', title="Editar Exámen de Laboratorio", logeado=logeado, tipos = tipos, dataexamen = dataexamen)
+
+@app.route('/usuarios')
+def usuarios():
+	try:
+		logeado = session['logeadocaja']
+	except:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT nombre, apellido, user, iniciales, iduser from user order by nombre asc, apellido asc'
+				cursor.execute(consulta)
+				usuarios = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('usuarios.html', title="Admin Usuarios", logeado=logeado, usuarios = usuarios)
+
+@app.route("/editarusuario/<id>", methods=['GET', 'POST'])
+def editarusuario(id):
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = "select nombre, apellido, user, iniciales from user where iduser = %s;"
+				cursor.execute(consulta, (id))
+				datausuario = cursor.fetchone()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		nombre = request.form["nombre"]
+		apellido = request.form["apellido"]
+		user = request.form["user"]
+		iniciales = request.form["iniciales"]
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = "update user set nombre = %s, apellido = %s, user = %s, iniciales = %s where iduser = %s;"
+					cursor.execute(consulta, (nombre, apellido, user, iniciales, id))
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('usuarios'))
+	return render_template('editarusuario.html', title='Editar Usuario', datausuario=datausuario)
+
+@app.route("/restablecerclave/<id>", methods=['GET', 'POST'])
+def restablecerclave(id):
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = "select nombre, apellido, user, iniciales from user where iduser = %s;"
+				cursor.execute(consulta, (id))
+				datausuario = cursor.fetchone()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		clave = request.form["pwd"]
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = "update user set pwd = MD5(%s) where iduser = %s;"
+					cursor.execute(consulta, (clave, id))
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('usuarios'))
+	return render_template('restablecerclave.html', title='Restablecer Contraseña', datausuario=datausuario)
+
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)

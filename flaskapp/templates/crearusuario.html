@@ -1,18 +1,42 @@
 {% extends "layout.html" %}
 {% block content %}
-    <center><h1>Nuevo usuario</h1>
+    <center><h1>Nuevo usuario</h1></center>
         <hr>
         <form action="" method="POST">
-    <input type="text" id="nombre" name="nombre" class="inputtext1" placeholder="  Nombre" onblur="creariniciales()"><br>
-    <input type="text" id="apellido" name="apellido" class="inputtext1" placeholder="  Apellido" onblur="creariniciales()"><br>
-    <input type="text" id="user" name="user" class="inputtext1" placeholder="  User"><br>
-    <input type="text" id="iniciales" name="iniciales" class="inputtext1" placeholder="  Iniciales"><br>
-    <input type="password" id="pwd" name="pwd" class="inputtext1" placeholder="  Contraseña"><br>
-    <input type="password" id="pwd1" name="pwd1" class="inputtext1" placeholder="  Confirme contraseña" onchange="verificarpwd()"><br>
-    <p id="mensajecontra" style="color: red;">{{mensaje}}</p>
-    <center><button onclick="submit" class="button">Aceptar</button></center>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="nombre">Nombre</label>
+					<input type="text" id="nombre" name="nombre" class="form-control" placeholder="Nombre" onblur="creariniciales()">
+				</div>
+				<div class="form-group col-md-6">
+					<label for="apellido">Apellido</label>
+					<input type="text" id="apellido" name="apellido" class="form-control" placeholder="Apellido" onblur="creariniciales()">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="user">Usuario</label>
+					<input type="text" id="user" name="user" class="form-control" placeholder="Usuario">
+				</div>
+				<div class="form-group col-md-6">
+					<label for="iniciales">Iniciales</label>
+					<input type="text" id="iniciales" name="iniciales" class="form-control" placeholder="Iniciales">
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="pwd">Contraseña</label>
+					<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Contraseña">
+				</div>
+				<div class="form-group col-md-6">
+					<label for="pwd1">Confirmar Contraseña</label>
+					<input type="password" id="pwd1" name="pwd1" class="form-control" placeholder="Confirme contraseña" onchange="verificarpwd()">
+					<p id="mensajecontra" style="color: red;">{{mensaje}}</p>
+				</div>
+			</div>
+    <center><button type="submit" class="btn btn-primary">Aceptar</button></center>
 </form>
-</center>
+
 
 <script type="text/javascript">
     function verificarpwd(){

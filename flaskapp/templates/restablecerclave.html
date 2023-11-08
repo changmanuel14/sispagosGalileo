@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+    <center><h1>Restablecer contraseña</h1></center>
+	<h2>Nombre: {{datausuario[0]}} {{datausuario[1]}}</h2>
+	<h2>Usuario: {{datausuario[2]}}</h2>
+        <hr>
+        <form action="" method="POST">
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="pwd">Contraseña</label>
+					<input type="password" id="pwd" name="pwd" class="form-control" placeholder="Contraseña">
+				</div>
+				<div class="form-group col-md-6">
+					<label for="pwd1">Confirmar Contraseña</label>
+					<input type="password" id="pwd1" name="pwd1" class="form-control" placeholder="Confirme contraseña" onchange="verificarpwd()">
+					<p id="mensajecontra" style="color: red;">{{mensaje}}</p>
+				</div>
+			</div>
+    <center><button type="submit" class="btn btn-primary">Aceptar</button></center>
+</form>
+
+
+<script type="text/javascript">
+    function verificarpwd(){
+        var mensaje = document.getElementById('mensajecontra')
+        var pwd = document.getElementById('pwd').value
+        var pwd1 = document.getElementById('pwd1').value
+        console.log('1: ' + pwd)
+        console.log('2: ' + pwd1)
+        if(pwd != pwd1) {
+            mensaje.innerHTML = 'Las contraseñas no coinciden'
+        }else {
+            mensaje.innerHTML = ''
+        }
+    }
+</script>
+
+    
+{% endblock %}

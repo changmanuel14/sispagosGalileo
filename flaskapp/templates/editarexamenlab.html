@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/pagosadmin">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/carreras">
+							<span>Carreras</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/laboratorioadmin">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/usuarios">
+							<span>Usuarios</span>
+						</a>
+					</li>
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<h2>Editar Examen de Laboratorio</h2>
+		<br>
+		<form action="" method="POST">
+			<div class="form-row">
+				<div class="form-group col-md-12">
+					<label for="nombre">Nombre</label>
+					<input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" value="{{dataexamen[1]}}" required>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="tipo">Tipo</label>
+					<select id="tipo" name="tipo" class="form-control" required>
+						<option selected value="">Seleccione tipo</option>
+						{% for i in tipos %}
+						{% if i[0] == dataexamen[2] %}
+						<option value="{{i[0]}}" selected>{{i[1]}}</option>
+						{% else %}
+						<option value="{{i[0]}}">{{i[1]}}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="precio">Precio</label>
+					<input type="number" step="0.01" class="form-control" id="precio" name="precio" value="{{dataexamen[3]}}" placeholder="Precio">
+				</div>
+			</div>
+		<button type="submit" class="btn btn-primary">Aceptar</button>
+		</form>
+	</main>
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
+{% endblock %}
