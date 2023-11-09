@@ -18,15 +18,16 @@ UPLOAD_FOLDER = r'C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\stat
 app = Flask(__name__)
 app.secret_key = 'd589d3d0d15d764ed0a98ff5a37af547'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+usuariosadministrativo = [2,3,4,7]
 
 def home():
 	return redirect(url_for('login'))
 
 @app.route("/verdev/<idpago>", methods=['GET', 'POST'])
 def verdev(idpago):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -48,9 +49,9 @@ def verdev(idpago):
 
 @app.route("/devolucion/<idpago>", methods=['GET', 'POST'])
 def devolucion(idpago):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -94,9 +95,9 @@ def devolucion(idpago):
 
 @app.route("/academia", methods=['GET', 'POST'])
 def academia():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -134,9 +135,9 @@ def academia():
 
 @app.route("/confirmacionaca/<nombre>&<carnet>&<datameses>&<carrera>&<insc>", methods=['GET', 'POST'])
 def confirmacionaca(nombre, carnet, datameses, carrera, insc):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	nombre = str(nombre)
 	carnet = str(carnet)
@@ -198,9 +199,9 @@ def confirmacionaca(nombre, carnet, datameses, carrera, insc):
 
 @app.route("/auxenf", methods=['GET', 'POST'])
 def auxenf():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	if request.method == 'POST':
@@ -232,9 +233,9 @@ def auxenf():
 
 @app.route("/confirmacionauxenf/<nombre>&<carnet>&<insc>&<datameses>&<mora>&<promocion>", methods=['GET', 'POST'])
 def confirmacionauxenf(nombre, carnet, insc, datameses, mora, promocion):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	nombre = str(nombre)
 	carnet = str(carnet)
@@ -311,9 +312,9 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora, promocion):
 
 @app.route('/repauxenf', methods=['GET', 'POST'])
 def repauxenf():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	try:
@@ -346,9 +347,9 @@ def repauxenf():
 
 @app.route('/repauxenfexcel', methods=['GET', 'POST'])
 def repauxenfexcel():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	try:
@@ -474,9 +475,9 @@ def repauxenfexcel():
 @app.route("/ingles", methods=['GET', 'POST'])
 @app.route("/ingles/<mensaje>", methods=['GET', 'POST'])
 def ingles(mensaje = 0):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	try:
@@ -522,9 +523,9 @@ def ingles(mensaje = 0):
 
 @app.route("/confirmacioningles/<nombre>&<carnet>&<plan>&<insc>&<datameses>&<ciclo>&<ciclomen>", methods=['GET', 'POST'])
 def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	nombre = str(nombre)
 	carnet = str(carnet)
@@ -617,9 +618,9 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
 
 @app.route('/repingles', methods=['GET', 'POST'])
 def repingles():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	meses1 = ["Agosto", "Septiembre", "Octubre"]
 	meses2 = ["Julio", "Agosto", "Septiembre"]
@@ -663,9 +664,9 @@ def repingles():
 
 @app.route('/repinglesexcel', methods=['GET', 'POST'])
 def repinglesexcel():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	meses1 = ["Agosto", "Septiembre", "Octubre"]
 	meses2 = ["Julio", "Agosto", "Septiembre"]
@@ -930,9 +931,9 @@ def repinglesexcel():
 
 @app.route("/laboratorio", methods=['GET', 'POST'])
 def laboratorio():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	fechaact = datetime.today().strftime('%Y-%m-%d')
 	try:
@@ -970,9 +971,9 @@ def laboratorio():
 
 @app.route("/confirmacionlab/<nombre>&<carnet>&<dataexamenes>", methods=['GET', 'POST'])
 def confirmacionlab(nombre, carnet, dataexamenes):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	nombre = str(nombre)
 	carnet = str(carnet)
@@ -1035,9 +1036,9 @@ def confirmacionlab(nombre, carnet, dataexamenes):
 
 @app.route("/eliminarpago/<idpago>", methods=['GET', 'POST'])
 def eliminarpago(idpago):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1054,9 +1055,9 @@ def eliminarpago(idpago):
 
 @app.route("/editarpago/<idpago>", methods=['GET', 'POST'])
 def editarpago(idpago):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1107,9 +1108,9 @@ def editarpago(idpago):
 @app.route('/home', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		logeado = 0
 	if logeado != 0:
 		return redirect(url_for('pagos'))
@@ -1140,15 +1141,19 @@ def login():
 
 @app.route("/logout")
 def logout():
-	session['logeadocaja'] = 0
-	session['idusercaja'] = ''
-	session['nombreusercaja'] = ''
-	session['apellidousercaja'] = ''
-	session['usercaja'] = ''
+	session.pop('logeadocaja', None)
+	session.pop('idusercaja', None)
+	session.pop('nombreusercaja', None)
+	session.pop('apellidousercaja', None)
+	session.pop('usercaja', None)
 	return redirect(url_for('login'))
 
 @app.route("/crearusuario", methods=['GET', 'POST'])
 def crearusuario():
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+	else:
+		return redirect(url_for('login'))
 	mensaje = ''
 	if request.method == 'POST':
 		nombre = request.form["nombre"]
@@ -1172,9 +1177,9 @@ def crearusuario():
 
 @app.route('/optica', methods=['GET', 'POST'])
 def optica():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	if request.method == 'POST':
 		carnet = request.form["carnet"]
@@ -1198,9 +1203,9 @@ def optica():
 
 @app.route('/confirmacionopt/<carnet>&<nombre>&<aro>&<lente>&<exavis>&<exaviseps>', methods=['GET', 'POST'])
 def confirmacionopt(carnet, nombre, aro, lente, exavis, exaviseps):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	examen = 0
 	if request.method == "POST":
@@ -1262,9 +1267,9 @@ def confirmacionopt(carnet, nombre, aro, lente, exavis, exaviseps):
 
 @app.route('/i', methods=['GET', 'POST'])
 def i():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1305,9 +1310,9 @@ def i():
 
 @app.route('/confirmacioni/<carrera>&<carnet>&<nombre>&<rinsc>&<rint>&<rrein>&<mesextra>&<exavis>', methods=['GET', 'POST'])
 def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	carrera = str(carrera)
 	carnet = str(carnet)
@@ -1379,9 +1384,9 @@ def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis)
 
 @app.route('/repi', methods=['GET', 'POST'])
 def repi():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1409,9 +1414,9 @@ def repi():
 
 @app.route('/ini', methods=['GET', 'POST'])
 def ini():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1433,9 +1438,9 @@ def ini():
 
 @app.route('/confirmacionini/<carrera>&<carnet>&<nombre>', methods=['GET', 'POST'])
 def confirmacionini(carrera, carnet, nombre):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	carrera = str(carrera)
 	carnet = str(carnet)
@@ -1461,9 +1466,9 @@ def confirmacionini(carrera, carnet, nombre):
 
 @app.route('/repini', methods=['GET', 'POST'])
 def repini():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1491,9 +1496,9 @@ def repini():
 
 @app.route('/ir', methods=['GET', 'POST'])
 def ir():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1515,9 +1520,9 @@ def ir():
 
 @app.route('/confirmacionir/<carrera>&<carnet>&<nombre>', methods=['GET', 'POST'])
 def confirmacionir(carrera, carnet, nombre):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	carrera = str(carrera)
 	carnet = str(carnet)
@@ -1543,9 +1548,9 @@ def confirmacionir(carrera, carnet, nombre):
 
 @app.route('/repir', methods=['GET', 'POST'])
 def repir():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1574,9 +1579,9 @@ def repir():
 
 @app.route('/extra', methods=['GET', 'POST'])
 def extra():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1602,9 +1607,9 @@ def extra():
 
 @app.route('/confirmacionextra/<carnet>&<nombre>&<idp>&<cod>&<descripcion>', methods=['GET', 'POST'])
 def confirmacionextra(carnet, nombre, idp, cod, descripcion):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	idp = int(idp)
 	carnet = str(carnet)
@@ -1654,9 +1659,9 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 
 @app.route('/repextra', methods=['GET', 'POST'])
 def repextra():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1679,9 +1684,9 @@ def repextra():
 
 @app.route('/u', methods=['GET', 'POST'])
 def u():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1709,9 +1714,9 @@ def u():
 
 @app.route('/confirmacionu/<uid>&<carnet>&<nombre>&<total>&<talla>&<ucod>', methods=['GET', 'POST'])
 def confirmacionu(uid, carnet, nombre, total, talla, ucod):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	uid = int(uid)
 	carnet = str(carnet)
@@ -1736,9 +1741,9 @@ def confirmacionu(uid, carnet, nombre, total, talla, ucod):
 
 @app.route('/repu', methods=['GET', 'POST'])
 def repu():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1791,9 +1796,9 @@ def repu():
 
 @app.route('/p', methods=['GET', 'POST'])
 def p():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	numeros = []
 	for i in range(10):
@@ -1839,9 +1844,9 @@ def p():
 
 @app.route('/confirmacionp/<carnet>&<nombre>&<datames>&<pid>&<pcod>&<cantidad>&<lugar>&<fechainicio>&<fechafin>', methods=['GET', 'POST'])
 def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainicio, fechafin):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	carnet = str(carnet)
 	cantidad = int(cantidad)
@@ -1972,9 +1977,9 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 
 @app.route('/repp', methods=['GET', 'POST'])
 def repp():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2028,9 +2033,9 @@ def repp():
 
 @app.route('/hojalbcq/<idpagos>', methods=['GET', 'POST'])
 def hojalbcq(idpagos):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	array = idpagos.split(',')
 	newarray = []
@@ -2076,9 +2081,9 @@ def hojalbcq(idpagos):
 
 @app.route('/epslbcq/<idpagos>', methods=['GET', 'POST'])
 def epslbcq(idpagos):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	array = idpagos.split(',')
 	newarray = []
@@ -2125,9 +2130,9 @@ def epslbcq(idpagos):
 
 @app.route('/hojalenq/<idpagos>', methods=['GET', 'POST'])
 def hojalenq(idpagos):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	array = idpagos.split(',')
 	newarray = []
@@ -2178,9 +2183,9 @@ def hojalenq(idpagos):
 
 @app.route('/hojathdq/<idpagos>', methods=['GET', 'POST'])
 def hojathdq(idpagos):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	array = idpagos.split(',')
 	newarray = []
@@ -2220,9 +2225,9 @@ def hojathdq(idpagos):
 
 @app.route('/hojadialisis/<idpagos>', methods=['GET', 'POST'])
 def hojadialisis(idpagos):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	array = idpagos.split(',')
 	newarray = []
@@ -2262,9 +2267,9 @@ def hojadialisis(idpagos):
 
 @app.route('/hojatlcq/<idpagos>', methods=['GET', 'POST'])
 def hojatlcq(idpagos):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	array = idpagos.split(',')
 	newarray = []
@@ -2310,9 +2315,9 @@ def hojatlcq(idpagos):
 
 @app.route('/prepracticatradq/<idpagos>', methods=['GET', 'POST'])
 def prepracticatradq(idpagos):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	array = idpagos.split(',')
 	newarray = []
@@ -2357,9 +2362,9 @@ def prepracticatradq(idpagos):
 
 @app.route('/practicatoptq/<idpagos>', methods=['GET', 'POST'])
 def practicatoptq(idpagos):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	array = idpagos.split(',')
 	newarray = []
@@ -2404,9 +2409,9 @@ def practicatoptq(idpagos):
 
 @app.route('/mextra', methods=['GET', 'POST'])
 def mextra():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2429,9 +2434,9 @@ def mextra():
 
 @app.route('/confirmacionme/<total>&<carnet>&<nombre>&<carrera>', methods=['GET', 'POST'])
 def confirmacionme(total, carnet, nombre, carrera):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	total = float(total)
 	carnet = str(carnet)
@@ -2457,9 +2462,9 @@ def confirmacionme(total, carnet, nombre, carrera):
 
 @app.route('/repme', methods=['GET', 'POST'])
 def repme():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2483,9 +2488,9 @@ def repme():
 
 @app.route('/parqueo', methods=['GET', 'POST'])
 def parqueo():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	if request.method == 'POST':
 		datacantidad = request.form["cantidad"]
@@ -2494,9 +2499,9 @@ def parqueo():
 
 @app.route('/confirmacionparqueo/<cantidad>', methods=['GET', 'POST'])
 def confirmacionparqueo(cantidad):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	cantidad = int(cantidad)
 	total = cantidad * 10
@@ -2517,9 +2522,9 @@ def confirmacionparqueo(cantidad):
 
 @app.route('/repparq', methods=['GET', 'POST'])
 def repparq():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2540,9 +2545,9 @@ def repparq():
 
 @app.route('/m', methods=['GET', 'POST'])
 def m():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2586,9 +2591,9 @@ def m():
 
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>&<datakit>', methods=['GET', 'POST'])
 def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	carnet = str(carnet)
 	nombre = str(nombre)
@@ -2704,9 +2709,9 @@ def repm():
 
 @app.route('/entregarm/<idpago>', methods=['GET', 'POST'])
 def entregarm(idpago):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2723,9 +2728,9 @@ def entregarm(idpago):
 
 @app.route('/pag', methods=['GET', 'POST'])
 def pag():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2758,9 +2763,9 @@ def pag():
 
 @app.route('/confirmacionpag/<carnet>&<nombre>&<total>&<descripcion>&<pid>&<pcod>&<ptotal>', methods=['GET', 'POST'])
 def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	carnet = str(carnet)
 	nombre = str(nombre)
@@ -2789,9 +2794,9 @@ def confirmacionpag(carnet, nombre, total, descripcion, pid, pcod, ptotal):
 
 @app.route('/reppag', methods=['GET', 'POST'])
 def reppag():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2812,9 +2817,9 @@ def reppag():
 
 @app.route('/grad', methods=['GET', 'POST'])
 def grad():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	if request.method == 'POST':
 		datacarnet = request.form["carnet"]
@@ -2825,9 +2830,9 @@ def grad():
 
 @app.route('/confirmaciongrad/<tipo>&<carnet>&<nombre>', methods=['GET', 'POST'])
 def confirmaciongrad(tipo, carnet, nombre):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	tipo = int(tipo)
 	carnet = str(carnet)
@@ -2857,9 +2862,9 @@ def confirmaciongrad(tipo, carnet, nombre):
 
 @app.route('/repgrad', methods=['GET', 'POST'])
 def repgrad():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2882,9 +2887,9 @@ def repgrad():
 
 @app.route('/reportes', methods=['GET', 'POST'])
 def reportes():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2974,9 +2979,9 @@ def reportes():
 
 @app.route('/unificarcajas')
 def unificarcajas():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	idusuario = session['idusercaja']
 	try:
@@ -2998,9 +3003,9 @@ def unificarcajas():
 
 @app.route('/nuevafactura', methods=['GET', 'POST'])
 def nuevafactura():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	factura = ["","","",""]
 	if request.method == 'POST':
@@ -3024,9 +3029,9 @@ def nuevafactura():
 
 @app.route('/editarfactura/<idfactura>', methods=['GET', 'POST'])
 def editarfactura(idfactura):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3060,9 +3065,9 @@ def editarfactura(idfactura):
 
 @app.route("/eliminarfactura/<idfactura>", methods=['GET', 'POST'])
 def eliminarfactura(idfactura):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3079,9 +3084,9 @@ def eliminarfactura(idfactura):
 
 @app.route('/repdiario', methods=['GET', 'POST'])
 def repdiario():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3153,9 +3158,9 @@ def repdiario():
 
 @app.route('/repdiariopdf', methods=['GET', 'POST'])
 def repdiariopdf():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	today = date.today()
 	d1 = today.strftime("%d/%m/%Y")
@@ -3288,9 +3293,9 @@ def repdiariopdf():
 
 @app.route('/replenq', methods=['GET', 'POST'])
 def replenq():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	data = []
 	conteo = 0
@@ -3333,9 +3338,9 @@ def replenq():
 
 @app.route('/replbcq', methods=['GET', 'POST'])
 def replbcq():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	data = []
 	conteo = 0
@@ -3371,9 +3376,9 @@ def replbcq():
 
 @app.route('/repgen', methods=['GET', 'POST'])
 def repgen():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	data = []
 	conteo = 0
@@ -3415,17 +3420,17 @@ def repgen():
 
 @app.route('/pagos')
 def pagos():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	return render_template('pagos.html', title="Pagos", logeado=logeado)
 
 @app.route('/transferencias', methods=['GET', 'POST'])
 def transferencias():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	if request.method == 'POST':
 		recibo = request.form["recibo"]
@@ -3448,9 +3453,9 @@ def transferencias():
 
 @app.route('/reptransferencias', methods=['GET', 'POST'])
 def reptransferencias():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3467,9 +3472,9 @@ def reptransferencias():
 
 @app.route('/imprimir/<idpagos>')
 def imprimir(idpagos):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+	else:
 		return redirect(url_for('login'))
 	array = idpagos.split(',')
 	newarray = []
@@ -3509,17 +3514,21 @@ def imprimir(idpagos):
 
 @app.route('/admin')
 def admin():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	return render_template('admin.html', title="Panel Administrativo", logeado=logeado)
 
 @app.route('/pagosadmin')
 def pagosadmin():
-	try:
-		logeado = session['logeadocaja']
-	except:
+	if 'logeadocaja' in session:
+		ogeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3536,9 +3545,11 @@ def pagosadmin():
 
 @app.route('/nuevocodigo', methods=['GET', 'POST'])
 def nuevocodigo():
-	try:
-		logeado = session['logeadocaja']
-	except:
+	if 'logeadocaja' in session:
+		ogeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3597,9 +3608,11 @@ def nuevocodigo():
 
 @app.route('/editarcodigo/<id>', methods=['GET', 'POST'])
 def editarcodigo(id):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3660,9 +3673,11 @@ def editarcodigo(id):
 
 @app.route('/carreras')
 def carreras():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3679,9 +3694,11 @@ def carreras():
 
 @app.route('/nuevacarrera', methods=['GET', 'POST'])
 def nuevacarrera():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	if request.method == 'POST':
 		codigo = request.form["codigo"]
@@ -3713,9 +3730,11 @@ def nuevacarrera():
 
 @app.route('/laboratorioadmin')
 def laboratorioadmin():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3732,9 +3751,11 @@ def laboratorioadmin():
 
 @app.route('/nuevoexamenlab', methods=['GET', 'POST'])
 def nuevoexamenlab():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3768,9 +3789,11 @@ def nuevoexamenlab():
 
 @app.route('/nuevacategorialab', methods=['GET', 'POST'])
 def nuevacategorialab():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	if request.method == "POST":
 		nombre = request.form["nombre"]
@@ -3791,9 +3814,11 @@ def nuevacategorialab():
 
 @app.route('/editarexamenlab/<id>', methods=['GET', 'POST'])
 def editarexamenlab(id):
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3830,9 +3855,11 @@ def editarexamenlab(id):
 
 @app.route('/usuarios')
 def usuarios():
-	try:
+	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
-	except:
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
 		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -3849,6 +3876,12 @@ def usuarios():
 
 @app.route("/editarusuario/<id>", methods=['GET', 'POST'])
 def editarusuario(id):
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
+		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
@@ -3881,6 +3914,12 @@ def editarusuario(id):
 
 @app.route("/restablecerclave/<id>", methods=['GET', 'POST'])
 def restablecerclave(id):
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
+		return redirect(url_for('login'))
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:

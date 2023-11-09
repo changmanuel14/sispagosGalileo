@@ -114,9 +114,13 @@
 				<div class="collapse navbar-collapse" id="navbarToggle">
 					<div class="navbar-nav mr-auto">
 						<li><a class="nav-item nav-link" href="/">Inicio</a></li>
+						{% if logeado == 1 %}
 						<li><a class="nav-item nav-link" href="/pagos">Pagos</a></li>
 						<li><a class="nav-item nav-link" href="/reportes">Reportes</a></li>
+						{% if session['idusercaja'] == 2 or session['idusercaja'] == 3 or session['idusercaja'] == 4 or session['idusercaja'] == 7 %}
 						<li><a class="nav-item nav-link" href="/admin">Administrativo</a></li>
+						{% endif %}
+						{% endif %}
 						<li class="nav-item dropdown">
 						</li>
 					</div>
