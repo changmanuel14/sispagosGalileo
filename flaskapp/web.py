@@ -1152,6 +1152,8 @@ def logout():
 def crearusuario():
 	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
 	else:
 		return redirect(url_for('login'))
 	mensaje = ''
@@ -3525,7 +3527,7 @@ def admin():
 @app.route('/pagosadmin')
 def pagosadmin():
 	if 'logeadocaja' in session:
-		ogeado = session['logeadocaja']
+		logeado = session['logeadocaja']
 		if session['idusercaja'] not in usuariosadministrativo:
 			return redirect(url_for('login'))
 	else:
@@ -3546,7 +3548,7 @@ def pagosadmin():
 @app.route('/nuevocodigo', methods=['GET', 'POST'])
 def nuevocodigo():
 	if 'logeadocaja' in session:
-		ogeado = session['logeadocaja']
+		logeado = session['logeadocaja']
 		if session['idusercaja'] not in usuariosadministrativo:
 			return redirect(url_for('login'))
 	else:
