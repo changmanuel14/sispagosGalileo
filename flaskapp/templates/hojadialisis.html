@@ -75,6 +75,53 @@
 		<br><br><br><br><br>
 		<table>
 			<tr>
+				<th style="width: 20%;">Nombre: </th>
+				<td style="width: 40%;">{{nombre}}</td>
+				<th style="width: 10%;">Carnet: </th>
+				<td style="width: 15%;">{{carnet}}</td>
+				<th style="width: 10%;">Hoja No: </th>
+				<td style="width: 5%;">1</td>
+			</tr>
+			<tr>
+				<th>Lugar de práctica: </th>
+				<td></td>
+				<th>Jornada: </th>
+				<td></td>
+				<th colspan="2"></th>
+			</tr>
+		</table>
+		<br><br>
+		<table class="tabla">
+			<tr>
+				<th class="tabla" style="width: 5%;"></th>
+				<th class="tabla" style="width: 10%;">Fecha</th>
+				<th class="tabla" style="width: 15%;">Hora de Entrada</th>
+				<th class="tabla" style="width: 15%;">Hora de Salida</th>
+				<th class="tabla" style="width: 15%;">Total horas</th>
+				<th class="tabla" style="width: 20%;">Nombre del paciente</th>
+				<th class="tabla" style="width: 20%;">Firma</th>
+			</tr>
+			{% for i in range(25) %}
+			<tr>
+				<td class="tdtabla">{{i + 1}}</td>
+				<td class="tdtabla" ></td>
+				<td class="tdtabla" ></td>
+				<td class="tdtabla" ></td>
+				<td class="tdtabla" ></td>
+				<td class="tdtabla" ></td>
+				<td class="tdtabla" ></td>
+			</tr>
+			{% endfor %}
+		</table><br>
+		<div style="width: 70%; float: left;">
+			<h5>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>TÉCNICO UNIVERSITARIO EN HEMODIÁLISIS<br>ASISTENCIA A PRÁCTICA - DIÁLISIS PERITONEAL</h5>
+		</div>
+		<div style="width: 25%; float: right;">
+			<img src="https://eventos.galileo.edu/images/logo-noslogan.png" width="100%"> 
+		</div>
+		<br><br><br><br><br>
+		<table>
+			<tr>
 				<th style="width: 20%;">Nombre del estudiante: </th>
 				<td colspan="3">{{nombre}}</td>
 			</tr>
