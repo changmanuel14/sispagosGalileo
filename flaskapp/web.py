@@ -2852,6 +2852,10 @@ def confirmaciongrad(tipo, carnet, nombre):
 						consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE cod = "GRADL"'
 						cursor.execute(consulta1)
 						precios1 = cursor.fetchall()
+					elif tipo == 3:
+						consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE cod = "GRADAUXENF"'
+						cursor.execute(consulta1)
+						precios1 = cursor.fetchall()
 					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 					cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0,session['idusercaja']))
 				conexion.commit()
