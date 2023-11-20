@@ -97,7 +97,7 @@
 				<div class="form-row">
 					<div class="col-md-12">
 						<label for="tipo">Tipo de Graduación</label>
-						<select class="form-control" id="tipo" name="tipo" required>
+						<select class="form-control" id="tipo" name="tipo" onchange="cambio()"  required>
 							<option value="">Seleccione tipo</option>
 							<option value="1">Técnicos</option>
 							<option value="2">Licenciaturas/Maestrías</option>
@@ -116,6 +116,14 @@
 							onblur="mayusculas()" required>
 					</div>
 				</div>
+				<div id="almuerzos"  style="display: none;">
+					<div class="form-row">
+						<div class="col-md-12">
+							<label for="cantalmuerzos">Cantidad de Almuerzos</label>
+							<input type="number" id="cantalmuerzos" name="cantalmuerzos" class="form-control" placeholder="Cantidad de Almuerzos">
+						</div>
+					</div>
+				</div>
 				<br>
 				<center>
 					<input class="btn btn-primary" type="submit" value="Aceptar">
@@ -132,6 +140,12 @@
 		var nombre = document.getElementById('nombre').value
 		nombre = nombre.toUpperCase()
 		document.getElementById('nombre').value = nombre
+	}
+	function cambio() {
+		var select = document.getElementById('tipo').value;
+		if(select == 3) {
+
+		}
 	}
 </script>
 <!-- page-wrapper -->
