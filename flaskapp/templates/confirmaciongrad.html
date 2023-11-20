@@ -108,8 +108,16 @@
 					<td>Graduación Técnicos</td>
 					{% elif tipo == 2 %}
 					<td>Graduación Licenciatura/Maestria</td>
+					{% elif tipo == 3 %}
+					<td>Graduación Auxiliares de Enfermeria</td>
 					{% endif %}
 				</tr>
+				{% if cant > 0 %}
+				<tr>
+					<th>Cantidad de almuerzos</th>
+					<td>{{cant}} almuerzos.</td>
+				</tr>
+				{% endif %}
 			</table>
 			<br>
 			<form action="" method="POST">

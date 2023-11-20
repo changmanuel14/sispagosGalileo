@@ -144,8 +144,11 @@
 	}
 	function cambio() {
 		var select = document.getElementById('tipo').value;
+		var dataalmuerzos = document.getElementById('almuerzos')
 		if(select == 3) {
-
+			dataalmuerzos.style.display = 'block'
+		} else {
+			dataalmuerzos.style.display = 'none'
 		}
 	}
 </script>

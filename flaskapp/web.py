@@ -2827,16 +2827,21 @@ def grad():
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
 		datatipo = request.form["tipo"]
-		return redirect(url_for('confirmaciongrad', tipo = datatipo, carnet = datacarnet, nombre = datanombre))
+		if int(datatipo) == 3:
+			datacant = request.form["cantalmuerzos"]
+		else:
+			datacant = 0
+		return redirect(url_for('confirmaciongrad', tipo = datatipo, carnet = datacarnet, nombre = datanombre, cant = datacant))
 	return render_template('graduacion.html', title="Graduación", logeado=logeado)
 
-@app.route('/confirmaciongrad/<tipo>&<carnet>&<nombre>', methods=['GET', 'POST'])
-def confirmaciongrad(tipo, carnet, nombre):
+@app.route('/confirmaciongrad/<tipo>&<carnet>&<nombre>&<cant>', methods=['GET', 'POST'])
+def confirmaciongrad(tipo, carnet, nombre, cant):
 	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
 	else:
 		return redirect(url_for('login'))
 	tipo = int(tipo)
+	cant = int(cant)
 	carnet = str(carnet)
 	nombre = str(nombre)
 	if request.method == "POST":
@@ -2848,23 +2853,45 @@ def confirmaciongrad(tipo, carnet, nombre):
 						consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE cod = "GRADT"'
 						cursor.execute(consulta1)
 						precios1 = cursor.fetchall()
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0,session['idusercaja']))
+						conexion.commit()
 					elif tipo == 2:
 						consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE cod = "GRADL"'
 						cursor.execute(consulta1)
 						precios1 = cursor.fetchall()
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0,session['idusercaja']))
+						conexion.commit()
 					elif tipo == 3:
 						consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE cod = "GRADAUXENF"'
 						cursor.execute(consulta1)
 						precios1 = cursor.fetchall()
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0,session['idusercaja']))
-				conexion.commit()
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0,session['idusercaja']))
+						conexion.commit()
+						if cant > 0:
+							consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE cod = "ALGRAAUXENF"'
+							cursor.execute(consulta1)
+							precios1 = cursor.fetchall()
+							totalalmuerzos = cant * float(precios1[0][1])
+							aux = str(cant) + " almuerzos."
+							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+							cursor.execute(consulta, (precios1[0][0], nombre, carnet,totalalmuerzos, date.today(), aux,0,session['idusercaja']))
+							conexion.commit()
+							consulta = "Select MAX(idpagos) from pagos;"
+							cursor.execute(consulta)
+							idpago = cursor.fetchone()
+							idpago = idpago[0]
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		return redirect(url_for('grad'))
-	return render_template('confirmaciongrad.html', title="Confirmación", nombre = nombre, carnet = carnet, tipo = tipo, logeado=logeado)
+		if tipo == 3:
+			return redirect(url_for('imprimir', idpagos=idpago))
+		else:
+			return redirect(url_for('grad'))
+	return render_template('confirmaciongrad.html', title="Confirmación", nombre = nombre, carnet = carnet, tipo = tipo, logeado=logeado, cant = cant)
 
 @app.route('/repgrad', methods=['GET', 'POST'])
 def repgrad():
