@@ -252,7 +252,7 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora, promocion):
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'SELECT idcodigos, precio from codigos where cod like "%AUXE%" order by cod asc'
+				consulta = 'SELECT idcodigos, precio from codigos where cod like "%INSCAUXE%" or cod like "%MENSAUXE%" or cod like "%MORAAUXE%" order by cod asc'
 				cursor.execute(consulta)
 				cuotas = cursor.fetchall()
 				pagoant = False
