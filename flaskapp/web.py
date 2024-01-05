@@ -3135,7 +3135,7 @@ def repdiario():
 				cursor.execute(consulta)
 				fechasig = cursor.fetchone()
 				fechasig = fechasig[0]
-				consulta = f'select recibo from pagos where length(recibo) < 5 and fecha = "{fechasig}" order by recibo desc;'
+				consulta = f'select recibo from pagos where length(recibo) < 5 and fecha = "{fechasig}" order by (recibo * 1) desc;'
 				cursor.execute(consulta)
 				boletasig = cursor.fetchone()
 				boletasig = boletasig[0]
