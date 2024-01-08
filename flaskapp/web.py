@@ -2611,26 +2611,35 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 					consulta = f'SELECT concepto FROM codigos WHERE idcodigos = "{mid}"'
 					cursor.execute(consulta)
 					concepto = cursor.fetchone()
+					kit = True
 					if "TLCQ" in concepto[0]:
 						carrera = "TLCQ"
+						if "Manual" in concepto[0]:
+							kit = False
 					elif "LBCQ" in concepto[0]:
 						carrera = "LBCQ"
+						if "Manual" in concepto[0]:
+							kit = False
 					consulta1 = f'SELECT idcodigos, precio FROM codigos WHERE idcodigos = "{mid}"'
 					cursor.execute(consulta1)
 					precios1 = cursor.fetchall()
 					idpagos = []
 					for i in range(cantidad):
-						total = 175
-						if carrera == 'LBCQ':
-							for j in nombremanualesindlbcq:
-								if cursos[i] == j[0]:
-									total = j[1]
-						elif carrera == "TLCQ":
-							for j in nombremanualesindtlcq:
-								if cursos[i] == j[0]:
-									total = j[1]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (precios1[0][0], nombre, carnet, total, date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
+						if kit == False:
+							total = 175
+							if carrera == 'LBCQ':
+								for j in nombremanualesindlbcq:
+									if cursos[i] == j[0]:
+										total = j[1]
+							elif carrera == "TLCQ":
+								for j in nombremanualesindtlcq:
+									if cursos[i] == j[0]:
+										total = j[1]
+							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+							cursor.execute(consulta, (precios1[0][0], nombre, carnet, total, date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
+						else:
+							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
 						conexion.commit()
 						consulta = "Select MAX(idpagos) from pagos;"
 						cursor.execute(consulta)
