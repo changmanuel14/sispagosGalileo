@@ -2572,39 +2572,30 @@ def m():
 		cantidad = request.form["cant"]
 		cantidad = int(cantidad)
 		datacurso = []
-		datakit = ""
 		for i in range(cantidad):
 			aux1 = f'curso{i+1}'
 			aux = request.form[aux1]
 			if(len(aux) > 0):
 				datacurso.append(aux)
 			aux1 = f'kit{i+1}'
-			try:
-				aux = request.form[aux1]
-				aux = int(aux)
-				if aux > 0:
-					datakit = datakit + str(aux) + ","
-			except:
-				pass
-		if datakit == "":
-			datakit = "0"
-		return redirect(url_for('confirmacionm', carnet = datacarnet, nombre = datanombre, curso= datacurso, mid = mid, mcod = mcod, datakit = datakit))
+		return redirect(url_for('confirmacionm', carnet = datacarnet, nombre = datanombre, curso= datacurso, mid = mid, mcod = mcod))
 	return render_template('manuales.html', title="Manuales",  carreras=carreras, logeado=logeado)
 
-@app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>&<datakit>', methods=['GET', 'POST'])
-def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
+@app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
+def confirmacionm(carnet, nombre, curso, mid, mcod):
 	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
 	else:
 		return redirect(url_for('login'))
+	numsmanualeslbcq = [1,3,5,7,9]
+	numsmanualestlcq = [1,3,5]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 510], ['QUIMICA GENERAL I', 510], ['PARASITOLOGIA', 260], ['QUIMICA INORGANICA', 260], ['BIOQUIMICA GENERAL', 280], ['HEMATOLOGIA BASICA', 320], ['HEMATOLOGIA CLINICA', 320], ['MICROBIOLOGIA CLINICA AVANZADA', 250], ['BANCO DE SANGRE', 310], ['MICROBIOLOGIA APLICADA II', 250]]
+	nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 260], ['PRACTICA EN LABORATORIO', 175]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
 	mcod = str(mcod)
 	curso = str(curso)
-	datakit = str(datakit)
-	kits = datakit.split(',')
-	kits.pop()	
 	cursos = curso.split(',')
 	cantidad = len(cursos)
 	for i in range(cantidad):
@@ -2617,19 +2608,6 @@ def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
-					consulta1 = f'SELECT idcodigos, precio FROM codigos WHERE idcodigos = "{mid}"'
-					cursor.execute(consulta1)
-					precios1 = cursor.fetchall()
-					idpagos = []
-					for i in range(cantidad):
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
-						conexion.commit()
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						idpago = cursor.fetchone()
-						idpago = idpago[0]
-						idpagos.append(idpago)
 					consulta = f'SELECT concepto FROM codigos WHERE idcodigos = "{mid}"'
 					cursor.execute(consulta)
 					concepto = cursor.fetchone()
@@ -2637,45 +2615,50 @@ def confirmacionm(carnet, nombre, curso, mid, mcod, datakit):
 						carrera = "TLCQ"
 					elif "LBCQ" in concepto[0]:
 						carrera = "LBCQ"
-					consulta = f'SELECT idcodigos FROM codigos WHERE concepto like "%Kit individual {carrera}"'
-					cursor.execute(consulta)
-					preciokit = cursor.fetchone()
-					for i in kits:
-						try:
-							if int(i) > 0:
-								consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-								cursor.execute(consulta, (preciokit[0], nombre, carnet, str(i), date.today(), "Kit Individual "+carrera, 0,session['idusercaja']))
-								conexion.commit()
-								consulta = "Select MAX(idpagos) from pagos;"
-								cursor.execute(consulta)
-								idpago = cursor.fetchone()
-								idpago = idpago[0]
-								idpagos.append(idpago)
-						except:
-							pass
+					consulta1 = f'SELECT idcodigos, precio FROM codigos WHERE idcodigos = "{mid}"'
+					cursor.execute(consulta1)
+					precios1 = cursor.fetchall()
+					idpagos = []
+					for i in range(cantidad):
+						total = 175
+						if carrera == 'LBCQ':
+							for j in nombremanualesindlbcq:
+								if cursos[i] == j[0]:
+									total = j[1]
+						elif carrera == "TLCQ":
+							for j in nombremanualesindtlcq:
+								if cursos[i] == j[0]:
+									total = j[1]
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (precios1[0][0], nombre, carnet, total, date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
+						conexion.commit()
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						idpago = cursor.fetchone()
+						idpago = idpago[0]
+						idpagos.append(idpago)
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('imprimir', idpagos=idpagos))
-	return render_template('confirmacionm.html', title="Confirmación", carnet = carnet, nombre = nombre, cursos = cursos, mid = mid, mcod = mcod, cantidad=cantidad, logeado=logeado, kits=kits)
+	return render_template('confirmacionm.html', title="Confirmación", carnet = carnet, nombre = nombre, cursos = cursos, mid = mid, mcod = mcod, cantidad=cantidad, logeado=logeado)
 
 @app.route('/repm', methods=['GET', 'POST'])
 def repm():
-	fechainicio = '2023-07-07'
+	fechainicio = '2024-01-07'
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				numsmanualeslbcq = [2,4,6,8]
-				numsmanualestlcq = [2,4]
-				nombremanualesindlbcq = ['BIOLOGIA GENERAL II', 'QUIMICA GENERAL II', 'MICROBIOLOGIA GENERAL', 'QUIMICA ORGANICA', 'BACTERIOLOGIA', 'BIOQUIMICA CLINICA', 'INMUNOLOGIA BASICA', 'INTERPRETACION DE PRUEBAS BIOQUIMICAS', 'MICOLOGIA', 'MICROBIOLOGIA APLICADA I']
-				nombremanualesindtlcq = ['HEMATOLOGIA Y COAGULACION', 'INMUNOLOGIA Y BANCO DE SANGRE', 'MICROBIOLOGIA', 'PRUEBAS ESPECIALES']
-				nombremanualespracticas = ['INTENSIVO HOSPITALARIAS', 'INTENSIVO COMUNITARIAS', 'REFORZAMIENTO EPS', 'INTENSIVO TLCQ']
+				numsmanualeslbcq = [1,3,5,7,9]
+				numsmanualestlcq = [1,3,5]
+				nombremanualesindlbcq = [[['BIOLOGIA GENERAL I', 510], ['QUIMICA GENERAL I', 510]], [['PARASITOLOGIA', 260], ['QUIMICA INORGANICA', 260]], [['BIOQUIMICA GENERAL', 280], ['HEMATOLOGIA BASICA', 320]], [['HEMATOLOGIA CLINICA', 320], ['MICROBIOLOGIA CLINICA AVANZADA', 250]], [['BANCO DE SANGRE', 310], ['MICROBIOLOGIA APLICADA II', 250]]]
+				nombremanualesindtlcq = [[['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 260]], [['PRACTICA EN LABORATORIO', 175]]]
 				manualeslbcq = []
 				manualestlcq = []
-				manualesind = []
-				manualespracticas = []
+				manualesindlbcq = []
+				manualesindtlcq = []
 				for i in numsmanualeslbcq:
 					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITLBCQ{i}'"
 					cursor.execute(consulta)
@@ -2687,27 +2670,27 @@ def repm():
 					manuales = cursor.fetchall()
 					manualestlcq.append(manuales)
 				for i in nombremanualesindlbcq:
-					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i}%' and c.concepto like '%Manual LBCQ%'"
-					cursor.execute(consulta)
-					manuales = cursor.fetchall()
-					manualesind.append(manuales)
+					manualeslbcqtemp = [] 
+					for j in i:
+						consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{j[0]}%' and c.concepto like '%Manual LBCQ%'"
+						cursor.execute(consulta)
+						manuales = cursor.fetchall()
+						manualeslbcqtemp.append(manuales)
+					manualesindlbcq.append(manualeslbcqtemp)
 				for i in nombremanualesindtlcq:
-					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i}%' and c.concepto like '%Manual TLCQ%'"
-					cursor.execute(consulta)
-					manuales = cursor.fetchall()
-					manualesind.append(manuales)
-				for i in nombremanualespracticas:
-					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i}%' and c.concepto like '%Manual %'"
-					print(consulta)
-					cursor.execute(consulta)
-					manuales = cursor.fetchall()
-					manualespracticas.append(manuales)
+					manualestlcqtemp = []
+					for j in i:
+						consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{j[0]}%' and c.concepto like '%Manual TLCQ%'"
+						cursor.execute(consulta)
+						manuales = cursor.fetchall()
+						manualestlcqtemp.append(manuales)
+					manualesindtlcq.append(manualestlcqtemp)
 			# Con fetchall traemos todas las filas
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	return render_template('repm.html', title="Reporte Manuales", numsmanualeslbcq = numsmanualeslbcq, numsmanualestlcq=numsmanualestlcq, manualeslbcq=manualeslbcq, manualestlcq=manualestlcq, manualesind=manualesind, manualespracticas=manualespracticas)
+	return render_template('repm.html', title="Reporte Manuales", numsmanualeslbcq = numsmanualeslbcq, numsmanualestlcq=numsmanualestlcq, manualeslbcq=manualeslbcq, manualestlcq=manualestlcq, manualesindlbcq=manualesindlbcq, manualesindtlcq=manualesindtlcq)
 
 @app.route('/entregarm/<idpago>', methods=['GET', 'POST'])
 def entregarm(idpago):

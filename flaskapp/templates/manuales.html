@@ -119,27 +119,9 @@
 				<br>
 				<div id="myDiv">
 					<div class="form-row" id="divcurso1">
-						<div class="col-md-6">
+						<div class="col-md-12">
 							<input type="text" id="curso1" name="curso1" class="form-control" required
 								placeholder="Curso">
-						</div>
-						<div class="col-md-6 d-flex align-items-end">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" id="1kit0" name="kit1" value="0">
-								<label class="form-check-label" for="1kit0" id="1kit0l">Sin Kit</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" id="1kit50" name="kit1" value="50">
-								<label class="form-check-label" for="1kit50" id="1kit50l">Kit Q 50.00</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" id="1kit100" name="kit1" value="100">
-								<label class="form-check-label" for="1kit100" id="1kit100l">Kit Q 100.00</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" id="1kit200" name="kit1" value="200">
-								<label class="form-check-label" for="1kit200" id="1kit200l">Kit Q 200.00</label>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -179,7 +161,7 @@
 		div1.className = "form-row"
 		div1.id = "divcurso" + String(num)
 		var div2 = document.createElement('div')
-		div2.className = "col-md-6"
+		div2.className = "col-md-12"
 		document.getElementById('cant').value = num
 		var input = document.createElement('input')
 		input.type = 'text'
@@ -189,79 +171,6 @@
 		input.placeholder = 'Curso'
 		div2.appendChild(input)
 		div1.appendChild(div2)
-		var div3 = document.createElement('div')
-		div3.className = 'col-md-6 d-flex align-items-end'
-		var div4 = document.createElement('div')
-		div4.className = "form-check form-check-inline"
-		var radio1 = document.createElement('input')
-		radio1.className = "form-check-input"
-		radio1.type = 'radio'
-		radio1.id = String(num) + 'kit0'
-		radio1.name = 'kit' + String(num)
-		radio1.value = 0
-		var label1 = document.createElement('label');
-		label1.className = "form-check-label"
-		label1.innerHTML = 'Sin Kit'
-		label1.htmlFor = String(num) + 'kit0'
-		label1.id = String(num) + 'kit0l'
-		div4.appendChild(radio1)
-		div4.appendChild(label1)
-		div3.appendChild(div4)
-
-		div4 = ""
-		div4 = document.createElement('div')
-		div4.className = "form-check form-check-inline"
-		var radio2 = document.createElement('input')
-		radio2.className = "form-check-input"
-		radio2.type = 'radio'
-		radio2.id = String(num) + 'kit50'
-		radio2.name = 'kit' + String(num)
-		radio2.value = 50
-		var label2 = document.createElement('label');
-		label2.className = "form-check-label"
-		label2.innerHTML = 'Kit Q 50.00'
-		label2.htmlFor = String(num) + 'kit50'
-		label2.id = String(num) + 'kit50l'
-		div4.appendChild(radio2)
-		div4.appendChild(label2)
-		div3.appendChild(div4)
-
-		div4 = ""
-		div4 = document.createElement('div')
-		div4.className = "form-check form-check-inline"
-		var radio3 = document.createElement('input')
-		radio3.className = "form-check-input"
-		radio3.type = 'radio'
-		radio3.id = String(num) + 'kit100'
-		radio3.name = 'kit' + String(num)
-		radio3.value = 100
-		var label3 = document.createElement('label');
-		label3.className = "form-check-label"
-		label3.innerHTML = 'Kit Q 100.00'
-		label3.htmlFor = String(num) + 'kit100'
-		label3.id = String(num) + 'kit100l'
-		div4.appendChild(radio3)
-		div4.appendChild(label3)
-		div3.appendChild(div4)
-
-		div4 = ""
-		div4 = document.createElement('div')
-		div4.className = "form-check form-check-inline"
-		var radio4 = document.createElement('input')
-		radio4.className = "form-check-input"
-		radio4.type = 'radio'
-		radio4.id = String(num) + 'kit200'
-		radio4.name = 'kit' + String(num)
-		radio4.value = 200
-		var label4 = document.createElement('label');
-		label4.className = "form-check-label"
-		label4.innerHTML = 'Kit Q 200.00'
-		label4.htmlFor = String(num) + 'kit200'
-		label4.id = String(num) + 'kit200l'
-		div4.appendChild(radio4)
-		div4.appendChild(label4)
-		div3.appendChild(div4)
-		div1.append(div3)
 		div.append(div1)
 	}
 </script>
