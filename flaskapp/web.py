@@ -12,6 +12,7 @@ from barcode.writer import ImageWriter
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from conexion import Conhost, Conuser, Conpassword, Condb
+import unicodedata
 #from flask_weasyprint import HTML, render_pdf
 
 UPLOAD_FOLDER = r'C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\uploads'
@@ -2595,7 +2596,7 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 	nombre = str(nombre)
 	mid = str(mid)
 	mcod = str(mcod)
-	curso = str(curso)
+	curso = str(curso).upper()
 	cursos = curso.split(',')
 	cantidad = len(cursos)
 	for i in range(cantidad):
@@ -2629,12 +2630,20 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 							total = 175
 							if carrera == 'LBCQ':
 								for j in nombremanualesindlbcq:
-									if cursos[i] == j[0]:
+									if unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip() == unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip():
 										total = j[1]
+										if cursos[i] == j[0]:
+											pass
+										else:
+											cursos[i] = j[0]
 							elif carrera == "TLCQ":
 								for j in nombremanualesindtlcq:
-									if cursos[i] == j[0]:
+									if unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip() == unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip():
 										total = j[1]
+										if cursos[i] == j[0]:
+											pass
+										else:
+											cursos[i] = j[0]
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, total, date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
 						else:
