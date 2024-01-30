@@ -3423,6 +3423,7 @@ def repgen():
 	datanombre = ""
 	datadescripcion = ""
 	datarecibo = ""
+	accion = 0
 	if request.method == "POST":
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
@@ -3431,11 +3432,12 @@ def repgen():
 		dataconcepto = request.form["concepto"]
 		datadescripcion = request.form["descripcion"]
 		datarecibo = request.form["recibo"]
+		accion = request.form["accion"]
 		try:
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
-					consulta = f'SELECT p.nombre, p.carnet, p.fecha, c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like "%{datanombre}%" and p.carnet like "%{datacarnet}%"'
+					consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like "%{datanombre}%" and p.carnet like "%{datacarnet}%"'
 					if len(datafechaini) != 0:
 						consulta = consulta + f' and p.fecha >= "{datafechaini}"'
 					if len(datafechafin) != 0:
@@ -3449,7 +3451,96 @@ def repgen():
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion, datarecibo = datarecibo)
+		print(accion)
+		if int(accion) == 1:
+			print(accion)
+			return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion, datarecibo = datarecibo)
+		elif int(accion) == 2:
+			print(accion)
+			output = io.BytesIO()
+			workbook = xlwt.Workbook(encoding="utf-8")
+			sh1 = workbook.add_sheet("Reporte General")
+
+			xlwt.add_palette_colour("Orange", 0x21) # the second argument must be a number between 8 and 64
+			workbook.set_colour_RGB(0x21, 255, 165, 0) # Red — 79, Green — 129, Blue — 189
+			xlwt.add_palette_colour("Lightgreen", 0x22) # the second argument must be a number between 8 and 64
+			workbook.set_colour_RGB(0x22, 144, 238, 144) # Red — 79, Green — 129, Blue — 189
+			
+			#bordes
+			borders = xlwt.Borders()
+			borders.left = 1
+			borders.right = 1
+			borders.top = 1
+			borders.bottom = 1
+
+			#encabezados
+			header_font = xlwt.Font()
+			header_font.name = 'Arial'
+			header_font.bold = True
+			header_style = xlwt.XFStyle()
+			header_style.font = header_font
+			header_style.borders = borders
+
+			#contenido1
+			content_font = xlwt.Font()
+			content_font.name = 'Arial'
+			content_pattern = xlwt.Pattern()
+			content_style = xlwt.XFStyle()
+			content_style.font = content_font
+			content_style.borders = borders
+			content_style.pattern = content_pattern
+
+			#titulos
+			tittle_font = xlwt.Font()
+			tittle_font.name = 'Arial'
+			tittle_font.bold = True
+			tittle_font.italic = True
+			tittle_font.height = 20*20
+			tittle_style = xlwt.XFStyle()
+			tittle_style.font = tittle_font
+
+			sh1.write(0,0,"Reporte General", tittle_style)
+			sh1.write(1,0,"Total de Resultados: "+str(conteo), tittle_style)
+			sh1.write(3,0,"No.", header_style)
+			sh1.write(3,1,"Nombre", header_style)
+			sh1.write(3,2,"Carnet", header_style)
+			sh1.write(3,3,"Fecha", header_style)
+			sh1.write(3,4,"Concepto", header_style)
+			sh1.write(3,5,"Descripción", header_style)
+			sh1.write(3,6,"Recibo", header_style)
+			sh1.write(3,7,"Total", header_style)
+
+			if len(data) > 0:
+				for i in range(len(data)):
+					sh1.write(i+4,0,i+1, content_style)
+					sh1.write(i+4,1,data[i][0], content_style)
+					sh1.write(i+4,2,data[i][1], content_style)
+					sh1.write(i+4,3,data[i][2], content_style)
+					sh1.write(i+4,4,data[i][3], content_style)
+					sh1.write(i+4,5,data[i][4], content_style)
+					sh1.write(i+4,6,data[i][5], content_style)
+					sh1.write(i+4,7,"Q"+str(data[i][6]), content_style)
+			
+			sh1.col(0).width = 0x0d00 + len("No.")
+			try:
+				sh1.col(1).width = 256 * (max([len(str(row[i])) for row in data[i][0]]) + 1) * 10
+				sh1.col(2).width = 256 * (max([len(str(row[i])) for row in data[i][1]]) + 1) * 10
+				sh1.col(3).width = 256 * (max([len(str(row[i])) for row in data[i][2]]) + 1) * 10
+				sh1.col(4).width = 256 * (max([len(str(row[i])) for row in data[i][3]]) + 1) * 10
+				sh1.col(5).width = 256 * (max([len(str(row[i])) for row in data[i][4]]) + 1) * 10
+				sh1.col(6).width = 256 * (max([len(str(row[i])) for row in data[i][5]]) + 1) * 10
+				sh1.col(7).width = 256 * (max([len(str(row[i])) for row in data[i][6]]) + 1) * 10
+			except:
+				sh1.col(1).width = 256 * 20
+				sh1.col(2).width = 256 * 20
+				sh1.col(3).width = 256 * 20
+				sh1.col(4).width = 256 * 20
+				sh1.col(5).width = 256 * 20
+				sh1.col(6).width = 256 * 20
+				sh1.col(7).width = 256 * 20
+			workbook.save(output)
+			output.seek(0)
+			return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=reportegeneral.xls"})
 	return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion, datarecibo = datarecibo)
 
 @app.route('/pagos')

@@ -152,11 +152,17 @@
 				<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 				<br>
 				<center>
-					<input class="btn btn-primary" type="submit" value="Buscar">
+					<button onclick="submit" class="btn btn-primary" name="accion" value="1">Buscar</button>
 				</center>
-			</form>
+			
 
 			<h4>Resultados encontrados: {{conteo}}</h4>
+			{% if conteo > 0 %}
+			<center>
+				<button onclick="submit" class="btn btn-primary" name="accion" value="2">Generar PDF</button>
+			</center>
+			{% endif %}
+			</form>
 			<table class="table table-striped sortable" id="sampleTable">
 				<tr>
 					<th>Nombre</th>
