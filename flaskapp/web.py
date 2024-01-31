@@ -2678,19 +2678,19 @@ def repm():
 				manualesindlbcq = []
 				manualesindtlcq = []
 				for i in numsmanualeslbcq:
-					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITLBCQ{i}'"
+					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITLBCQ{i}' and p.devuelto = 0"
 					cursor.execute(consulta)
 					manuales = cursor.fetchall()
 					manualeslbcq.append(manuales)
 				for i in numsmanualestlcq:
-					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITTLCQ{i}'"
+					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITTLCQ{i}' and p.devuelto = 0"
 					cursor.execute(consulta)
 					manuales = cursor.fetchall()
 					manualestlcq.append(manuales)
 				for i in nombremanualesindlbcq:
 					manualeslbcqtemp = [] 
 					for j in i:
-						consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{j[0]}%' and c.concepto like '%Manual LBCQ%'"
+						consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{j[0]}%' and c.concepto like '%Manual LBCQ%' and p.devuelto = 0"
 						cursor.execute(consulta)
 						manuales = cursor.fetchall()
 						manualeslbcqtemp.append(manuales)
@@ -2698,7 +2698,7 @@ def repm():
 				for i in nombremanualesindtlcq:
 					manualestlcqtemp = []
 					for j in i:
-						consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{j[0]}%' and c.concepto like '%Manual TLCQ%'"
+						consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{j[0]}%' and c.concepto like '%Manual TLCQ%' and p.devuelto = 0"
 						cursor.execute(consulta)
 						manuales = cursor.fetchall()
 						manualestlcqtemp.append(manuales)
