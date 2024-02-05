@@ -2592,8 +2592,8 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 		return redirect(url_for('login'))
 	numsmanualeslbcq = [1,3,5,7,9]
 	numsmanualestlcq = [1,3,5]
-	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 510], ['QUIMICA GENERAL I', 510], ['PARASITOLOGIA', 260], ['QUIMICA INORGANICA', 260], ['BIOQUIMICA GENERAL', 280], ['HEMATOLOGIA BASICA', 320], ['HEMATOLOGIA CLINICA', 320], ['MICROBIOLOGIA CLINICA AVANZADA', 250], ['BANCO DE SANGRE', 310], ['MICROBIOLOGIA APLICADA II', 250]]
-	nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 260], ['PRACTICA EN LABORATORIO', 175]]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 535], ['QUIMICA GENERAL I', 535], ['PARASITOLOGIA', 285], ['QUIMICA INORGANICA', 285], ['BIOQUIMICA GENERAL', 305], ['HEMATOLOGIA BASICA', 345], ['HEMATOLOGIA CLINICA', 345], ['MICROBIOLOGIA CLINICA AVANZADA', 275], ['BANCO DE SANGRE', 335], ['MICROBIOLOGIA APLICADA II', 275]]
+	nombremanualesindtlcq = [['BACTERIOLOGIA', 585], ['QUIMICA CLINICA', 285], ['PRACTICA EN LABORATORIO', 175]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
@@ -2673,8 +2673,8 @@ def repm():
 			with conexion.cursor() as cursor:
 				numsmanualeslbcq = [1,3,5,7,9]
 				numsmanualestlcq = [1,3,5]
-				nombremanualesindlbcq = [[['BIOLOGIA GENERAL I', 510], ['QUIMICA GENERAL I', 510]], [['PARASITOLOGIA', 260], ['QUIMICA INORGANICA', 260]], [['BIOQUIMICA GENERAL', 280], ['HEMATOLOGIA BASICA', 320]], [['HEMATOLOGIA CLINICA', 320], ['MICROBIOLOGIA CLINICA AVANZADA', 250]], [['BANCO DE SANGRE', 310], ['MICROBIOLOGIA APLICADA II', 250]]]
-				nombremanualesindtlcq = [[['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 260]], [['PRACTICA EN LABORATORIO', 175]]]
+				nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 535], ['QUIMICA GENERAL I', 535], ['PARASITOLOGIA', 285], ['QUIMICA INORGANICA', 285], ['BIOQUIMICA GENERAL', 305], ['HEMATOLOGIA BASICA', 345], ['HEMATOLOGIA CLINICA', 345], ['MICROBIOLOGIA CLINICA AVANZADA', 275], ['BANCO DE SANGRE', 335], ['MICROBIOLOGIA APLICADA II', 275]]
+				nombremanualesindtlcq = [['BACTERIOLOGIA', 585], ['QUIMICA CLINICA', 285], ['PRACTICA EN LABORATORIO', 175]]
 				manualeslbcq = []
 				manualestlcq = []
 				manualesindlbcq = []
