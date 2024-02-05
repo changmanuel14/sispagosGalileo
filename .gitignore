@@ -1,6 +1,7 @@
 Include/
 Lib/
 Scripts/
+share/
 Sql/
 MyPDF.pdf
 pyvenv.cfg

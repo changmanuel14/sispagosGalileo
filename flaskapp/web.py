@@ -3,12 +3,10 @@ from flask import Flask, render_template, request, url_for, redirect, make_respo
 import pymysql
 from datetime import date, datetime
 import os
-import webbrowser
 import io
 import xlwt
 import pdfkit as pdfkit
-import barcode
-from barcode.writer import ImageWriter
+import qrcode
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from conexion import Conhost, Conuser, Conpassword, Condb
@@ -1641,17 +1639,21 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 		if  "Congreso" in cod:
 			idpago = int(idpago)
 			idpago = str(idpago)
-			number = idpago.rjust(6, '0')
-			number = f"{number}98765"
-			barcode_format = barcode.get_barcode_class('upc')
+			number = idpago.rjust(7, '0')
+
+			img = qrcode.make(number)
+			type(img)  # qrcode.image.pil.PilImage
+			img.save(r"C:\Users\galileoserver\Documents\siscajaGalileo\flaskapp\static\codbars\\" + str(idpago) + ".png")
+			#barcode_format = barcode.get_barcode_class('upc')
 			#Generate barcode and render as image
-			my_barcode = barcode_format(number, writer=ImageWriter())
+			#my_barcode = barcode_format(number, writer=ImageWriter())
 			#Save barcode as PNG
-			aux = f"C:\\Users\\galileoserver\\Documents\\sispagosGalileo\\flaskapp\\static\\codbars\\{idpago}"
-			my_barcode.save(aux)
+			#aux = f"C:\\Users\\galileoserver\\Documents\\sispagosGalileo\\flaskapp\\static\\codbars\\{idpago}"
+			#my_barcode.save(aux)
+
 			#Inserción a archivo de Google Sheets
 			scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-			creds = ServiceAccountCredentials.from_json_keyfile_name(r"C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\clientcongreso.json", scope)
+			creds = ServiceAccountCredentials.from_json_keyfile_name(r"C:\Users\galileoserver\Documents\siscajaGalileo\flaskapp\clientcongreso.json", scope)
 			client = gspread.authorize(creds)
 			sheet = client.open("Tabulación Congreso").sheet1
 			row = [nombre, carnet, descripcion, idpago]
@@ -3210,7 +3212,7 @@ def repdiariopdf():
 				suma = 0
 				for i in data:
 					suma = suma + float(i[5])
-				consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fechadevuelto,"%d/%m/%Y"), c.concepto, p.extra, round(p.total), p.idpagos, p.recibo, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.userdev WHERE fechadevuelto = CURDATE() order by c.cod asc, p.nombre asc;'
+				consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fechadevuelto,"%d/%m/%Y"), c.concepto, p.extra, round(p.total, 2), p.idpagos, p.recibo, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.userdev WHERE fechadevuelto = CURDATE() order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				datadev = cursor.fetchall()
 				contdev = len(datadev)
