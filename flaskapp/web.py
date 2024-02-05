@@ -1643,7 +1643,7 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 
 			img = qrcode.make(number)
 			type(img)  # qrcode.image.pil.PilImage
-			img.save(r"C:\Users\galileoserver\Documents\siscajaGalileo\flaskapp\static\codbars\\" + str(idpago) + ".png")
+			img.save(r"C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\codbars\\" + str(idpago) + ".png")
 			#barcode_format = barcode.get_barcode_class('upc')
 			#Generate barcode and render as image
 			#my_barcode = barcode_format(number, writer=ImageWriter())
@@ -1653,7 +1653,7 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 
 			#Inserción a archivo de Google Sheets
 			scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-			creds = ServiceAccountCredentials.from_json_keyfile_name(r"C:\Users\galileoserver\Documents\siscajaGalileo\flaskapp\clientcongreso.json", scope)
+			creds = ServiceAccountCredentials.from_json_keyfile_name(r"C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\clientcongreso.json", scope)
 			client = gspread.authorize(creds)
 			sheet = client.open("Tabulación Congreso").sheet1
 			row = [nombre, carnet, descripcion, idpago]
