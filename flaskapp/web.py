@@ -2691,21 +2691,19 @@ def repm():
 					manualestlcq.append(manuales)
 				for i in nombremanualesindlbcq:
 					manualeslbcqtemp = [] 
-					for j in i:
-						consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{j[0]}%' and c.concepto like '%Manual LBCQ%' and p.devuelto = 0"
-						cursor.execute(consulta)
-						manuales = cursor.fetchall()
-						manualeslbcqtemp.append(manuales)
-					manualesindlbcq.append(manualeslbcqtemp)
+					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i[0]}%' and c.concepto like '%Manual LBCQ%' and p.devuelto = 0"
+					cursor.execute(consulta)
+					manuales = cursor.fetchall()
+					manualesindlbcq.append(manuales)
 				for i in nombremanualesindtlcq:
 					manualestlcqtemp = []
-					for j in i:
-						consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{j[0]}%' and c.concepto like '%Manual TLCQ%' and p.devuelto = 0"
-						cursor.execute(consulta)
-						manuales = cursor.fetchall()
-						manualestlcqtemp.append(manuales)
-					manualesindtlcq.append(manualestlcqtemp)
+					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i[0]}%' and c.concepto like '%Manual TLCQ%' and p.devuelto = 0"
+					cursor.execute(consulta)
+					manuales = cursor.fetchall()
+					manualesindtlcq.append(manuales)
 			# Con fetchall traemos todas las filas
+			#print(manualesindlbcq[1][1])
+			print(manualesindtlcq)
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
