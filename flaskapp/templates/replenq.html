@@ -142,8 +142,12 @@
 				</div>
 				<div class="form-row">
 					<div class="col-md-6">
-						<label for="fechapago">Fecha de Pago</label>
-						<input type="date" class="form-control" name="fechapago" id="fechapago" value="{{datafechapago}}">
+						<label for="fechapagoinicio">Pagado desde:</label>
+						<input type="date" class="form-control" name="fechapagoinicio" id="fechapagoinicio" value="{{datafechapagoinicio}}">
+					</div>
+					<div class="col-md-6">
+						<label for="fechapagofin">Pagado hasta:</label>
+						<input type="date" class="form-control" name="fechapagofin" id="fechapagofin" value="{{datafechapagofin}}">
 					</div>
 				</div>
 				<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
@@ -152,6 +156,8 @@
 					<input class="btn btn-primary" type="submit" value="Buscar">
 				</center>
 			</form>
+			<a class="btn btn-success" href="/matrizlenq" role="button">Ver matriz de pagos</a>
+			<br>
 			<table class="table table-striped sorttable">
 				<tr>
 					<th>Nombre</th>

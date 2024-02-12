@@ -124,8 +124,20 @@
 				<div id="practicalenq" style="display: none;">
 					<div class="form-row">
 						<div class="col-md-12">
-							<label for="lugar">Lugar</label>
-							<input type="text" id="lugar" name="lugar" class="form-control" placeholder="Lugar">
+							<label for="lugar">Lugar 1</label>
+							<input type="text" id="lugar1" name="lugar1" class="form-control" placeholder="Lugar 1">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-12">
+							<label for="lugar2">Lugar 2</label>
+							<input type="text" id="lugar2" name="lugar2" class="form-control" placeholder="Lugar 2">
+						</div>
+					</div>
+					<div class="form-row">
+						<div class="col-md-12">
+							<label for="lugar3">Lugar 3</label>
+							<input type="text" id="lugar3" name="lugar3" class="form-control" placeholder="Lugar 3">
 						</div>
 					</div>
 					<div class="form-row">
@@ -188,8 +200,6 @@
 		nombre = nombre.toUpperCase()
 		document.getElementById('nombre').value = nombre
 	}
-</script>
-<script type="text/javascript">
 	function eliminar() {
 		var num = parseInt(document.getElementById('cant').value)
 		if (num > 1) {
@@ -230,6 +240,7 @@
 				desc.placeholder = 'Tipo de Práctica'
 				desc.setAttribute('list', 'pracenf')
 				datalenq.style.display = 'block'
+				console.log("Entro enfermeria")
 			} else if (aux.includes('THDQ') || aux.includes('Peritoneal') || (aux.includes('TRADQ') && !(aux.includes('Prepractica'))) || aux.includes('Optometria') && aux.includes('EPS')) {
 				desc.placeholder = 'Descripción'
 				desc.setAttribute('list', '')
