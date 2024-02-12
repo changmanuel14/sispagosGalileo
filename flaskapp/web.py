@@ -3373,15 +3373,15 @@ def matrizlenq():
 									aux.append(data[0][7])
 							else:
 								if k == 0:
-									aux.append("")
-									aux.append("")
-								aux.append("")
+									aux.append("Pend")
+									aux.append("Pend")
+								aux.append("Pend")
 								if k == 2:
-									aux.append("")
-									aux.append("")
-									aux.append("")
-									aux.append("")
-									aux.append("")
+									aux.append("Pend")
+									aux.append("Pend")
+									aux.append("Pend")
+									aux.append("Pend")
+									aux.append("Pend")
 						datapractica.append(aux)
 					practicas.append(datapractica)
 		finally:

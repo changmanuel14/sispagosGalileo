@@ -112,7 +112,7 @@
 			<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 			<br>
 			<h2>Práctica Primer Semestre</h2>
-			<table class="table table-striped sorttable">
+			<table class="table table-striped sorttable" id="semestre1">
 				<tr>
 					<th>No.</th>
 					<th>Nombre</th>
@@ -140,7 +140,7 @@
 			</table>
 			<br><br>
 			<h2>Práctica Segundo Semestre</h2>
-			<table class="table table-striped sorttable">
+			<table class="table table-striped sorttable" id="semestre2">
 				<tr>
 					<th>No.</th>
 					<th>Nombre</th>
@@ -170,7 +170,7 @@
 			</table>
 			<br><br>
 			<h2>Práctica Tercer Semestre</h2>
-			<table class="table table-striped sorttable">
+			<table class="table table-striped sorttable" id="semestre3">
 				<tr>
 					<th>No.</th>
 					<th>Nombre</th>
@@ -200,7 +200,7 @@
 			</table>
 			<br><br>
 			<h2>Práctica Cuarto Semestre</h2>
-			<table class="table table-striped sorttable">
+			<table class="table table-striped sorttable" id="semestre4">
 				<tr>
 					<th>No.</th>
 					<th>Nombre</th>
@@ -232,7 +232,7 @@
 			</table>
 			<br><br>
 			<h2>Práctica Quinto Semestre</h2>
-			<table class="table table-striped sorttable">
+			<table class="table table-striped sorttable" id="semestre5">
 				<tr>
 					<th>No.</th>
 					<th>Nombre</th>
@@ -264,7 +264,7 @@
 			</table>
 			<br><br>
 			<h2>Práctica Sexto Semestre</h2>
-			<table class="table table-striped sorttable">
+			<table class="table table-striped sorttable" id="semestre6">
 				<tr>
 					<th>No.</th>
 					<th>Nombre</th>
@@ -295,5 +295,23 @@
 	</main>
 	<!-- page-content" -->
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        marcarPendientes();
+    });
+
+    function marcarPendientes() {
+        var tablas = document.querySelectorAll("table");
+        tablas.forEach(function(tabla) {
+            var celdas = tabla.querySelectorAll("td");
+            celdas.forEach(function(celda) {
+                if (celda.textContent.trim() === "Pend") {
+                    celda.style.backgroundColor = "orange";
+                }
+            });
+        });
+    }
+</script>
 <!-- page-wrapper -->
 {% endblock %}
