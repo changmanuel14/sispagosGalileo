@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 {% block content %}
-<script src="{{ url_for('static', filename='fancyTable.js') }}"></script>
 <div class="page-wrapper chiller-theme toggled">
 	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
 		<i class="fas fa-bars"></i>
@@ -106,58 +105,62 @@
 	<!-- sidebar-wrapper  -->
 	<main class="page-content">
 		<div class="container">
-			<h2>Práctica</h2>
+			<center>
+				<h1>Matriz de Práctica de Laboratorio Clínico</h1>
+			</center>
 			<hr>
 			<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-			<a class="btn btn-success" href="/matriztlcq" role="button">Matriz TLCQ</a>
-			<table id="sampleTable" class="sortable table table-bordered">
+			<br>
+			<table class="table table-striped sorttable" id="semestre1">
 				<tr>
-					<th>Nombre</th>
-					<th>Carnet</th>
-					<th>Fecha</th>
-					<th>Codigo</th>
-					<th>Descripción</th>
-					<th>Total</th>
-					<th>imprimir</th>
+					<th style="font-size: x-small;">No.</th>
+					<th style="font-size: x-small;">Nombre</th>
+					<th style="font-size: x-small;">Carnet</th>
+					{% for i in meses %}
+					<th style="font-size: x-small;">{{i}}</th>
+					{% endfor %}
 				</tr>
-				{% for i in data %}
+				{% for i in estudiantes %}
 				<tr>
-					<td>{{i[0]}}</td>
-					<td>{{i[1]}}</td>
-					<td>{{i[2]}}</td>
-					<td>{{i[3]}}</td>
-					<td>{{i[4]}}</td>
-					<td>Q. {{i[5]}}</td>
-					<td>
-						{% if 'THDQ1' in i[3] %}
-						<a href="/hojadialisis/{{i[6]}}" target="_blank">Imprimir</a>
-						{% elif 'THDQ' in i[3] %}
-						<a href="/hojathdq/{{i[6]}}" target="_blank">Imprimir</a>
-						{% elif 'PREPTRAD' in i[3] %}
-						<a href="/prepracticatradq/{{i[6]}}" target="_blank">Imprimir</a>
-						{% elif 'TLCQ' in i[3] %}
-						<a href="/hojatlcq/{{i[6]}}" target="_blank">Imprimir</a>
-						{% elif 'TOPTQ' in i[3] %}
-						<a href="/practicatoptq/{{i[6]}}" target="_blank">Imprimir</a>
-						{% else %}
-						No Aplica
-						{% endif %}
-					</td>
+					<td style="font-size: x-small;">{{loop.index}}</td>
+					<td style="font-size: x-small;">{{i[0]}}</td>
+					<td style="font-size: x-small;">{{i[1]}}</td>
+					<td style="font-size: x-small;">{{i[2]}}</td>
+					<td style="font-size: x-small;">{{i[3]}}</td>
+					<td style="font-size: x-small;">{{i[4]}}</td>
+					<td style="font-size: x-small;">{{i[5]}}</td>
+					<td style="font-size: x-small;">{{i[6]}}</td>
+					<td style="font-size: x-small;">{{i[7]}}</td>
+					<td style="font-size: x-small;">{{i[8]}}</td>
+					<td style="font-size: x-small;">{{i[9]}}</td>
+					<td style="font-size: x-small;">{{i[10]}}</td>
+					<td style="font-size: x-small;">{{i[11]}}</td>
+					<td style="font-size: x-small;">{{i[12]}}</td>
+					<td style="font-size: x-small;">{{i[13]}}</td>
 				</tr>
 				{% endfor %}
 			</table>
-			</form>
+			<br>
 	</main>
-	<script>
-		$(document).ready(function () {
-			$("#sampleTable").fancyTable({
-				inputPlaceholder: 'Buscar',
-				pagination: true,
-				perPage:20
-			});
-		});
-	</script>
 	<!-- page-content" -->
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        marcarPendientes();
+    });
+
+    function marcarPendientes() {
+        var tablas = document.querySelectorAll("table");
+        tablas.forEach(function(tabla) {
+            var celdas = tabla.querySelectorAll("td");
+            celdas.forEach(function(celda) {
+                if (celda.textContent.trim() === "Pend") {
+                    celda.style.backgroundColor = "orange";
+                }
+            });
+        });
+    }
+</script>
 <!-- page-wrapper -->
 {% endblock %}

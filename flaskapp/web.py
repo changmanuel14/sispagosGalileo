@@ -638,7 +638,7 @@ def repingles():
 				for n in range(4):
 					ciclo = n+1
 					datos = []
-					consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and (p.extra like '%{mesesbase[n][0]}%' or p.extra like '%{mesesbase[n][1]}%' or p.extra like '%{mesesbase[n][2]}%')  and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) group by p.nombre order by p.nombre;"
+					consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and (p.extra like '%{mesesbase[n][0]}%' or p.extra like '%{mesesbase[n][1]}%' or p.extra like '%{mesesbase[n][2]}%')  and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) and p.extra not like '%Retirado%' group by p.nombre order by p.nombre;"
 					cursor.execute(consulta)
 					nombres = cursor.fetchall()
 					for i in nombres:
@@ -3390,6 +3390,47 @@ def matrizlenq():
 		print("Ocurrió un error al conectar: ", e)
 	print(practicas)
 	return render_template('matrizlenq.html', title="Matriz Práctica Enfermeria", logeado=logeado, practicas = practicas)
+
+@app.route('/matriztlcq', methods=['GET', 'POST'])
+def matriztlcq():
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+	else:
+		return redirect(url_for('login'))
+	fechaact = date.today()
+	year = fechaact.year
+	fechainicio = date(year, 1,1)
+	fechafin = date(year, 12,31)
+	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				estudiantes = []
+				consulta = f"Select p.carnet from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%Practica TLCQ%' group by p.carnet order by p.nombre"
+				cursor.execute(consulta)
+		# Con fetchall traemos todas las filas
+				carnets = cursor.fetchall()
+				for i in carnets:
+					aux = ["",""]
+					for j in meses:
+						consulta = f"SELECT nombre, carnet, DATE_FORMAT(p.fecha,'%d/%m/%Y') FROM pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%Practica TLCQ%' and p.extra like '%{j}%' group by p.carnet order by p.nombre"
+						cursor.execute(consulta)
+					# Con fetchall traemos todas las filas
+						data = cursor.fetchall()
+						conteo = len(data)
+						if conteo > 0:
+							aux[0] = data[0][0]
+							aux[1] = data[0][1]
+							aux.append(data[0][2])
+						else:
+							aux.append("Pend")
+					estudiantes.append(aux)
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('matriztlcq.html', title="Matriz Práctica Laboratorio Clinico", logeado=logeado, estudiantes = estudiantes, meses = meses)
 
 @app.route('/replenq', methods=['GET', 'POST'])
 def replenq():
