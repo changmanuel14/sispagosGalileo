@@ -2386,21 +2386,22 @@ def practicatoptq(idpagos):
 			if j.isdigit():
 				varaux = varaux + str(j)
 		newarray.append(varaux)
+		id = newarray[0]
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
 				numeros = []
-				for i in range(cantidad):
-					consulta = f'SELECT nombre, carnet, extra FROM pagos WHERE idpagos = {newarray[i]};'
-					cursor.execute(consulta)
-				# Con fetchall traemos todas las filas
-					data = cursor.fetchone()
-					nombre = data[0]
-					carnet = data[1]
-					aux = data[2]
-					aux = str(aux).split(':')
-					numeros.append(int(aux[1]))
+				consulta = f'SELECT nombre, carnet, extra, DATE_FORMAT(fecha,"%d/%m/%Y") FROM pagos WHERE idpagos = {id};'
+				cursor.execute(consulta)
+			# Con fetchall traemos todas las filas
+				data = cursor.fetchone()
+				nombre = data[0]
+				carnet = data[1]
+				aux = data[2]
+				fecha = data[3]
+				aux = str(aux).split(':')
+				numeros.append(int(aux[1]))
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
@@ -2408,7 +2409,7 @@ def practicatoptq(idpagos):
 	fechaact = date.today()
 	year = fechaact.year
 	#Se genera PDF
-	rendered = render_template('practicatoptq.html', title="Práctica TOPTQ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros)
+	rendered = render_template('practicatoptq.html', title="Práctica TOPTQ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros, fecha =fecha)
 	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-bottom': '35mm','margin-right': '10mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)

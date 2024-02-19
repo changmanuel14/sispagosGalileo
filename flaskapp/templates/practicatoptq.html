@@ -1,66 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    {% if title %}
-        <title>Sistema de caja - {{ title }}</title>
-    {% else %}
-        <title>Sistema de caja</title>
-    {% endif %}
-         <link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	{% if title %}
+	<title>Sistema de caja - {{ title }}</title>
+	{% else %}
+	<title>Sistema de caja</title>
+	{% endif %}
+	<link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
 	<style type="text/css">
-	body {
-		background: #ffffff;
-		margin-top: 5rem;
-	}
-	table {
-		border: 0px;
-		width: 100%;
-	}
-	h1, h2, h3, h4, h5, h6 {
-		color: #000000;
-	}
-	.tabla {
-		font-size: 30px;
-		padding-left: 8px;
-		padding-right: 8px;
-		padding-top: 0px;
-		padding-bottom: 0px;
-		border: #000000 1px solid;
-	}
-	.tabla1 {
-		font-size: 25px;
-		padding-left: 8px;
-		padding-right: 8px;
-		padding-top: 0px;
-		padding-bottom: 0px;
-		border: #000000 1px solid;
-	}
-	.tabla2 {
-		font-size: 20px;
-		border: #000000 1px solid;
-		height: 160px;
-		text-align: center;
-		vertical-align: bottom;
-		color: gray;
-	}
+		body {
+			background: #ffffff;
+			margin-top: 5rem;
+		}
 
-</style>
+		table {
+			border: 0px;
+			width: 100%;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			color: #000000;
+		}
+
+		.tabla {
+			font-size: 20px;
+			padding-left: 8px;
+			padding-right: 8px;
+			padding-top: 0px;
+			padding-bottom: 0px;
+			border: #000000 1px solid;
+
+		}
+
+		.tabla1 {
+			font-size: 18px;
+			padding-left: 8px;
+			padding-right: 8px;
+			padding-top: 0px;
+			padding-bottom: 0px;
+			border: #000000 1px solid;
+
+		}
+
+		.tabla2 {
+			font-size: 20px;
+			border: #000000 1px solid;
+			height: 110px;
+			text-align: center;
+			vertical-align: bottom;
+			color: gray;
+
+		}
+	</style>
 </head>
-<body>
-    <main role="main" class="container">
-		{% if 2 in numeros %}
-		<img src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\TOPTQ2.jpg"/>
 
-		<center>
-			<h3>Universidad Galileo</h3>
-			<h3>Facultad Ciencias de la Salud Quetzaltenango</h3>
-			<h3>Técnico en Optometría</h3>
-			<h3>Módulo Propedéutico de Práctica Supervisada</h3>
-			<h3>Control de Asistencia y Aprobación</h3>
-		</center>
+<body>
+	<main role="main" class="container">
+		{% if 2 in numeros %}
+		<div style="width: 35%; float: left;">
+			<img src="{{url_for('static', filename='logofacisasalud.jpg')}}" width="100%"> 
+			<!--<img src="C:\Users\USUARIO\Documents\siscaja\flaskapp\static\logofacisasalud.jpg" width="100%">-->
+		</div>
+		<div style="text-align: right;width: 65%; float: left;">
+			<h5>Técnico en Optometria</h5>
+			<h5>Segundo Semestre</h5>
+			<h5>Curso Propedéutico de Práctica Supervisada</h5>
+			<h5>Nivel de Aprendizaje 1 al 4</h5>
+			<h5>Control de Asistencia y Aprobación</h5>
+		</div>
 
 		<table class="tabla">
 			<th class="tabla" style="width: 70%;">Alumno: {{nombre}}</th>
@@ -68,95 +85,100 @@
 		</table>
 		<br>
 		<center>
-		<table class="tabla1" style="width: 94%;">
-			<tr>
-				<th class="tabla1" style="width: 37.5%;">Identidad Optométrica</th>
-				<th style="color: gray;" class="tabla1" style="width: 12.5%;">Finalizado</th>
-				<th class="tabla1"  style="width: 37.5%;">Problemas que Afectan al Sistema Visual y Tratamiento</th>
-				<th style="color: gray;" class="tabla1"  style="width: 12.5%;">Finalizado</th>
-			</tr>
-		</table>
-		<table style="width: 94%;">
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-		</table>
-		<table class="tabla1" style="width: 94%;">
-			<tr>
-				<th class="tabla1" style="width: 37.5%;">Anatomía Ocular y sus Anexos</th>
-				<th style="color: gray;" class="tabla1" style="width: 12.5%;">Finalizado</th>
-				<th class="tabla1"  style="width: 37.5%;">Protocolo de Evaluación y Reglamento Interno</th>
-				<th style="color: gray;" class="tabla1"  style="width: 12.5%;">Finalizado</th>
-			</tr>
-		</table>
-		<table style="width: 94%;">
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-		</table>
-		<br>
-		<table>
-			<tr>
-				<td class="tabla2">Sello Universidad</td>
-				<td class="tabla2">Sello de Supervisor</td>
-				<td class="tabla2">Sello de Aprobación</td>
-			</tr>
-		</table>
-	</center>
-	<br>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 1. Identidad Optométrica</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 2. Problemas que Afectan al Sistema Visual y
+						Tratamiento</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 3. Anatomía Ocular y sus Anexos</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 4. Protocolo de Evaluación y Reglamento Interno</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td class="tabla" style="width: 25%;"> <strong>
+							<center>Fecha de Adquisición:<br>{{fecha}}</center>
+						</strong></td>
+					<td class="tabla2" style="width: 25%;">Sello Universidad</td>
+					<td class="tabla2" style="width: 25%;">Sello de Supervisor</td>
+					<td class="tabla2" style="width: 25%;">Sello de Aprobación</td>
+				</tr>
+			</table>
+		</center>
 		{% endif %}
 		{% if 3 in numeros %}
-		<img src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\TOPTQ3.jpg"/>
-
-		<center>
-			<h3>Universidad Galileo</h3>
-			<h3>Facultad Ciencias de la Salud Quetzaltenango</h3>
-			<h3>Técnico en Optometría</h3>
-			<h3>Práctica Supervisada 3er Semestre</h3>
-			<h3>Control de Asistencia y Aprobación de Práctica Supervisada</h3>
-		</center>
+		<div style="width: 35%; float: left;">
+			<img src="{{url_for('static', filename='logofacisasalud.jpg')}}" width="100%"> 
+			<!--<img src="C:\Users\USUARIO\Documents\siscaja\flaskapp\static\logofacisasalud.jpg" width="100%">-->
+		</div>
+		<div style="text-align: right;width: 65%; float: left;">
+			<h5>Técnico en Optometria</h5>
+			<h5>Tercer Semestre</h5>
+			<h5>Práctica Supervisada 1</h5>
+			<h5>Nivel de Aprendizaje 5 al 8</h5>
+			<h5>Control de Asistencia y Aprobación</h5>
+		</div>
 
 		<table class="tabla">
 			<th class="tabla" style="width: 70%;">Alumno: {{nombre}}</th>
@@ -164,96 +186,100 @@
 		</table>
 		<br>
 		<center>
-		<table class="tabla1" style="width: 94%;">
-			<tr>
-				<th class="tabla1" style="width: 37.5%;">Modulo 1: Anamnesis</th>
-				<th style="color: gray;" class="tabla1" style="width: 12.5%;">Finalizado</th>
-				<th class="tabla1"  style="width: 37.5%;">Modulo 2: Agudeza visual</th>
-				<th style="color: gray;" class="tabla1"  style="width: 12.5%;">Finalizado</th>
-			</tr>
-		</table>
-		<table style="width: 94%;">
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-		</table>
-		<table class="tabla1" style="width: 94%;">
-			<tr>
-				<th class="tabla1" style="width: 37.5%;">Modulo 3: EPRO</th>
-				<th style="color: gray;" class="tabla1" style="width: 12.5%;">Finalizado</th>
-				<th class="tabla1"  style="width: 37.5%;">Modulo 4: Refracción Objetiva </th>
-				<th style="color: gray;" class="tabla1"  style="width: 12.5%;">Finalizado</th>
-			</tr>
-		</table>
-		<table style="width: 94%;">
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-		</table>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 5. Anamnesis</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 6. Agudeza Visual</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 7. E.P.R.O.</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 8. Refracción Objetiva</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td class="tabla" style="width: 25%;"> <strong>
+							<center>Fecha de Adquisición:<br>{{fecha}}</center>
+						</strong></td>
+					<td class="tabla2" style="width: 25%;">Sello Universidad</td>
+					<td class="tabla2" style="width: 25%;">Sello de Supervisor</td>
+					<td class="tabla2" style="width: 25%;">Sello de Aprobación</td>
+				</tr>
+			</table>
+		</center>
 		<br>
-		<table>
-			<tr>
-				<td class="tabla2">Sello Universidad</td>
-				<td class="tabla2">Sello de Supervisor</td>
-				<td class="tabla2">Sello de Aprobación</td>
-			</tr>
-		</table>
-	</center>
-	<br><br>
-			
 		{% endif %}
 		{% if 4 in numeros %}
-		<img src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\TOPTQ4.jpg"/>
-
-		<center>
-			<h3>Universidad Galileo</h3>
-			<h3>Facultad Ciencias de la Salud Quetzaltenango</h3>
-			<h3>Técnico en Optometría</h3>
-			<h3>Práctica Supervisada 4to Semestre</h3>
-			<h3>Control de Asistencia y Aprobación de Práctica Supervisada</h3>
-		</center>
+		<div style="width: 35%; float: left;">
+			<img src="{{url_for('static', filename='logofacisasalud.jpg')}}" width="100%"> 
+			<!--<img src="C:\Users\USUARIO\Documents\siscaja\flaskapp\static\logofacisasalud.jpg" width="100%">-->
+		</div>
+		<div style="text-align: right;width: 65%; float: left;">
+			<h5>Técnico en Optometria</h5>
+			<h5>Cuarto Semestre</h5>
+			<h5>Práctica Supervisada 2</h5>
+			<h5>Nivel de Aprendizaje 9 al 12</h5>
+			<h5>Control de Asistencia y Aprobación</h5>
+		</div>
 
 		<table class="tabla">
 			<th class="tabla" style="width: 70%;">Alumno: {{nombre}}</th>
@@ -261,186 +287,300 @@
 		</table>
 		<br>
 		<center>
-		<table class="tabla1" style="width: 94%;">
-			<tr>
-				<th class="tabla1" style="width: 37.5%;">Modulo 1:  Refracción Objetiva 2</th>
-				<th style="color: gray;" class="tabla1" style="width: 12.5%;">Finalizado</th>
-				<th class="tabla1"  style="width: 37.5%;">Modulo 2:  Refracción Subjetiva</th>
-				<th style="color: gray;" class="tabla1"  style="width: 12.5%;">Finalizado</th>
-			</tr>
-		</table>
-		<table style="width: 94%;">
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-		</table>
-		<table class="tabla1" style="width: 94%;">
-			<tr>
-				<th class="tabla1" style="width: 37.5%;">Modulo 3: Exploración Segmento Anterior</th>
-				<th style="color: gray;" class="tabla1" style="width: 12.5%;">Finalizado</th>
-				<th class="tabla1"  style="width: 37.5%;"> Modulo 4:  Exploración Segmento Posterior</th>
-				<th style="color: gray;" class="tabla1"  style="width: 12.5%;">Finalizado</th>
-			</tr>
-		</table>
-		<table style="width: 94%;">
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-		</table>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 9. Refracción Objetiva 2</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 10. Refracción Subjetiva</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 11. Exploración Segmento Anterior</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 12. Exploración Segmento Posterior</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td class="tabla" style="width: 25%;"> <strong>
+							<center>Fecha de Adquisición:<br>{{fecha}}</center>
+						</strong></td>
+					<td class="tabla2" style="width: 25%;">Sello Universidad</td>
+					<td class="tabla2" style="width: 25%;">Sello de Supervisor</td>
+					<td class="tabla2" style="width: 25%;">Sello de Aprobación</td>
+				</tr>
+			</table>
+		</center>
 		<br>
-		<table>
-			<tr>
-				<td class="tabla2">Sello Universidad</td>
-				<td class="tabla2">Sello de Supervisor</td>
-				<td class="tabla2">Sello de Aprobación</td>
-			</tr>
-		</table>
-	</center>
-	<br><br>
-		
 		{% endif %}
 		{% if 5 in numeros %}
-		<img src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\TOPTQ5.jpg"/>
-
-		<center>
-			<h3>Universidad Galileo</h3>
-			<h3>Facultad Ciencias de la Salud Quetzaltenango</h3>
-			<h3>Técnico en Optometría</h3>
-			<h3>Ejercicio Profesional Supervisado 5to. Semestre</h3>
-			<h3>Control de Asistencia y Pacientes de E. P. S.</h3>
-		</center>
-
+		<div style="width: 35%; float: left;">
+			<img src="{{url_for('static', filename='logofacisasalud.jpg')}}" width="100%"> 
+			<!--<img src="C:\Users\USUARIO\Documents\siscaja\flaskapp\static\logofacisasalud.jpg" width="100%">-->
+		</div>
+		<div style="text-align: right;width: 65%; float: left;">
+			<h5>Técnico en Optometria</h5>
+			<h5>Quinto Semestre</h5>
+			<h5>Ejercicio Profesional Supervisado 1</h5>
+			<h5>Nivel de Aprendizaje 13 al 16</h5>
+			<h5>Control de Asistencia y Aprobación</h5>
+		</div>
 		<table class="tabla">
 			<th class="tabla" style="width: 70%;">Alumno: {{nombre}}</th>
 			<th class="tabla">No. Carnet: {{carnet}}</th>
 		</table>
 		<br>
 		<center>
-		<table class="tabla1" style="width: 94%;">
-			<tr>
-				<th class="tabla1" style="width: 37.5%;">Pacientes Adultos: 10</th>
-				<th style="color: gray;" class="tabla1" style="width: 12.5%;">Finalizado</th>
-				<th class="tabla1"  style="width: 37.5%;">Pacientes Adolescentes: 5</th>
-				<th style="color: gray;" class="tabla1"  style="width: 12.5%;">Finalizado</th>
-			</tr>
-		</table>
-		<table style="width: 94%;">
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-		</table>
-		<table class="tabla1" style="width: 94%;">
-			<tr>
-				<th class="tabla1" style="width: 37.5%;">Pacientes Présbitas: 5</th>
-				<th style="color: gray;" class="tabla1" style="width: 12.5%;">Finalizado</th>
-				<th class="tabla1"  style="width: 37.5%;">Paciente de lente de contacto: 1</th>
-				<th style="color: gray;" class="tabla1"  style="width: 12.5%;">Finalizado</th>
-			</tr>
-		</table>
-		<table style="width: 94%;">
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
-			<tr>
-				<td style="height: 200px;" class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-				<td class="tabla1" style="width: 25%;"></td>
-			</tr>
-			<tr>
-				<td style="height: 50px;" class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-				<td class="tabla1"></td>
-			</tr>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 13. Atención a Pacientes Adolescentes con Ametropías.
+						5pts</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 14. Atención a Pacientes Adultos con Ametropías.
+						10pts.</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 15. Atención a Pacientes Présbitas. 5 pts.</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 16. Adaptación de lente de contacto blando teórico. 1
+						pt.</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td class="tabla" style="width: 25%;"> <strong>
+							<center>Fecha de Adquisición:<br>{{fecha}}</center>
+						</strong></td>
+					<td class="tabla2" style="width: 25%;">Sello Universidad</td>
+					<td class="tabla2" style="width: 25%;">Sello de Supervisor</td>
+					<td class="tabla2" style="width: 25%;">Sello de Aprobación</td>
+				</tr>
+			</table>
+		</center>
+		{% endif %}
+		{% if 9 in numeros %}
+		<div style="width: 35%; float: left;">
+			<img src="{{url_for('static', filename='logofacisasalud.jpg')}}" width="100%"> 
+			<!--<img src="C:\Users\USUARIO\Documents\siscaja\flaskapp\static\logofacisasalud.jpg" width="100%">-->
+		</div>
+		<div style="text-align: right;width: 65%; float: left;">
+			<h5>Licenciatura en Optometria</h5>
+			<h5>Noveno Semestre</h5>
+			<h5>Ejercicio Profesional Supervisado 3</h5>
+			<h5>Nivel de Aprendizaje 17 al 20</h5>
+			<h5>Control de Asistencia y Aprobación</h5>
+		</div>
+		<table class="tabla">
+			<th class="tabla" style="width: 70%;">Alumno: {{nombre}}</th>
+			<th class="tabla">No. Carnet: {{carnet}}</th>
 		</table>
 		<br>
-		<table>
-			<tr>
-				<td class="tabla2">Sello Universidad</td>
-				<td class="tabla2">Sello de Supervisor</td>
-				<td class="tabla2">Sello de Aprobación</td>
-			</tr>
-		</table>
-	</center>
-	<br><br>
+		<center>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 17. Atención a Pacientes Pediátricos con Ametropías.</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 18. Atención a Pacientes con problemas acomodativos. 3pts.</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<table class="tabla1" style="width: 94%;">
+				<tr>
+					<th class="tabla1" style="width: 37.5%;">Nivel 19. Atención a Pacientes con patologías oculares. 3 pts.</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+					<th class="tabla1" style="width: 37.5%;">Nivel 20. Atención a Pacientes Geriátricos</th>
+					<th style="color: gray;" class="tabla1" style="width: 12.5%;">Punteo</th>
+				</tr>
+			</table>
+			<table style="width: 94%;">
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+				<tr>
+					<td style="height: 120px;" class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+					<td class="tabla1" style="width: 25%;"></td>
+				</tr>
+				<tr>
+					<td style="height: 30px;" class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+					<td class="tabla1"></td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td class="tabla" style="width: 25%;"> <strong>
+							<center>Fecha de Adquisición:<br>{{fecha}}</center>
+						</strong></td>
+					<td class="tabla2" style="width: 25%;">Sello Universidad</td>
+					<td class="tabla2" style="width: 25%;">Sello de Supervisor</td>
+					<td class="tabla2" style="width: 25%;">Sello de Aprobación</td>
+				</tr>
+			</table>
+		</center>
 		{% endif %}
-    </main>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
+	</main>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+	<script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
 </body>
+
 </html>
