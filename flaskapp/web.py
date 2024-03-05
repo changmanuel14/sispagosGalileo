@@ -638,14 +638,13 @@ def repingles():
 				for n in range(4):
 					ciclo = n+1
 					datos = []
-					consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and (p.extra like '%{mesesbase[n][0]}%' or p.extra like '%{mesesbase[n][1]}%' or p.extra like '%{mesesbase[n][2]}%')  and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) and p.extra not like '%Retirado%' group by p.nombre order by p.nombre;"
+					consulta = f"SELECT p.nombre, p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{ciclo}%' and (p.extra like '%{mesesbase[n][0]}%' or p.extra like '%{mesesbase[n][1]}%' or p.extra like '%{mesesbase[n][2]}%')  and p.fecha > DATE_SUB(CURDATE(),INTERVAL 10 MONTH) and p.extra not like '%Retirado%' group by p.nombre order by p.nombre;"
 					cursor.execute(consulta)
 					nombres = cursor.fetchall()
 					for i in nombres:
 						data = [i[0], i[1]]
 						for j in mesesbase[n]:
-							consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{j}%' and p.extra like '%{ciclo}%' and p.nombre like '%{i[0]}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 6 MONTH) order by p.nombre asc;"
-							print(consulta)
+							consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where c.concepto like '%Mensualidad Ingles Trimestral (A)%' and p.extra like '%{j}%' and p.extra like '%{ciclo}%' and p.nombre like '%{i[0]}%' and p.fecha > DATE_SUB(CURDATE(),INTERVAL 10 MONTH) order by p.nombre asc;"
 							cursor.execute(consulta)
 							pago = cursor.fetchall()
 							if len(pago) > 0:
