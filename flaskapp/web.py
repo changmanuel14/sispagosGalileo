@@ -14,7 +14,6 @@ from conexion import Conhost, Conuser, Conpassword, Condb
 import unicodedata
 #from flask_weasyprint import HTML, render_pdf
 
-UPLOAD_FOLDER = r'C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\uploads'
 app = Flask(__name__)
 app.secret_key = 'd589d3d0d15d764ed0a98ff5a37af547'
 route_files = Blueprint("route_files", __name__)
@@ -84,7 +83,8 @@ def devolucion(idpago):
 						nombrearc = f'dev{idpago}.'
 						div = str(file.filename).split('.')
 						nombrearc = nombrearc + div[1]
-						file.save(os.path.join(app.config['UPLOAD_FOLDER'], nombrearc))
+						ruta = PATH_FILE + f"static{mi_string}uploads{mi_string}"
+						file.save(os.path.join(ruta, nombrearc))
 						consulta = f"UPDATE pagos set devuelto = 1, urldevuelto = '{nombrearc}', fechadevuelto='{date.today()}', user={session['idusercaja']}, userdev={data[0][0]} where idpagos = {idpago};"
 						cursor.execute(consulta)
 					conexion.commit()
