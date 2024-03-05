@@ -1,8 +1,9 @@
 from operator import truediv
-from flask import Flask, render_template, request, url_for, redirect, make_response, session, Response
+from flask import Flask, render_template, request, url_for, redirect, make_response, session, Response, Blueprint
 import pymysql
 from datetime import date, datetime
 import os
+from os import getcwd, path
 import io
 import xlwt
 import pdfkit as pdfkit
@@ -13,10 +14,11 @@ from conexion import Conhost, Conuser, Conpassword, Condb
 import unicodedata
 #from flask_weasyprint import HTML, render_pdf
 
-UPLOAD_FOLDER = r'C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\uploads'
 app = Flask(__name__)
 app.secret_key = 'd589d3d0d15d764ed0a98ff5a37af547'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+route_files = Blueprint("route_files", __name__)
+mi_string = chr(92)
+PATH_FILE = getcwd() + f'{mi_string}flaskapp{mi_string}'
 usuariosadministrativo = [2,3,4,7]
 
 def home():
@@ -81,7 +83,8 @@ def devolucion(idpago):
 						nombrearc = f'dev{idpago}.'
 						div = str(file.filename).split('.')
 						nombrearc = nombrearc + div[1]
-						file.save(os.path.join(app.config['UPLOAD_FOLDER'], nombrearc))
+						ruta = PATH_FILE + f"static{mi_string}uploads{mi_string}"
+						file.save(os.path.join(ruta, nombrearc))
 						consulta = f"UPDATE pagos set devuelto = 1, urldevuelto = '{nombrearc}', fechadevuelto='{date.today()}', user={session['idusercaja']}, userdev={data[0][0]} where idpagos = {idpago};"
 						cursor.execute(consulta)
 					conexion.commit()
@@ -1642,7 +1645,9 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 
 			img = qrcode.make(number)
 			type(img)  # qrcode.image.pil.PilImage
-			img.save(r"C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\codbars\\" + str(idpago) + ".png")
+			ruta = PATH_FILE + f"static{mi_string}codbars{mi_string}{idpago}.png"
+			print(PATH_FILE)
+			img.save(ruta)
 			#barcode_format = barcode.get_barcode_class('upc')
 			#Generate barcode and render as image
 			#my_barcode = barcode_format(number, writer=ImageWriter())
@@ -1652,7 +1657,8 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 
 			#Inserción a archivo de Google Sheets
 			scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-			creds = ServiceAccountCredentials.from_json_keyfile_name(r"C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\clientcongreso.json", scope)
+			ruta1 = PATH_FILE + f"clientcongreso.json"
+			creds = ServiceAccountCredentials.from_json_keyfile_name(ruta1, scope)
 			client = gspread.authorize(creds)
 			sheet = client.open("Tabulación Congreso").sheet1
 			row = [nombre, carnet, descripcion, idpago]
@@ -3414,7 +3420,7 @@ def matriztlcq():
 				for i in carnets:
 					aux = ["",""]
 					for j in meses:
-						consulta = f"SELECT nombre, carnet, DATE_FORMAT(p.fecha,'%d/%m/%Y') FROM pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%Practica TLCQ%' and p.extra like '%{j}%' group by p.carnet order by p.nombre"
+						consulta = f"SELECT nombre, carnet, DATE_FORMAT(p.fecha,'%d/%m/%Y') FROM pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%Practica TLCQ%' and p.extra like '%{j}%' and p.carnet like'%{i[0]}%' group by p.carnet order by p.nombre"
 						cursor.execute(consulta)
 					# Con fetchall traemos todas las filas
 						data = cursor.fetchall()
