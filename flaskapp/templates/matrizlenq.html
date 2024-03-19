@@ -123,6 +123,8 @@
 					<th>Fecha Inicio</th>
 					<th>Fecha Fin</th>
 					<th>Lugar</th>
+					<th>Editar</th>
+					<th>Imprimir</th>
 				</tr>
 				{% for i in practicas[0] %}
 				<tr>
@@ -135,6 +137,12 @@
 					<td>{{i[5]}}</td>
 					<td>{{i[6]}}</td>
 					<td>{{i[7]}}</td>
+					{% if i[10] | int == 0 or i[11] | int == 0 or i[12] | int == 0 %}
+					<td colspan="2">No ha completado los 3 pagos</td>
+					{% else %}
+					<td><a class="btn btn-warning" href="/editarpracticalenq/{{i[1]}}&1" role="button">Editar</a></td>
+					<td><a class="btn btn-info" href="/hojalenq/{{i[12]}}" role="button" target="_blank">Imprimir</a></td>
+					{% endif %}
 				</tr>
 				{% endfor %}
 			</table>
@@ -152,6 +160,8 @@
 					<th>Fecha Fin</th>
 					<th>Lugar 1</th>
 					<th>Lugar 2</th>
+					<th>Editar</th>
+					<th>Imprimir</th>
 				</tr>
 				{% for i in practicas[1] %}
 				<tr>
@@ -165,6 +175,12 @@
 					<td>{{i[6]}}</td>
 					<td>{{i[7]}}</td>
 					<td>{{i[8]}}</td>
+					{% if i[10] | int == 0 or i[11] | int == 0 or i[12] | int == 0 %}
+					<td colspan="2">No ha completado los 3 pagos</td>
+					{% else %}
+					<td><a class="btn btn-warning" href="/editarpracticalenq/{{i[1]}}&2" role="button">Editar</a></td>
+					<td><a class="btn btn-info" href="/hojalenq/{{i[12]}}" role="button" target="_blank">Imprimir</a></td>
+					{% endif %}
 				</tr>
 				{% endfor %}
 			</table>
@@ -182,6 +198,8 @@
 					<th>Fecha Fin</th>
 					<th>Lugar 1</th>
 					<th>Lugar 2</th>
+					<th>Editar</th>
+					<th>Imprimir</th>
 				</tr>
 				{% for i in practicas[2] %}
 				<tr>
@@ -195,6 +213,12 @@
 					<td>{{i[6]}}</td>
 					<td>{{i[7]}}</td>
 					<td>{{i[8]}}</td>
+					{% if i[10] | int == 0 or i[11] | int == 0 or i[12] | int == 0 %}
+					<td colspan="2">No ha completado los 3 pagos</td>
+					{% else %}
+					<td><a class="btn btn-warning" href="/editarpracticalenq/{{i[1]}}&3" role="button">Editar</a></td>
+					<td><a class="btn btn-info" href="/hojalenq/{{i[12]}}" role="button" target="_blank">Imprimir</a></td>
+					{% endif %}
 				</tr>
 				{% endfor %}
 			</table>
@@ -213,6 +237,8 @@
 					<th>Lugar 1</th>
 					<th>Lugar 2</th>
 					<th>Lugar 3</th>
+					<th>Editar</th>
+					<th>Imprimir</th>
 				</tr>
 				{% for i in practicas[3] %}
 				<tr>
@@ -227,6 +253,12 @@
 					<td>{{i[7]}}</td>
 					<td>{{i[8]}}</td>
 					<td>{{i[9]}}</td>
+					{% if i[10] | int == 0 or i[11] | int == 0 or i[12] | int == 0 %}
+					<td colspan="2">No ha completado los 3 pagos</td>
+					{% else %}
+					<td><a class="btn btn-warning" href="/editarpracticalenq/{{i[1]}}&4" role="button">Editar</a></td>
+					<td><a class="btn btn-info" href="/hojalenq/{{i[12]}}" role="button" target="_blank">Imprimir</a></td>
+					{% endif %}
 				</tr>
 				{% endfor %}
 			</table>
@@ -245,6 +277,8 @@
 					<th>Lugar 1</th>
 					<th>Lugar 2</th>
 					<th>Lugar 3</th>
+					<th>Editar</th>
+					<th>Imprimir</th>
 				</tr>
 				{% for i in practicas[4] %}
 				<tr>
@@ -259,6 +293,12 @@
 					<td>{{i[7]}}</td>
 					<td>{{i[8]}}</td>
 					<td>{{i[9]}}</td>
+					{% if i[10] | int == 0 or i[11] | int == 0 or i[12] | int == 0 %}
+					<td colspan="2">No ha completado los 3 pagos</td>
+					{% else %}
+					<td><a class="btn btn-warning" href="/editarpracticalenq/{{i[1]}}&5" role="button">Editar</a></td>
+					<td><a class="btn btn-info" href="/hojalenq/{{i[12]}}" role="button" target="_blank">Imprimir</a></td>
+					{% endif %}
 				</tr>
 				{% endfor %}
 			</table>
@@ -276,6 +316,8 @@
 					<th>Fecha Fin</th>
 					<th>Lugar 1</th>
 					<th>Lugar 2</th>
+					<th>Editar</th>
+					<th>Imprimir</th>
 				</tr>
 				{% for i in practicas[5] %}
 				<tr>
@@ -289,6 +331,12 @@
 					<td>{{i[6]}}</td>
 					<td>{{i[7]}}</td>
 					<td>{{i[8]}}</td>
+					{% if i[10] | int == 0 or i[11] | int == 0 or i[12] | int == 0 %}
+					<td colspan="2">No ha completado los 3 pagos</td>
+					{% else %}
+					<td><a class="btn btn-warning" href="/editarpracticalenq/{{i[1]}}&6" role="button">Editar</a></td>
+					<td><a class="btn btn-info" href="/hojalenq/{{i[12]}}" role="button" target="_blank">Imprimir</a></td>
+					{% endif %}
 				</tr>
 				{% endfor %}
 			</table>

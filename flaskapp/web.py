@@ -1946,7 +1946,10 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 							if 'LENQ' in precios1[0][2] and 'Pago 3' in meses[i]:
 								precioasig = 200
-								imprimir = True
+								if lugar == 0 or fechainicio == '0000-00-00' or fechafin == '0000-00-00':
+									imprimir = False
+								else:
+									imprimir = True
 							else:
 								imprimir = False
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
@@ -1976,7 +1979,6 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 			if imprimir:
 				return redirect(url_for('hojalenq', idpagos = idpracticas))
 			else:
-				print(idpagos)
 				return redirect(url_for('imprimir', idpagos = idpagos))
 		elif 'THDQ' in pcod:
 			return redirect(url_for('hojathdq', idpagos = idpagos))
@@ -3361,8 +3363,9 @@ def matrizlenq():
 					datapractica = []
 					for j in carnets:
 						aux = []
+						aux1 = []
 						for k in range(3):
-							consulta = f'SELECT nombre, carnet, fecha, fechainicio, fechafin, lugar, lugar2, lugar3 FROM practicalenq where carnet like "%{j[0]}%" and practica like "%{i+1})%" and practica like "%Pago {k+1}%" and fecha >= "{fechainicio}" and fecha <= "{fechafin}"'
+							consulta = f'SELECT nombre, carnet, fecha, fechainicio, fechafin, lugar, lugar2, lugar3, idpracticalenq FROM practicalenq where carnet like "%{j[0]}%" and practica like "%{i+1})%" and practica like "%Pago {k+1}%" and fecha >= "{fechainicio}" and fecha <= "{fechafin}"'
 							cursor.execute(consulta)
 						# Con fetchall traemos todas las filas
 							data = cursor.fetchall()
@@ -3371,7 +3374,11 @@ def matrizlenq():
 								if k == 0:
 									aux.append(data[0][0])
 									aux.append(data[0][1])
+								else:
+									aux[0] = data[0][0]
+									aux[1] = data[0][1]
 								aux.append(data[0][2])
+								aux1.append(data[0][8])
 								if k == 2:
 									aux.append(data[0][3])
 									aux.append(data[0][4])
@@ -3383,12 +3390,16 @@ def matrizlenq():
 									aux.append("Pend")
 									aux.append("Pend")
 								aux.append("Pend")
+								aux1.append(0)
 								if k == 2:
 									aux.append("Pend")
 									aux.append("Pend")
 									aux.append("Pend")
 									aux.append("Pend")
 									aux.append("Pend")
+						aux.append(aux1[0])
+						aux.append(aux1[1])	
+						aux.append(aux1[2])
 						datapractica.append(aux)
 					practicas.append(datapractica)
 		finally:
@@ -3397,6 +3408,49 @@ def matrizlenq():
 		print("Ocurrió un error al conectar: ", e)
 	print(practicas)
 	return render_template('matrizlenq.html', title="Matriz Práctica Enfermeria", logeado=logeado, practicas = practicas)
+
+@app.route("/editarpracticalenq/<carnet>&<semestre>", methods=['GET', 'POST'])
+def editarpracticalenq(carnet, semestre):
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+	else:
+		return redirect(url_for('login'))
+	practicas = ["1) Práctica Hospitalaria", "2) Práctica Enfermería Preventiva", "3) Práctica Médico Quirúrgica",
+            "4) Práctica Enfermería Niños y Adolescentes", "5) Práctica Materno Infantil", "6) Práctica Administrativa"]
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = f'SELECT idpracticalenq, nombre, carnet, fechainicio, fechafin, lugar, lugar2, lugar3 from practicalenq where carnet = "{carnet}" and practica like "{semestre})%" and year(fecha) = year(CURDATE());'
+				cursor.execute(consulta)
+				datapractica = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		carnet = request.form["carnet"]
+		nombre = request.form["nombre"]
+		fechainicio = request.form["fechainicio"]
+		fechafin = request.form["fechafin"]
+		lugar1 = request.form["lugar1"]
+		lugar2 = request.form["lugar2"]
+		lugar3 = request.form["lugar3"]
+
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					for i in datapractica:
+						consulta = 'UPDATE practicalenq set nombre=%s, carnet=%s, fechainicio=%s, fechafin=%s, lugar1=%s, lugar2=%s, lugar3=%s where idpracticalenq=%s;'
+						cursor.execute(consulta, (nombre, carnet, fechainicio, fechafin, lugar1, lugar2, lugar3, i[0]))
+				conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('repdiario'))
+	return render_template('editarpracticalenq.html', title='Editar Datos de Práctica Enfermeria', logeado=logeado, datapractica=datapractica, practicas=practicas, semestre=semestre)
 
 @app.route('/matriztlcq', methods=['GET', 'POST'])
 def matriztlcq():
@@ -3745,7 +3799,7 @@ def imprimir(idpagos):
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma, numpagos=numpagos, newarray=newarray)
+	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma, numpagos=numpagos, newarray=newarray, ruta = PATH_FILE)
 	options = {'enable-local-file-access': None, 'page-size': 'A8', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '5mm', 'margin-top': '0', 'margin-bottom': '0', 'encoding': 'utf-8'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)

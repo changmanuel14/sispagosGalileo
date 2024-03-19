@@ -1,0 +1,170 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/repdiario">
+							<span>Corte Diario</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgen">
+							<span>Listado General</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repi">
+							<span>Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repme">
+							<span>Mes Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repini">
+							<span>Internet Inscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repir">
+							<span>Internet Reinscripciones</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repu">
+							<span>Uniformes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repp">
+							<span>Practica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replenq">
+							<span>Practica Enfermeria</span>
+						</a>
+					</li>
+					<li>
+						<a href="/replbcq">
+							<span>Practica Química Biológica</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repm">
+							<span>Manuales</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repingles">
+							<span>Ingles</span>
+						</a>
+					</li>
+					<li>
+						<a href="/reppag">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repgrad">
+							<span>Graduacion</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repextra">
+							<span>Pagos Extra</span>
+						</a>
+					</li>
+					<li>
+						<a href="/repparq">
+							<span>Parqueo</span>
+						</a>
+					</li>
+					<!-- sidebar-menu  -->
+
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<div class="container">
+			<center>
+				<h1>Editar Datos de Práctica</h1>
+			</center>
+			<hr>
+			<form action="" method="POST" enctype=multipart/form-data>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" value="{{datapractica[0][2]}}" required>
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
+							onblur="mayusculas()" value="{{datapractica[0][1]}}" required>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="fechainicio">Fecha Inicio</label>
+						<input type="date" class="form-control" name="fechainicio" id="fechainicio"  value="{{datapractica[2][3]}}">
+					</div>
+					<div class="col-md-6">
+						<label for="fechafin">Fecha Fin</label>
+						<input type="date" class="form-control" name="fechafin" id="fechafin" value="{{datapractica[2][4]}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label for="lugar">Lugar 1</label>
+						<input type="text" id="lugar1" name="lugar1" class="form-control" placeholder="Lugar 1" value="{{datapractica[2][5]}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label for="lugar2">Lugar 2</label>
+						<input type="text" id="lugar2" name="lugar2" class="form-control" placeholder="Lugar 2" value="{{datapractica[2][6]}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-12">
+						<label for="lugar3">Lugar 3</label>
+						<input type="text" id="lugar3" name="lugar3" class="form-control" placeholder="Lugar 3" value="{{datapractica[2][7]}}">
+					</div>
+				</div>
+				<br>
+				<center><input class="btn btn-primary" type="submit" value="Aceptar"></center>
+				<br>
+				<hr>
+			</form>
+		</div>
+	</main>
+	<!-- page-content" -->
+</div>
+<script type="text/javascript">
+	function mayusculas() {
+		var nombre = document.getElementById('nombre').value
+		nombre = nombre.toUpperCase()
+		document.getElementById('nombre').value = nombre
+	}
+</script>
+<!-- page-wrapper -->
+{% endblock %}

@@ -36,7 +36,7 @@
     <h4>EN CASO DE EXTRAVÍO, DEBERÁ CANCELAR Q 25.00 POR REPOSICIÓN</h4>
 	{% for i in range(numpagos) %}
 	<center>
-		<img style="width: 60%;" src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\codbars\{{newarray[i]}}.png"/><br>
+		<img style="width: 60%;" src="{{ruta}}static\codbars\{{newarray[i]}}.png"/><br>
 		{{newarray[i]}}
 	</center>
 	{% endfor %}
