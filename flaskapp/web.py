@@ -3458,14 +3458,14 @@ def editarpracticalenq(carnet, semestre):
 			try:
 				with conexion.cursor() as cursor:
 					for i in datapractica:
-						consulta = 'UPDATE practicalenq set nombre=%s, carnet=%s, fechainicio=%s, fechafin=%s, lugar1=%s, lugar2=%s, lugar3=%s where idpracticalenq=%s;'
+						consulta = 'UPDATE practicalenq set nombre=%s, carnet=%s, fechainicio=%s, fechafin=%s, lugar=%s, lugar2=%s, lugar3=%s where idpracticalenq=%s;'
 						cursor.execute(consulta, (nombre, carnet, fechainicio, fechafin, lugar1, lugar2, lugar3, i[0]))
 				conexion.commit()
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		return redirect(url_for('repdiario'))
+		return redirect(url_for('matrizlenq'))
 	return render_template('editarpracticalenq.html', title='Editar Datos de Práctica Enfermeria', logeado=logeado, datapractica=datapractica, practicas=practicas, semestre=semestre)
 
 @app.route('/matriztlcq', methods=['GET', 'POST'])
