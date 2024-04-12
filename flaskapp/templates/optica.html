@@ -130,6 +130,16 @@
 						</td>
 					</tr>
 					<tr>
+						<th>Examen de la Vista (Jornada)</th>
+						<td>
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="exavisjornada" name="exavisjornada" value="1" onclick="calctotal()">
+								<label class="form-check-label" for="exavisjornada">Q</label>
+								<label class="form-check-label" for="exavisjornada" id="exavisjornadal">25.00</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
 						<th>Aro</th>
 						<td><input type="number" step="0.01" id="aro" name="aro" class="form-control"
 								onchange="calctotal()" placeholder="Aro"></td>
@@ -167,6 +177,7 @@
 	function calctotal() {
 		var examenvista = document.getElementById('exavis')
 		var examenvistaeps = document.getElementById('exaviseps')
+		var examenvistajornada = document.getElementById('exavisjornada')
 		var aro = document.getElementById('aro').value
 		var lente = document.getElementById('lente').value
 		var tot = document.getElementById('total')
@@ -177,6 +188,9 @@
 		}
 		if (examenvistaeps.checked == true) {
 			total = total + 40
+		}
+		if (examenvistajornada.checked == true) {
+			total = total + 25
 		}
 		if (aro.length == 0) {
 			total = total + 0

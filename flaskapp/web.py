@@ -1197,15 +1197,19 @@ def optica():
 			exaviseps = request.form["exaviseps"]
 		except:
 			exaviseps = 0
+		try:
+			exavisjornada = request.form["exavisjornada"]
+		except:
+			exavisjornada = 0
 		if len(aro) < 1:
 			aro = 0
 		if len(lente) < 1:
 			lente = 0
-		return redirect(url_for('confirmacionopt', carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis, exaviseps = exaviseps))
+		return redirect(url_for('confirmacionopt', carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis, exaviseps = exaviseps, exavisjornada = exavisjornada))
 	return render_template('optica.html', title="Óptica", logeado=logeado)
 
-@app.route('/confirmacionopt/<carnet>&<nombre>&<aro>&<lente>&<exavis>&<exaviseps>', methods=['GET', 'POST'])
-def confirmacionopt(carnet, nombre, aro, lente, exavis, exaviseps):
+@app.route('/confirmacionopt/<carnet>&<nombre>&<aro>&<lente>&<exavis>&<exaviseps>&<exavisjornada>', methods=['GET', 'POST'])
+def confirmacionopt(carnet, nombre, aro, lente, exavis, exaviseps,exavisjornada):
 	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
 	else:
@@ -1236,6 +1240,19 @@ def confirmacionopt(carnet, nombre, aro, lente, exavis, exaviseps):
 						idexamen = datos[0][0]
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 						cursor.execute(consulta, (idexamen, nombre, carnet, 40, date.today(), "Examen de la Vista EPS",0, session['idusercaja']))
+						conexion.commit()
+						examen = 1
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						pagoexamen = cursor.fetchone()
+						pagoexamen = pagoexamen[0]
+					if exavisjornada != 0 and exavisjornada != '0':
+						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
+						cursor.execute(consulta)
+						datos = cursor.fetchall()
+						idexamen = datos[0][0]
+						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+						cursor.execute(consulta, (idexamen, nombre, carnet, 25, date.today(), "Examen de la Vista Jornada",0, session['idusercaja']))
 						conexion.commit()
 						examen = 1
 						consulta = "Select MAX(idpagos) from pagos;"
