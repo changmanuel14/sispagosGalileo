@@ -2016,55 +2016,127 @@ def repp():
 		logeado = session['logeadocaja']
 	else:
 		return redirect(url_for('login'))
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				cursor.execute("SELECT idcodigos, cod, concepto FROM pagossis.codigos WHERE practica = 1 ORDER BY cod asc;")
-			# Con fetchall traemos todas las filas
-				carreras = cursor.fetchall()
-				consulta = '''select p.nombre, p.carnet, p.fecha, d.cod, p.extra, p.total, p.idpagos from pagos p 
-				inner join codigos d on p.idcod = d.idcodigos
-				inner join carreras c on d.idcarrera = c.idcarreras
-				where d.practica = 1
-				order by p.fecha desc, c.codigo desc, p.nombre asc, p.extra asc'''
-				cursor.execute(consulta)
-			# Con fetchall traemos todas las filas
-				data = cursor.fetchall()
-				suma = 0
-				for i in data:
-					suma = suma + i[5]
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
-	if request.method == 'POST':
-		defecha = request.form["defecha"]
-		afecha = request.form["afecha"]
+	datacarnet = ""
+	datanombre = ""
+	datafechainicio = ""
+	datafechafin = ""
+	datacarrera = ""
+	datadescripcion = ""
+	accion = 0
+	data = []
+	conteo = 0
+	if request.method == "POST":
+		datacarnet = request.form["carnet"]
+		datanombre = request.form["nombre"]
+		datafechainicio = request.form["fechaini"]
+		datafechafin = request.form["fechafin"]
+		datacarrera = request.form["carrera"]
+		datadescripcion = request.form["descripcion"]
+		accion = request.form["accion"]
 		try:
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
-					cursor.execute("SELECT idcarreras, codigo FROM carreras;")
-				# Con fetchall traemos todas las filas
-					carreras = cursor.fetchall()
-					consulta = '''select p.nombre, p.carnet, p.fecha, c.codigo, p.extra, p.total from pagos p 
-					inner join codigos d on p.idcod = d.idcodigos
-					inner join carreras c on d.idcarrera = c.idcarreras
-					where d.cod LIKE 'P%' and d.cod != 'PROP' and d.cod != 'PAG' and d.cod != 'PARQ' and p.fecha >= '''
-					consulta = consulta + f'"{defecha}" and p.fecha <= "{afecha}"'
-					consulta = consulta + ' order by p.fecha asc, c.codigo desc, p.nombre asc, p.extra asc'
+					consulta = f'select p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), d.cod, p.extra, p.total, p.idpagos from pagos p inner join codigos d on p.idcod = d.idcodigos inner join carreras c on d.idcarrera = c.idcarreras where d.practica = 1 and p.nombre like "%{datanombre}%" and p.carnet like "%{datacarnet}%"'
+					if len(datafechainicio) != 0:
+						consulta = consulta + f' and p.fecha >= "{datafechainicio}"'
+					if len(datafechafin) != 0:
+						consulta = consulta + f' and p.fecha <= "{datafechafin}"'
+					consulta = consulta + f' and d.cod like "%{datacarrera}%" and p.extra like "%{datadescripcion}%" order by p.fecha desc, c.codigo desc, p.nombre asc, p.extra asc;'
 					cursor.execute(consulta)
 				# Con fetchall traemos todas las filas
 					data = cursor.fetchall()
-					suma = 0
-					for i in data:
-						suma = suma + i[5]
+					conteo = len(data)
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-	return render_template('repp.html', title="Reporte Prácticas", data = data, suma=suma, carreras=carreras, logeado=logeado)
+		if int(accion) == 1:
+			return render_template('repp.html', title="Reporte Prácticas", data = data, carreras=carreras, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechainicio = datafechainicio, datafechafin = datafechafin, datacarrera = datacarrera, datadescripcion = datadescripcion)
+		elif int(accion) == 2:
+			output = io.BytesIO()
+			workbook = xlwt.Workbook(encoding="utf-8")
+			sh1 = workbook.add_sheet("Reporte Prácticas")
+
+			xlwt.add_palette_colour("Orange", 0x21) # the second argument must be a number between 8 and 64
+			workbook.set_colour_RGB(0x21, 255, 165, 0) # Red — 79, Green — 129, Blue — 189
+			xlwt.add_palette_colour("Lightgreen", 0x22) # the second argument must be a number between 8 and 64
+			workbook.set_colour_RGB(0x22, 144, 238, 144) # Red — 79, Green — 129, Blue — 189
+			
+			#bordes
+			borders = xlwt.Borders()
+			borders.left = 1
+			borders.right = 1
+			borders.top = 1
+			borders.bottom = 1
+
+			#encabezados
+			header_font = xlwt.Font()
+			header_font.name = 'Arial'
+			header_font.bold = True
+			header_style = xlwt.XFStyle()
+			header_style.font = header_font
+			header_style.borders = borders
+
+			#contenido1
+			content_font = xlwt.Font()
+			content_font.name = 'Arial'
+			content_pattern = xlwt.Pattern()
+			content_style = xlwt.XFStyle()
+			content_style.font = content_font
+			content_style.borders = borders
+			content_style.pattern = content_pattern
+
+			#titulos
+			tittle_font = xlwt.Font()
+			tittle_font.name = 'Arial'
+			tittle_font.bold = True
+			tittle_font.italic = True
+			tittle_font.height = 20*20
+			tittle_style = xlwt.XFStyle()
+			tittle_style.font = tittle_font
+
+			sh1.write(0,0,"Reporte Prácticas", tittle_style)
+			sh1.write(1,0,"Total de Resultados: "+str(conteo), tittle_style)
+			sh1.write(3,0,"No.", header_style)
+			sh1.write(3,1,"Nombre", header_style)
+			sh1.write(3,2,"Carnet", header_style)
+			sh1.write(3,3,"Fecha", header_style)
+			sh1.write(3,4,"Código", header_style)
+			sh1.write(3,5,"Descripción", header_style)
+			sh1.write(3,6,"Total", header_style)
+
+			if len(data) > 0:
+				for i in range(len(data)):
+					sh1.write(i+4,0,i+1, content_style)
+					sh1.write(i+4,1,data[i][0], content_style)
+					sh1.write(i+4,2,data[i][1], content_style)
+					sh1.write(i+4,3,data[i][2], content_style)
+					sh1.write(i+4,4,data[i][3], content_style)
+					sh1.write(i+4,5,data[i][4], content_style)
+					sh1.write(i+4,6,"Q"+str(data[i][5]), content_style)
+			
+			sh1.col(0).width = 0x0d00 + len("No.")
+			try:
+				sh1.col(1).width = 256 * (max([len(str(row[i])) for row in data[i][0]]) + 1) * 10
+				sh1.col(2).width = 256 * (max([len(str(row[i])) for row in data[i][1]]) + 1) * 10
+				sh1.col(3).width = 256 * (max([len(str(row[i])) for row in data[i][2]]) + 1) * 10
+				sh1.col(4).width = 256 * (max([len(str(row[i])) for row in data[i][3]]) + 1) * 10
+				sh1.col(5).width = 256 * (max([len(str(row[i])) for row in data[i][4]]) + 1) * 10
+				sh1.col(6).width = 256 * (max([len(str(row[i])) for row in data[i][5]]) + 1) * 10
+				sh1.col(7).width = 256 * (max([len(str(row[i])) for row in data[i][6]]) + 1) * 10
+			except:
+				sh1.col(1).width = 256 * 20
+				sh1.col(2).width = 256 * 20
+				sh1.col(3).width = 256 * 20
+				sh1.col(4).width = 256 * 20
+				sh1.col(5).width = 256 * 20
+				sh1.col(6).width = 256 * 20
+				sh1.col(7).width = 256 * 20
+			workbook.save(output)
+			output.seek(0)
+			return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=reportepracticas.xls"})
+	return render_template('repp.html', title="Reporte Prácticas", data = data, carreras=carreras, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechainicio = datafechainicio, datafechafin = datafechafin, datacarrera = datacarrera, datadescripcion = datadescripcion)
 
 @app.route('/hojalbcq/<idpagos>', methods=['GET', 'POST'])
 def hojalbcq(idpagos):
@@ -3509,6 +3581,112 @@ def matriztlcq():
 		print("Ocurrió un error al conectar: ", e)
 	return render_template('matriztlcq.html', title="Matriz Práctica Laboratorio Clinico", logeado=logeado, estudiantes = estudiantes, meses = meses)
 
+@app.route('/matrizlbcq', methods=['GET', 'POST'])
+def matrizlbcq():
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+	else:
+		return redirect(url_for('login'))
+	fechaact = date.today()
+	year = fechaact.year
+	fechainicio = date(year, 1,1)
+	fechafin = date(year, 12,31)
+	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				estudiantes = []
+				consulta = f"Select p.carnet from practicalbcq p inner join codigos c on c.idcodigos = p.idcodigo where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto not like '%EPS%' group by p.carnet order by p.nombre"
+				cursor.execute(consulta)
+		# Con fetchall traemos todas las filas
+				carnets = cursor.fetchall()
+				for i in carnets:
+					aux = ["",""]
+					for j in meses:
+						consulta = f"SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,'%d/%m/%Y') FROM practicalbcq p inner join codigos c on c.idcodigos = p.idcodigo where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and p.descripcion like '%{j}%' and p.carnet like'%{i[0]}%' and c.concepto not like '%EPS%' group by p.carnet order by p.nombre"
+						cursor.execute(consulta)
+					# Con fetchall traemos todas las filas
+						data = cursor.fetchall()
+						conteo = len(data)
+						if conteo > 0:
+							aux[0] = data[0][0]
+							aux[1] = data[0][1]
+							aux.append(data[0][2])
+						else:
+							aux.append("Pend")
+					estudiantes.append(aux)
+				estudianteseps = []
+				consulta = f"Select p.carnet from practicalbcq p inner join codigos c on c.idcodigos = p.idcodigo where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%EPS%' group by carnet order by nombre"
+				cursor.execute(consulta)
+		# Con fetchall traemos todas las filas
+				carnets = cursor.fetchall()
+				for i in carnets:
+					aux = ["",""]
+					for j in meses:
+						consulta = f"SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,'%d/%m/%Y') FROM practicalbcq p inner join codigos c on c.idcodigos = p.idcodigo where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and p.descripcion like '%{j}%' and p.carnet like'%{i[0]}%' and c.concepto like '%EPS%' group by p.carnet order by p.nombre"
+						cursor.execute(consulta)
+					# Con fetchall traemos todas las filas
+						data = cursor.fetchall()
+						conteo = len(data)
+						if conteo > 0:
+							aux[0] = data[0][0]
+							aux[1] = data[0][1]
+							aux.append(data[0][2])
+						else:
+							aux.append("Pend")
+					estudianteseps.append(aux)
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('matrizlbcq.html', title="Matriz Práctica Química Biológica", logeado=logeado, estudiantes = estudiantes, estudianteseps = estudianteseps, meses = meses)
+
+@app.route('/matriztradq', methods=['GET', 'POST'])
+def matriztradq():
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+	else:
+		return redirect(url_for('login'))
+	fechaact = date.today()
+	year = fechaact.year
+	fechainicio = date(year, 1,1)
+	fechafin = date(year, 12,31)
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				estudiantes = []
+				consulta = f"Select p.carnet from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%prepractica TRADQ%' group by p.carnet order by p.nombre"
+				cursor.execute(consulta)
+		# Con fetchall traemos todas las filas
+				carnets = cursor.fetchall()
+				for i in carnets:
+					aux = ["",""]
+					for j in range(1,5):
+						consulta = f"SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,'%d/%m/%Y') FROM pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%prepractica TRADQ%' and p.extra like '%{j}%' and p.carnet like'%{i[0]}%' group by p.carnet order by p.nombre"
+						cursor.execute(consulta)
+					# Con fetchall traemos todas las filas
+						data = cursor.fetchall()
+						conteo = len(data)
+						if conteo > 0:
+							aux[0] = data[0][0]
+							aux[1] = data[0][1]
+							aux.append(data[0][2])
+						else:
+							aux.append("Pend")
+					estudiantes.append(aux)
+				estudiantes1 = []
+				consulta = f"SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,'%d/%m/%Y') FROM pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like 'Practica TRADQ%' group by p.carnet order by p.nombre"
+				cursor.execute(consulta)
+			# Con fetchall traemos todas las filas
+				estudiantes1 = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('matriztradq.html', title="Matriz Práctica Radiologia", logeado=logeado, estudiantes = estudiantes, estudiantes1 = estudiantes1)
+
 @app.route('/replenq', methods=['GET', 'POST'])
 def replenq():
 	if 'logeadocaja' in session:
@@ -3639,12 +3817,9 @@ def repgen():
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		print(accion)
 		if int(accion) == 1:
-			print(accion)
 			return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion, datarecibo = datarecibo)
 		elif int(accion) == 2:
-			print(accion)
 			output = io.BytesIO()
 			workbook = xlwt.Workbook(encoding="utf-8")
 			sh1 = workbook.add_sheet("Reporte General")

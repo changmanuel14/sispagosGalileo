@@ -108,8 +108,54 @@
 		<div class="container">
 			<h2>Práctica</h2>
 			<hr>
+			<form action="" method="POST">
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" value="{{datacarnet}}">
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre" value="{{datanombre}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="fechaini">Fecha Inicio</label>
+						<input type="date" class="form-control" name="fechaini" id="fechaini" value="{{datafechaini}}">
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Fecha Finalización</label>
+						<input type="date" class="form-control" id="fechafin" name="fechafin" value="{{datafechafin}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carrera">Carrera</label>
+						<input type="text" class="form-control" name="carrera" id="carrera" placeholder="Carrera" value="{{datacarrera}}">
+					</div>
+					<div class="col-md-6">
+						<label for="descripcion">Descripción</label>
+						<input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" value="{{datadescripcion}}">
+					</div>
+				</div>
+				<br>
+				<center>
+					<button onclick="submit" class="btn btn-primary" name="accion" value="1">Buscar</button>
+				</center>
+			
+
+			<h4>Resultados encontrados: {{conteo}}</h4>
+			{% if conteo > 0 %}
+			<center>
+				<button onclick="submit" class="btn btn-primary" name="accion" value="2">Generar PDF</button>
+			</center>
+			{% endif %}
+			</form>
 			<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 			<a class="btn btn-success" href="/matriztlcq" role="button">Matriz TLCQ</a>
+			<a class="btn btn-success" href="/matrizlbcq" role="button">Matriz LBCQ</a>
+			<a class="btn btn-success" href="/matriztradq" role="button">Matriz TRADQ</a>
 			<table id="sampleTable" class="sortable table table-bordered">
 				<tr>
 					<th>Nombre</th>

@@ -107,11 +107,12 @@
 	<main class="page-content">
 		<div class="container">
 			<center>
-				<h1>Matriz de Práctica de Laboratorio Clínico</h1>
+				<h1>Matriz de Práctica de Química Biológica</h1>
 			</center>
 			<hr>
 			<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 			<br>
+			<h4>Práctica Hospitalaria y Comunitaria</h4>
 			<table class="table table-striped sorttable" id="semestre1">
 				<thead>
 					<tr>
@@ -144,6 +145,40 @@
 				{% endfor %}
 			</table>
 			<br>
+			<hr>
+			<br>
+			<h4>EPS</h4>
+			<table class="table table-striped sorttable" id="semestre2">
+				<thead>
+					<tr>
+						<th style="font-size: x-small;">No.</th>
+						<th style="font-size: x-small;">Nombre</th>
+						<th style="font-size: x-small;">Carnet</th>
+						{% for i in meses %}
+						<th style="font-size: x-small;">{{i}}</th>
+						{% endfor %}
+					</tr>
+				</thead>
+				{% for i in estudianteseps %}
+				<tr>
+					<td style="font-size: x-small;">{{loop.index}}</td>
+					<td style="font-size: x-small;">{{i[0]}}</td>
+					<td style="font-size: x-small;">{{i[1]}}</td>
+					<td style="font-size: x-small;">{{i[2]}}</td>
+					<td style="font-size: x-small;">{{i[3]}}</td>
+					<td style="font-size: x-small;">{{i[4]}}</td>
+					<td style="font-size: x-small;">{{i[5]}}</td>
+					<td style="font-size: x-small;">{{i[6]}}</td>
+					<td style="font-size: x-small;">{{i[7]}}</td>
+					<td style="font-size: x-small;">{{i[8]}}</td>
+					<td style="font-size: x-small;">{{i[9]}}</td>
+					<td style="font-size: x-small;">{{i[10]}}</td>
+					<td style="font-size: x-small;">{{i[11]}}</td>
+					<td style="font-size: x-small;">{{i[12]}}</td>
+					<td style="font-size: x-small;">{{i[13]}}</td>
+				</tr>
+				{% endfor %}
+			</table>
 	</main>
 	<!-- page-content" -->
 </div>
@@ -167,8 +202,13 @@
 	$(document).ready(function () {
 		$("#semestre1").fancyTable({
 			inputPlaceholder: 'Buscar',
-			pagination: true,
-			perPage:20
+			pagination: false
+		});
+	});
+	$(document).ready(function () {
+		$("#semestre2").fancyTable({
+			inputPlaceholder: 'Buscar',
+			pagination: false
 		});
 	});
 </script>
