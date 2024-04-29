@@ -625,8 +625,8 @@ def repingles():
 	else:
 		return redirect(url_for('login'))
 	meses1 = ["Abril", "Mayo", "Junio"]
-	meses2 = ["Julio", "Agosto", "Septiembre"]
-	meses3 = ["Octubre", "Noviembre", "Diciembre"]
+	meses2 = ["Abril", "Mayo", "Junio"]
+	meses3 = ["Julio", "Agosto", "Septiembre"]
 	meses4 = ["Marzo", "Abril", "Mayo"]
 	mesesbase = []
 	mesesbase.append(meses1)
@@ -670,8 +670,8 @@ def repinglesexcel():
 	else:
 		return redirect(url_for('login'))
 	meses1 = ["Abril", "Mayo", "Junio"]
-	meses2 = ["Julio", "Agosto", "Septiembre"]
-	meses3 = ["Octubre", "Noviembre", "Diciembre"]
+	meses2 = ["Abril", "Mayo", "Junio"]
+	meses3 = ["Julio", "Agosto", "Septiembre"]
 	meses4 = ["Marzo", "Abril", "Mayo"]
 	mesesbase = []
 	mesesbase.append(meses1)
