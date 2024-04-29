@@ -627,7 +627,7 @@ def repingles():
 	meses1 = ["Enero", "Febrero", "Marzo"]
 	meses2 = ["Julio", "Agosto", "Septiembre"]
 	meses3 = ["Octubre", "Noviembre", "Diciembre"]
-	meses4 = ["Octubre", "Noviembre", "Diciembre"]
+	meses4 = ["Enero", "Febrero", "Marzo"]
 	mesesbase = []
 	mesesbase.append(meses1)
 	mesesbase.append(meses2)
