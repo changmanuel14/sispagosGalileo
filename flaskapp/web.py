@@ -624,10 +624,10 @@ def repingles():
 		logeado = session['logeadocaja']
 	else:
 		return redirect(url_for('login'))
-	meses1 = ["Enero", "Febrero", "Marzo"]
+	meses1 = ["Abril", "Mayo", "Junio"]
 	meses2 = ["Julio", "Agosto", "Septiembre"]
 	meses3 = ["Octubre", "Noviembre", "Diciembre"]
-	meses4 = ["Enero", "Febrero", "Marzo"]
+	meses4 = ["Marzo", "Abril", "Mayo"]
 	mesesbase = []
 	mesesbase.append(meses1)
 	mesesbase.append(meses2)
@@ -669,10 +669,10 @@ def repinglesexcel():
 		logeado = session['logeadocaja']
 	else:
 		return redirect(url_for('login'))
-	meses1 = ["Enero", "Febrero", "Marzo"]
+	meses1 = ["Abril", "Mayo", "Junio"]
 	meses2 = ["Julio", "Agosto", "Septiembre"]
 	meses3 = ["Octubre", "Noviembre", "Diciembre"]
-	meses4 = ["Octubre", "Noviembre", "Diciembre"]
+	meses4 = ["Marzo", "Abril", "Mayo"]
 	mesesbase = []
 	mesesbase.append(meses1)
 	mesesbase.append(meses2)
