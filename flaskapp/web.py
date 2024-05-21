@@ -3789,6 +3789,7 @@ def repgen():
 	datanombre = ""
 	datadescripcion = ""
 	datarecibo = ""
+	dataempresa = ""
 	accion = 0
 	if request.method == "POST":
 		datacarnet = request.form["carnet"]
@@ -3798,17 +3799,18 @@ def repgen():
 		dataconcepto = request.form["concepto"]
 		datadescripcion = request.form["descripcion"]
 		datarecibo = request.form["recibo"]
+		dataempresa = request.form["empresa"]
 		accion = request.form["accion"]
 		try:
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
-					consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like "%{datanombre}%" and p.carnet like "%{datacarnet}%"'
+					consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto, p.empresa FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like "%{datanombre}%" and p.carnet like "%{datacarnet}%"'
 					if len(datafechaini) != 0:
 						consulta = consulta + f' and p.fecha >= "{datafechaini}"'
 					if len(datafechafin) != 0:
 						consulta = consulta + f' and p.fecha <= "{datafechafin}"'
-					consulta = consulta + f' and c.concepto like "%{dataconcepto}%" and p.extra like "%{datadescripcion}%" and p.recibo like "%{datarecibo}%" order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
+					consulta = consulta + f' and c.concepto like "%{dataconcepto}%" and p.extra like "%{datadescripcion}%" and p.recibo like "%{datarecibo}%" and p.empresa like "%{dataempresa}%" order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
 					cursor.execute(consulta)
 				# Con fetchall traemos todas las filas
 					data = cursor.fetchall()
@@ -3818,7 +3820,7 @@ def repgen():
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		if int(accion) == 1:
-			return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion, datarecibo = datarecibo)
+			return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion, datarecibo = datarecibo, dataempresa = dataempresa)
 		elif int(accion) == 2:
 			output = io.BytesIO()
 			workbook = xlwt.Workbook(encoding="utf-8")
@@ -3872,6 +3874,7 @@ def repgen():
 			sh1.write(3,5,"Descripción", header_style)
 			sh1.write(3,6,"Recibo", header_style)
 			sh1.write(3,7,"Total", header_style)
+			sh1.write(3,8,"Empresa", header_style)
 
 			if len(data) > 0:
 				for i in range(len(data)):
@@ -3883,6 +3886,7 @@ def repgen():
 					sh1.write(i+4,5,data[i][4], content_style)
 					sh1.write(i+4,6,data[i][5], content_style)
 					sh1.write(i+4,7,"Q"+str(data[i][6]), content_style)
+					sh1.write(i+4,8,data[i][9], content_style)
 			
 			sh1.col(0).width = 0x0d00 + len("No.")
 			try:
@@ -3893,6 +3897,7 @@ def repgen():
 				sh1.col(5).width = 256 * (max([len(str(row[i])) for row in data[i][4]]) + 1) * 10
 				sh1.col(6).width = 256 * (max([len(str(row[i])) for row in data[i][5]]) + 1) * 10
 				sh1.col(7).width = 256 * (max([len(str(row[i])) for row in data[i][6]]) + 1) * 10
+				sh1.col(8).width = 256 * (max([len(str(row[i])) for row in data[i][6]]) + 1) * 10
 			except:
 				sh1.col(1).width = 256 * 20
 				sh1.col(2).width = 256 * 20
@@ -3901,10 +3906,11 @@ def repgen():
 				sh1.col(5).width = 256 * 20
 				sh1.col(6).width = 256 * 20
 				sh1.col(7).width = 256 * 20
+				sh1.col(8).width = 256 * 20
 			workbook.save(output)
 			output.seek(0)
 			return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=reportegeneral.xls"})
-	return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion, datarecibo = datarecibo)
+	return render_template('repgen.html', title="Reporte general", data = data, logeado=logeado, conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, dataconcepto = dataconcepto, datadescripcion = datadescripcion, datarecibo = datarecibo, dataempresa = dataempresa)
 
 @app.route('/pagos')
 def pagos():

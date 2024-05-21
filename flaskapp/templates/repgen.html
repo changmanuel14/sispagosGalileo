@@ -144,9 +144,13 @@
 					</div>
 				</div>
 				<div class="form-row">
-					<div class="col-md-12">
+					<div class="col-md-6">
 						<label for="recibo">Recibo</label>
 						<input type="text" class="form-control" name="recibo" id="recibo" placeholder="Recibo" value="{{datarecibo}}">
+					</div>
+					<div class="col-md-6">
+						<label for="empresa">Empresa</label>
+						<input type="text" class="form-control" name="empresa" id="empresa" placeholder="Empresa" value="{{dataempresa}}">
 					</div>
 				</div>
 				<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
@@ -172,6 +176,7 @@
 					<th>Descripción</th>
 					<th>Recibo</th>
 					<th>Total</th>
+					<th>Empresa</th>
 					<th>Devolución</th>
 				</tr>
 				{% for i in data %}
@@ -183,6 +188,7 @@
 					<td>{{i[4]}}</td>
 					<td>{{i[5]}}</td>
 					<td>Q. {{i[6]}}</td>
+					<td>{{i[9]}}</td>
 					{% if i[8] == 0 %}
 					<td><a class="btn btn-danger" href="/devolucion/{{i[7]}}" role="button">No - Devolver</a></td>
 					{% else %}
