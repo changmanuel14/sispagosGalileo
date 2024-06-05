@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block content %}
+<center>
+	<h1>Editar Equivalencia</h1>
+</center>
+<hr>
+<form action="" method="POST" enctype=multipart/form-data>
+	<div class="form-row">
+		<div class="col-md-6">
+			<label for="nombre">Nombre</label>
+			<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre" onblur="mayusculas()" value="{{equivalencia[0]}}" required>
+		</div>
+		<div class="col-md-6">
+			<label for="carnet">Carnet</label>
+			<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" value="{{equivalencia[1]}}" required>
+		</div>
+	</div>
+	<div class="form-row">
+		<div class="col-md-6">
+			<label for="carrera">Carrera</label>
+			<select class="form-control" id="carrera" name="carrera" required>
+				<option value="">Seleccione una carrera</option>
+				{% for i in carreras %}
+				{% if i[0] | int == equivalencia[2] | int %}
+				<option value="{{i[0]}}" selected>{{i[1]}} - {{i[2]}}</option>
+				{% else %}
+				<option value="{{i[0]}}">{{i[1]}} - {{i[2]}}</option>
+				{% endif %}
+				{% endfor %}
+			</select>
+		</div>
+		<div class="col-md-6">
+			<label for="curso">Curso</label>
+			<input type="text" id="curso" name="curso" class="form-control" placeholder="Curso" value="{{equivalencia[3]}}" required>
+		</div>
+	</div>
+	<div class="form-row">
+		<div class="col-md-6">
+			<label for="catedratico">Catedrático</label>
+			<input type="text" id="catedratico" name="catedratico" class="form-control" placeholder="Catedrático" value="{{equivalencia[6]}}" required>
+		</div>
+		<div class="col-md-3">
+			<label for="semestre">Semestre</label>
+			<input type="text" id="semestre" name="semestre" class="form-control" placeholder="Semestre" value="{{equivalencia[4]}}" required>
+		</div>
+		<div class="col-md-3">
+			<label for="seccion">Sección</label>
+			<input type="text" id="seccion" name="seccion" class="form-control" placeholder="Sección" value="{{equivalencia[5]}}" required>
+		</div>
+	</div>
+	<br>
+	<center>
+		<input class="btn btn-primary" type="submit" value="Aceptar">
+	</center>
+</form>
+<script type="text/javascript">
+	function mayusculas() {
+		var nombre = document.getElementById('nombre').value
+		nombre = nombre.toUpperCase()
+		document.getElementById('nombre').value = nombre
+	}
+</script>
+
+{% endblock %}

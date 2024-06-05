@@ -9,6 +9,8 @@ import xlwt
 import pdfkit as pdfkit
 import qrcode
 import gspread
+from PIL import Image
+from fpdf import FPDF
 from oauth2client.service_account import ServiceAccountCredentials
 from conexion import Conhost, Conuser, Conpassword, Condb
 import unicodedata
@@ -94,6 +96,15 @@ def devolucion(idpago):
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('repgen'))
 	return render_template('devolucion.html', title='Devolución de Pago', logeado=logeado, datapago=datapago)
+
+@app.route("/verdocumento/<nombredocumento>", methods=['GET', 'POST'])
+def verdocumento(nombredocumento):
+	try:
+		logeado = session['logeado1']
+	except:
+		logeado = 0
+		return redirect(url_for('login'))
+	return render_template('verdocumento.html', title='Visualización de Documento', logeado=logeado, nombredocumento = nombredocumento)
 
 @app.route("/academia", methods=['GET', 'POST'])
 def academia():
@@ -4440,6 +4451,276 @@ def restablecerclave(id):
 			print("Ocurrió un error al conectar: ", e)
 		return redirect(url_for('usuarios'))
 	return render_template('restablecerclave.html', title='Restablecer Contraseña', datausuario=datausuario)
+
+@app.route('/equivalencias', methods=['GET', 'POST'])
+def equivalencias():
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT e.nombre, e.carnet, c.codigo, e.curso, e.semestre, e.seccion, e.catedratico, a.estado, e.notificacion1, e.notificacion2, e.notificacion3, e.terminado, e.idequivalencia from equivalencia e inner join carreras c on c.idcarreras = e.idcarrera inner join estado a on a.idestado = e.idestado where e.terminado = 0 and e.idestado != 1 order by e.nombre asc, e.curso asc;'
+				cursor.execute(consulta)
+				equivalencias = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		for i in equivalencias:
+			try:
+				auxa1 = f"notificaciona{i[12]}"
+				aux1 = int(request.form[auxa1])
+			except:
+				aux1 = 0
+			try:
+				auxa2 = f"notificacionb{i[12]}"
+				aux2 = int(request.form[auxa2])
+			except:
+				aux2 = 0
+			try:
+				auxa3 = f"notificacionc{i[12]}"
+				aux3 = int(request.form[auxa3])
+			except:
+				aux3 = 0
+			try:
+				auxa4 = f"terminado{i[12]}"
+				aux4 = int(request.form[auxa4])
+			except:
+				aux4 = 0
+			try:
+				conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+				try:
+					with conexion.cursor() as cursor:
+						if aux1 == 1:
+							consulta = 'update equivalencia set notificacion1 = %s where idequivalencia = %s;'
+							cursor.execute(consulta, (aux1, i[12]))
+						if aux2 == 1:
+							consulta = 'update equivalencia set notificacion2 = %s where idequivalencia = %s;'
+							cursor.execute(consulta, (aux2, i[12]))
+						if aux3 == 1:
+							consulta = 'update equivalencia set notificacion3 = %s where idequivalencia = %s;'
+							cursor.execute(consulta, (aux3, i[12]))
+						if aux4 == 1:
+							consulta = 'update equivalencia set terminado = %s where idequivalencia = %s;'
+							cursor.execute(consulta, (aux4, i[12]))
+						conexion.commit()
+				finally:
+					conexion.close()
+			except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+				print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('equivalencias'))
+	return render_template('equivalencias.html', title="Equivalencias", logeado=logeado, equivalencias = equivalencias)
+
+@app.route('/aprobarequivalencias', methods=['GET', 'POST'])
+def aprobarequivalencias():
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT idestado, estado from estado'
+				cursor.execute(consulta)
+				estados = cursor.fetchall()
+				consulta = 'SELECT e.nombre, e.carnet, c.codigo, e.curso, e.semestre, e.seccion, e.catedratico, e.idestado, e.notificacion1, e.notificacion2, e.notificacion3, e.terminado, e.idequivalencia from equivalencia e inner join carreras c on c.idcarreras = e.idcarrera inner join estado a on a.idestado = e.idestado where e.terminado = 0 and e.idestado = 1 order by e.nombre asc, e.curso asc;'
+				cursor.execute(consulta)
+				equivalencias = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		for i in equivalencias:
+			aux = f"estado{i[12]}"
+			aux1 = int(request.form[aux])
+			try:
+				conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+				try:
+					with conexion.cursor() as cursor:
+						consulta = 'update equivalencia set idestado = %s where idequivalencia = %s;'
+						cursor.execute(consulta, (aux1, i[12]))
+						conexion.commit()
+				finally:
+					conexion.close()
+			except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+				print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('aprobarequivalencias'))
+	return render_template('aprobarequivalencias.html', title="Aprobación de Equivalencias", logeado=logeado, equivalencias = equivalencias, estados = estados)
+
+@app.route('/historialequivalencias', methods=['GET', 'POST'])
+def historialequivalencias():
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT idestado, estado from estado'
+				cursor.execute(consulta)
+				estados = cursor.fetchall()
+				consulta = 'SELECT e.nombre, e.carnet, c.codigo, e.curso, e.semestre, e.seccion, e.catedratico, a.estado, e.notificacion1, e.notificacion2, e.notificacion3, e.terminado, e.idequivalencia from equivalencia e inner join carreras c on c.idcarreras = e.idcarrera inner join estado a on a.idestado = e.idestado where e.terminado = 1 order by e.nombre asc, e.curso asc;'
+				cursor.execute(consulta)
+				equivalencias = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('historialequivalencias.html', title="Historial de Equivalencias", logeado=logeado, equivalencias = equivalencias, estados = estados)
+
+@app.route('/nuevaequivalencia/<mensaje>', methods=['GET', 'POST'])
+def nuevaequivalencia(mensaje):
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT idcarreras, codigo, carrera from carreras order by carrera asc'
+				cursor.execute(consulta)
+				carreras = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		nombre = request.form["nombre"]
+		carnet = request.form["carnet"]
+		carrera = request.form["carrera"]
+		cant = int(request.form["cant"])
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					for i in range(cant):
+						acurso, acatedratico, asemestre, aseccion = f"curso{i+1}", f"catedratico{i+1}", f"semestre{i+1}", f"seccion{i+1}"
+						curso = request.form[acurso]
+						catedratico = request.form[acatedratico]
+						semestre = request.form[asemestre]
+						seccion = request.form[aseccion]
+						carta = request.files['carta']
+						consulta = 'insert into equivalencia(nombre, carnet, idcarrera, curso, semestre, seccion, catedratico, idestado, notificacion1, notificacion2, notificacion3, terminado) values (%s,%s,%s,%s,%s,%s,%s,1,0,0,0,0);'
+						cursor.execute(consulta, (nombre, carnet, carrera, curso, semestre, seccion, catedratico))
+						if carta.filename != '':
+							if ".pdf" not in carta.filename:
+								if carta.filename.split('.')[-1].lower() not in ['jpg', 'jpeg', 'png', 'gif']:
+									mensaje = 1
+									return redirect(url_for('nuevaequivalencia', mensaje = mensaje))
+								else:
+									conexion.commit()
+									consulta = 'SELECT MAX(idequivalencia) from equivalencia;'
+									cursor.execute(consulta)
+									idequivalencia = cursor.fetchone()
+									idequivalencia = idequivalencia[0]
+									carta.save('temp.png')
+									if carta.filename.split('.')[-1].lower() == 'png':
+										img = Image.open('temp.png')
+										rgb_img = img.convert('RGB')
+										rgb_img.save('temp.jpg')
+										imagen_path = 'temp.jpg'
+									else:
+										imagen_path = 'temp.png'
+									pdf = FPDF('P', 'mm', 'Letter')  # Ajustar a tamaño Carta
+									pdf.add_page()
+									pdf.image(imagen_path, 0, 0, 215.9, 279.4)
+									auxRuta = path.join(PATH_FILE, f"static{mi_string}uploads{mi_string}carta_{idequivalencia}.pdf")
+									pdf.output(auxRuta, 'F')
+									os.remove(imagen_path)
+							else:
+								conexion.commit()
+								consulta = 'SELECT MAX(idequivalencia) from equivalencia;'
+								cursor.execute(consulta)
+								idequivalencia = cursor.fetchone()
+								idequivalencia = idequivalencia[0]
+								carta.save(path.join(PATH_FILE, f"static{mi_string}uploads{mi_string}carta_{idequivalencia}.pdf"))
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('aprobarequivalencias'))
+	return render_template('nuevaequivalencia.html', title="Nueva Equivalencia", logeado=logeado, carreras = carreras, mensaje = mensaje)
+
+@app.route('/editarequivalencia/<id>', methods=['GET', 'POST'])
+def editarequivalencia(id):
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'SELECT nombre, carnet, idcarrera, curso, semestre, seccion, catedratico from equivalencia where idequivalencia = %s'
+				cursor.execute(consulta, id)
+				equivalencia = cursor.fetchone()
+				consulta = 'SELECT idcarreras, codigo, carrera from carreras order by carrera asc'
+				cursor.execute(consulta)
+				carreras = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		nombre = request.form["nombre"]
+		carnet = request.form["carnet"]
+		carrera = request.form["carrera"]
+		curso = request.form["curso"]
+		semestre = request.form["semestre"]
+		seccion = request.form["seccion"]
+		catedratico = request.form["catedratico"]
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta = 'update equivalencia set nombre = %s, carnet = %s, idcarrera = %s, curso = %s, semestre = %s, seccion = %s, catedratico = %s where idequivalencia = %s'
+					cursor.execute(consulta, (nombre, carnet, carrera, curso, semestre, seccion, catedratico, id))
+					conexion.commit()
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('equivalencias'))
+	return render_template('editarequivalencia.html', title="Editar Equivalencia", logeado=logeado, carreras = carreras, equivalencia = equivalencia)
+
+@app.route('/eliminarequivalencia/<id>', methods=['GET', 'POST'])
+def eliminarequivalencia(id):
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+		if session['idusercaja'] not in usuariosadministrativo:
+			return redirect(url_for('login'))
+	else:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				consulta = 'DELETE FROM equivalencia where idequivalencia = %s'
+				cursor.execute(consulta, id)
+				conexion.commit()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return redirect(url_for('equivalencias'))
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5000, threaded=True, debug=True)

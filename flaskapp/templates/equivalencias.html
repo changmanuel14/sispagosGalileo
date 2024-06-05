@@ -1,0 +1,120 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/pagosadmin">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/carreras">
+							<span>Carreras</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/laboratorioadmin">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/usuarios">
+							<span>Usuarios</span>
+						</a>
+					</li>
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<h2>Equivalencias</h2>
+		<br>
+		<a href="/nuevaequivalencia/0"><button type="button" class="btn btn-success">Nueva Equivalencia</button></a>
+		<br>
+		<form action="" method="POST">
+			<table class="table table-striped sortable" id="tablacodigos">
+				<thead>
+					<tr>
+						<th style="vertical-align: middle; font-size:small">No.</th>
+						<th style="vertical-align: middle; font-size:small">Nombre</th>
+						<th style="vertical-align: middle; font-size:small">Carnet</th>
+						<th style="vertical-align: middle; font-size:small">Carrera</th>
+						<th style="vertical-align: middle; font-size:small">Curso</th>
+						<th style="vertical-align: middle; font-size:small"><center>Semestre/ Sección</center></th>
+						<th style="vertical-align: middle; font-size:small">Catedrático</th>
+						<th style="vertical-align: middle; font-size:small">Estado</th>
+						<th style="vertical-align: middle; font-size:small" colspan="3">Notificaciones</th>
+						<th style="vertical-align: middle; font-size:small">Terminado</th>
+						<th style="vertical-align: middle; font-size:small" colspan="2"><center>Opciones</center></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for i in equivalencias %}
+					<tr>
+						<td style="font-size: smaller;">{{ loop.index }}</td>
+						<td style="font-size: smaller;">{{i[0]}}</td>
+						<td style="font-size: smaller;">{{i[1]}}</td>
+						<td style="font-size: smaller;">{{i[2]}}</td>
+						<td style="font-size: smaller;">{{i[3]}}</td>
+						<td style="font-size: smaller;">{{i[4]}} - {{i[5]}}</td>
+						<td style="font-size: smaller;">{{i[6]}}</td>
+						<td style="font-size: smaller;">{{i[7]}}</td>
+						<td style="font-size: smaller;">
+							{% if i[8] | int == 0 %}
+							<input style="margin: auto;" class="form-check-input" type="checkbox" id="notificaciona{{i[12]}}" name="notificaciona{{i[12]}}" value="1">
+							{% else %}
+							<i class="fas fa-check"></i>
+							{% endif %}
+						</td>
+						<td style="font-size: smaller;">
+							{% if i[9] | int == 0 %}
+							<input style="margin: auto;" class="form-check-input" type="checkbox" id="notificacionb{{i[12]}}" name="notificacionb{{i[12]}}" value="1">
+							{% else %}
+							<i class="fas fa-check"></i>
+							{% endif %}
+						</td>
+						<td style="font-size: smaller;">
+							{% if i[10] | int == 0 %}
+							<input style="margin: auto;" class="form-check-input" type="checkbox" id="notificacionc{{i[12]}}" name="notificacionc{{i[12]}}" value="1">
+							{% else %}
+							<i class="fas fa-check"></i>
+							{% endif %}
+						</td>
+						<td style="font-size: smaller;">
+							{% if i[11] | int == 0 %}
+							<input style="margin: auto;" class="form-check-input" type="checkbox" id="terminado{{i[12]}}" name="terminado{{i[12]}}" value="1">
+							{% else %}
+							<i class="fas fa-check"></i>
+							{% endif %}
+						</td>
+						<td style="font-size: smaller;"><a href="/editarequivalencia/{{i[12]}}"><button type="button" class="btn btn-primary">Editar</button></a></td>
+						<td style="font-size: smaller;"><a href="/eliminarequivalencia/{{i[12]}}" onclick="return confirm('¿Estás seguro de eliminar?');"><button type="button" class="btn btn-danger">Eliminar</button></a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			<center><input class="btn btn-primary" type="submit" value="Aceptar"></center>
+		</form>
+	</main>
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
+{% endblock %}

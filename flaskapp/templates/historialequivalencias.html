@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-wrapper chiller-theme toggled">
+	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+		<i class="fas fa-bars"></i>
+	</a>
+	<nav id="sidebar" class="sidebar-wrapper">
+		<div class="sidebar-content">
+			<div class="sidebar-brand">
+				<div id="close-sidebar">
+					<i class="fas fa-times"></i>
+				</div>
+			</div>
+			<!-- sidebar-header  -->
+			<div class="sidebar-menu">
+				<ul>
+					<li class="header-menu">
+						<span>Opciones</span>
+					</li>
+					<br>
+					<li>
+						<a href="/pagosadmin">
+							<span>Pagos</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/carreras">
+							<span>Carreras</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/laboratorioadmin">
+							<span>Laboratorio</span>
+						</a>
+					</li>
+					<br>
+					<li>
+						<a href="/usuarios">
+							<span>Usuarios</span>
+						</a>
+					</li>
+					<!-- sidebar-content  -->
+	</nav>
+	<!-- sidebar-wrapper  -->
+	<main class="page-content" id="main">
+		<h2>Historial de Equivalencias</h2>
+		<br>
+		<table class="table table-striped sortable" id="tablacodigos">
+			<thead>
+				<tr>
+					<th style="vertical-align: middle; font-size:small">No.</th>
+					<th style="vertical-align: middle; font-size:small">Nombre</th>
+					<th style="vertical-align: middle; font-size:small">Carnet</th>
+					<th style="vertical-align: middle; font-size:small">Carrera</th>
+					<th style="vertical-align: middle; font-size:small">Curso</th>
+					<th style="vertical-align: middle; font-size:small"><center>Semestre/ Sección</center></th>
+					<th style="vertical-align: middle; font-size:small">Catedrático</th>
+					<th style="vertical-align: middle; font-size:small">Estado</th>
+					<th style="vertical-align: middle; font-size:small">Carta</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for i in equivalencias %}
+				<tr>
+					<td style="font-size: smaller;">{{ loop.index }}</td>
+					<td style="font-size: smaller;">{{i[0]}}</td>
+					<td style="font-size: smaller;">{{i[1]}}</td>
+					<td style="font-size: smaller;">{{i[2]}}</td>
+					<td style="font-size: smaller;">{{i[3]}}</td>
+					<td style="font-size: smaller;">{{i[4]}} - {{i[5]}}</td>
+					<td style="font-size: smaller;">{{i[6]}}</td>
+					<td style="font-size: smaller;">{{i[7]}}</td>
+					<td style="font-size: smaller;"><a href="/verdocumento/carta_{{i[12]}}"><button type="button" class="btn btn-success">Ver carta</button></td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</main>
+	<!-- page-content" -->
+</div>
+<!-- page-wrapper -->
+{% endblock %}
