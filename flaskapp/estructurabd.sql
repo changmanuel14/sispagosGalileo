@@ -20,3 +20,13 @@ CREATE TABLE `estado` (
   `estado` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idestado`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `pagooptica` (
+  `idpagooptica` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) DEFAULT NULL,
+  `nit` varchar(45) DEFAULT NULL,
+  `precioaro` float DEFAULT NULL,
+  `preciolente` float DEFAULT NULL,
+  `total` float DEFAULT NULL,
+  PRIMARY KEY (`idpagooptica`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
