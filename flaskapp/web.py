@@ -2771,10 +2771,10 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 		logeado = session['logeadocaja']
 	else:
 		return redirect(url_for('login'))
-	numsmanualeslbcq = [1,3,5,7,9]
-	numsmanualestlcq = [1,3,5]
-	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 535], ['QUIMICA GENERAL I', 535], ['PARASITOLOGIA', 285], ['QUIMICA INORGANICA', 285], ['BIOQUIMICA GENERAL', 305], ['HEMATOLOGIA BASICA', 345], ['HEMATOLOGIA CLINICA', 345], ['MICROBIOLOGIA CLINICA AVANZADA', 275], ['BANCO DE SANGRE', 335], ['MICROBIOLOGIA APLICADA II', 275]]
-	nombremanualesindtlcq = [['BACTERIOLOGIA', 585], ['QUIMICA CLINICA', 285], ['PRACTICA EN LABORATORIO', 175]]
+	numsmanualeslbcq = [2,4,6,8]
+	numsmanualestlcq = [2,4]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 265], ['MICROBIOLOGIA GENERAL', 415], ['BACTERIOLOGIA', 410], ['INMUNOLOGIA BASICA', 280], ['BIOQUIMICA CLINICA', 250], ['MICOLOGIA', 235], ['MICROBIOLOGIA APLICADA I', 235], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 335]]
+	nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 300], ['INMUNOLOGIA Y BANCO DE SANGRE', 275], ['MICROBIOLOGIA', 255], ['PRUEBAS ESPECIALES', 305]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
