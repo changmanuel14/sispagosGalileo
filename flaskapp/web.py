@@ -2847,15 +2847,15 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 
 @app.route('/repm', methods=['GET', 'POST'])
 def repm():
-	fechainicio = '2024-01-07'
+	fechainicio = '2024-07-01'
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				numsmanualeslbcq = [1,3,5,7,9]
-				numsmanualestlcq = [1,3,5]
-				nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 535], ['QUIMICA GENERAL I', 535], ['PARASITOLOGIA', 285], ['QUIMICA INORGANICA', 285], ['BIOQUIMICA GENERAL', 305], ['HEMATOLOGIA BASICA', 345], ['HEMATOLOGIA CLINICA', 345], ['MICROBIOLOGIA CLINICA AVANZADA', 275], ['BANCO DE SANGRE', 335], ['MICROBIOLOGIA APLICADA II', 275]]
-				nombremanualesindtlcq = [['BACTERIOLOGIA', 585], ['QUIMICA CLINICA', 285], ['PRACTICA EN LABORATORIO', 175]]
+				numsmanualeslbcq = [2,4,6,8]
+				numsmanualestlcq = [2,4]
+				nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 265], ['QUIMICA GENERAL II', 175], ['MICROBIOLOGIA GENERAL', 415], ['QUIMICA ORGANICA', 175], ['BACTERIOLOGIA', 410],  ['BIOQUIMICA CLINICA', 250], ['INMUNOLOGIA BASICA', 280],['MICOLOGIA', 235], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 335], ['MICROBIOLOGIA APLICADA I', 235]]
+				nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 300], ['INMUNOLOGIA Y BANCO DE SANGRE', 275], ['MICROBIOLOGIA', 255], ['PRUEBAS ESPECIALES', 305]]
 				manualeslbcq = []
 				manualestlcq = []
 				manualesindlbcq = []
@@ -2871,13 +2871,11 @@ def repm():
 					manuales = cursor.fetchall()
 					manualestlcq.append(manuales)
 				for i in nombremanualesindlbcq:
-					manualeslbcqtemp = [] 
 					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i[0]}%' and c.concepto like '%Manual LBCQ%' and p.devuelto = 0"
 					cursor.execute(consulta)
 					manuales = cursor.fetchall()
 					manualesindlbcq.append(manuales)
 				for i in nombremanualesindtlcq:
-					manualestlcqtemp = []
 					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i[0]}%' and c.concepto like '%Manual TLCQ%' and p.devuelto = 0"
 					cursor.execute(consulta)
 					manuales = cursor.fetchall()
