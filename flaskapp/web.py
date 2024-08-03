@@ -3657,6 +3657,63 @@ def matriztlcq():
 		print("Ocurrió un error al conectar: ", e)
 	return render_template('matriztlcq.html', title="Matriz Práctica Laboratorio Clinico", logeado=logeado, estudiantes = estudiantes, meses = meses)
 
+@app.route('/matrizthdq', methods=['GET', 'POST'])
+def matrizthdq():
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+	else:
+		return redirect(url_for('login'))
+	fechaact = date.today()
+	year = fechaact.year - 1
+	month = fechaact.month
+	day = fechaact.day
+	fechainicio = date(year, month, day)
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				estudiantes = []
+				consulta = f"SELECT p.carnet from pagos p inner join codigos c on c.idcodigos = p.idcod where p.fecha >= '{fechainicio}' and (c.concepto like '%Practica THDQ%' or c.concepto like '%Practica Dialisis Peritoneal%') group by p.carnet order by p.nombre"
+				cursor.execute(consulta)
+		# Con fetchall traemos todas las filas
+				carnets = cursor.fetchall()
+				for i in carnets:
+					aux = []
+					consulta = f"SELECT nombre from pagos where carnet = '{i[0]}' order by fecha desc limit 1"
+					print(consulta)
+					cursor.execute(consulta)
+					nombre = cursor.fetchone()
+					aux.append(nombre[0])
+					aux.append(i[0])
+					consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where carnet = '{i[0]}' and c.concepto like '%Practica THDQ%' order by p.fecha desc limit 1"
+					cursor.execute(consulta)
+					fecha1 = cursor.fetchone()
+					try:
+						if len(fecha1) < 1:
+							fecha1 = "Pend"
+						else:
+							fecha1 = fecha1[0]
+					except:
+						fecha1 = "Pend"
+					consulta = f"SELECT DATE_FORMAT(p.fecha,'%d/%m/%Y') from pagos p inner join codigos c on c.idcodigos = p.idcod where carnet = '{i[0]}' and c.concepto like '%Practica Dialisis%' order by p.fecha desc limit 1"
+					cursor.execute(consulta)
+					fecha2 = cursor.fetchone()
+					try:
+						if len(fecha2) < 1:
+							fecha2 = "Pend"
+						else:
+							fecha2 = fecha2[0]
+					except:
+						fecha2 = "Pend"
+					aux.append(fecha1)
+					aux.append(fecha2)
+					estudiantes.append(aux)
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	return render_template('matrizthdq.html', title="Matriz Práctica Hemodiálisis", logeado=logeado, estudiantes = estudiantes)
+
 @app.route('/matrizlbcq', methods=['GET', 'POST'])
 def matrizlbcq():
 	if 'logeadocaja' in session:
