@@ -3680,7 +3680,6 @@ def matrizthdq():
 				for i in carnets:
 					aux = []
 					consulta = f"SELECT nombre from pagos where carnet = '{i[0]}' order by fecha desc limit 1"
-					print(consulta)
 					cursor.execute(consulta)
 					nombre = cursor.fetchone()
 					aux.append(nombre[0])
