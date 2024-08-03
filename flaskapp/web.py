@@ -2773,8 +2773,8 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 		return redirect(url_for('login'))
 	numsmanualeslbcq = [2,4,6,8]
 	numsmanualestlcq = [2,4]
-	nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 265], ['MICROBIOLOGIA GENERAL', 415], ['BACTERIOLOGIA', 410], ['INMUNOLOGIA BASICA', 280], ['BIOQUIMICA CLINICA', 250], ['MICOLOGIA', 235], ['MICROBIOLOGIA APLICADA I', 235], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 335]]
-	nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 300], ['INMUNOLOGIA Y BANCO DE SANGRE', 275], ['MICROBIOLOGIA', 255], ['PRUEBAS ESPECIALES', 305]]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 290], ['MICROBIOLOGIA GENERAL', 440], ['BACTERIOLOGIA', 435], ['INMUNOLOGIA BASICA', 305], ['BIOQUIMICA CLINICA', 275], ['MICOLOGIA', 260], ['MICROBIOLOGIA APLICADA I', 260], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 265]]
+	nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 325], ['INMUNOLOGIA Y BANCO DE SANGRE', 300], ['MICROBIOLOGIA', 280], ['PRUEBAS ESPECIALES', 330]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
