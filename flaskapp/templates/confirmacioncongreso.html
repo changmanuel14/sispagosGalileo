@@ -89,73 +89,45 @@
 						</a>
 					</li>
 					<!-- sidebar-menu  -->
-					<!-- sidebar-content  -->
+			</div>
+			<!-- sidebar-content  -->
 	</nav>
 	<!-- sidebar-wrapper  -->
 	<main class="page-content" id="main">
 		<div class="container">
 			<center>
-				<h1>Graduación</h1>
+				<h2>¿Está seguro de continuar?</h2>
 			</center>
-			<hr>
+			<table class="table table-bordered">
+				<tr>
+					<th>Nombre</th>
+					<td>{{nombre}}</td>
+				</tr>
+				<tr>
+					<th>Carnet</th>
+					<td>{{carnet}}</td>
+				</tr>
+				<tr>
+					<th>Pago</th>
+					<td>{{concepto}}</td>
+				</tr>
+				<tr>
+					<th>Descripcion</th>
+					<td>
+						{% for i in range(cantidad) %}
+						{{carrera}} {{cursos[i]}} <br>
+						{% endfor %}
+					</td>
+				</tr>
+			</table>
 			<form action="" method="POST">
-				<div class="form-row">
-					<div class="col-md-12">
-						<label for="tipo">Tipo de Graduación</label>
-						<select class="form-control" id="tipo" name="tipo" onchange="cambio()"  required>
-							<option value="">Seleccione tipo</option>
-							<option value="3">Auxiliares de enfermeria</option>
-							<option value="1">Técnicos</option>
-							<option value="2">Licenciaturas/Maestrías</option>
-						</select>
-						<input type="hidden" id="cant" name="cant" value="1" readonly>
-					</div>
-				</div>
-				<div class="form-row">
-					<div class="col-md-6">
-						<label for="carnet">Carnet</label>
-						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
-					</div>
-					<div class="col-md-6">
-						<label for="nombre">Nombre</label>
-						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
-							onblur="mayusculas()" required>
-					</div>
-				</div>
-				<div id="almuerzos"  style="display: none;">
-					<div class="form-row">
-						<div class="col-md-12">
-							<label for="cantalmuerzos">Cantidad de Almuerzos</label>
-							<input type="number" id="cantalmuerzos" name="cantalmuerzos" class="form-control" placeholder="Cantidad de Almuerzos">
-						</div>
-					</div>
-				</div>
-				<br>
 				<center>
 					<input class="btn btn-primary" type="submit" value="Aceptar">
+					<a class="btn btn-primary" href="{{ url_for('congreso') }}" role="button">Regresar</a>
 				</center>
-				<br>
-				<hr>
 			</form>
-		</div>
 	</main>
 	<!-- page-content" -->
 </div>
-<script type="text/javascript">
-	function mayusculas() {
-		var nombre = document.getElementById('nombre').value
-		nombre = nombre.toUpperCase()
-		document.getElementById('nombre').value = nombre
-	}
-	function cambio() {
-		var select = document.getElementById('tipo').value;
-		var dataalmuerzos = document.getElementById('almuerzos')
-		if(select == 3) {
-			dataalmuerzos.style.display = 'block'
-		} else {
-			dataalmuerzos.style.display = 'none'
-		}
-	}
-</script>
 <!-- page-wrapper -->
 {% endblock %}

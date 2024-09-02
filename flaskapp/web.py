@@ -14,6 +14,7 @@ from fpdf import FPDF
 from oauth2client.service_account import ServiceAccountCredentials
 from conexion import Conhost, Conuser, Conpassword, Condb
 import unicodedata
+import requests
 #from flask_weasyprint import HTML, render_pdf
 
 app = Flask(__name__)
@@ -1733,32 +1734,6 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		if  "Congreso" in cod:
-			idpago = int(idpago)
-			idpago = str(idpago)
-			number = idpago.rjust(7, '0')
-
-			img = qrcode.make(number)
-			type(img)  # qrcode.image.pil.PilImage
-			ruta = PATH_FILE + f"static{mi_string}codbars{mi_string}{idpago}.png"
-			print(PATH_FILE)
-			img.save(ruta)
-			#barcode_format = barcode.get_barcode_class('upc')
-			#Generate barcode and render as image
-			#my_barcode = barcode_format(number, writer=ImageWriter())
-			#Save barcode as PNG
-			#aux = f"C:\\Users\\galileoserver\\Documents\\sispagosGalileo\\flaskapp\\static\\codbars\\{idpago}"
-			#my_barcode.save(aux)
-
-			#Inserción a archivo de Google Sheets
-			scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-			ruta1 = PATH_FILE + f"clientcongreso.json"
-			creds = ServiceAccountCredentials.from_json_keyfile_name(ruta1, scope)
-			client = gspread.authorize(creds)
-			sheet = client.open("Tabulación Congreso").sheet1
-			row = [nombre, carnet, descripcion, idpago]
-			index = 2
-			sheet.insert_row(row, index)
 		return redirect(url_for('imprimir', idpagos = idpago))
 	return render_template('confirmacionextra.html', title="Confirmación", carnet = carnet, nombre = nombre, idp = idp, cod = cod, logeado=logeado, descripcion=descripcion)
 
@@ -2786,7 +2761,7 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 		try:
 			cursos[i] = str(cursos[i].split("'")[1])
 		except:
-			cursos[i] = cursos[i]
+			pass
 	if request.method == "POST":
 		try:
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2907,6 +2882,110 @@ def entregarm(idpago):
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
 	return redirect(url_for('repm'))
+
+@app.route('/congreso', methods=['GET', 'POST'])
+def congreso():
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+	else:
+		return redirect(url_for('login'))
+	try:
+		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+		try:
+			with conexion.cursor() as cursor:
+				cursor.execute("SELECT idcodigos, concepto FROM codigos WHERE congreso = 1 ORDER BY concepto asc;")
+			# Con fetchall traemos todas las filas
+				congresos = cursor.fetchall()
+				cursor.execute("SELECT codigo, carrera FROM carreras WHERE institucion = 1 ORDER BY codigo asc;")
+			# Con fetchall traemos todas las filas
+				carreras = cursor.fetchall()
+		finally:
+			conexion.close()
+	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+		print("Ocurrió un error al conectar: ", e)
+	if request.method == 'POST':
+		datacarnet = request.form["carnet"]
+		datanombre = request.form["nombre"]
+		datacarrera = request.form["carrera"]
+		datacongreso = request.form["congreso"]
+		data = datacongreso.split(',')
+		datacongreso = data[0]
+		concepto = data[1]
+		cantidad = request.form["cant"]
+		cantidad = int(cantidad)
+		datacurso = []
+		for i in range(cantidad):
+			aux1 = f'curso{i+1}'
+			aux = request.form[aux1]
+			if(len(aux) > 0):
+				datacurso.append(aux)
+			aux1 = f'kit{i+1}'
+		return redirect(url_for('confirmacioncongreso', carnet = datacarnet, nombre = datanombre, curso= datacurso, carrera = datacarrera, congreso = datacongreso, concepto=concepto))
+	return render_template('congreso.html', title="Congreso",  congresos=congresos, carreras=carreras, logeado=logeado)
+
+@app.route('/confirmacioncongreso/<carnet>&<nombre>&<curso>&<carrera>&<congreso>&<concepto>', methods=['GET', 'POST'])
+def confirmacioncongreso(carnet, nombre, curso, carrera, congreso, concepto):
+	if 'logeadocaja' in session:
+		logeado = session['logeadocaja']
+	else:
+		return redirect(url_for('login'))
+	carnet = str(carnet)
+	nombre = str(nombre)
+	carrera = str(carrera)
+	congreso = str(congreso)
+	curso = str(curso).upper()
+	cursos = curso.split(',')
+	cantidad = len(cursos)
+	concepto = str(concepto)
+	for i in range(cantidad):
+		try:
+			cursos[i] = str(cursos[i].split("'")[1])
+		except:
+			pass
+	if request.method == "POST":
+		try:
+			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
+			try:
+				with conexion.cursor() as cursor:
+					consulta1 = f'SELECT idcodigos, precio, concepto FROM codigos WHERE idcodigos = {congreso}'
+					cursor.execute(consulta1)
+					precios1 = cursor.fetchall()
+					idpagos = []
+					cadenaaux = ""
+					for i in range(cantidad):
+						if i != 0:
+							cadenaaux = cadenaaux + ", " + str(cursos[i])
+						else:
+							cadenaaux = str(cursos[i])
+					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+					cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), f"{carrera} {cadenaaux}", 0,session['idusercaja']))
+					conexion.commit()
+					consulta = "Select MAX(idpagos) from pagos;"
+					cursor.execute(consulta)
+					idpago = cursor.fetchone()
+					idpago = idpago[0]
+					for i in range(cantidad):
+						descripcion = str(carrera) + " " + str(cursos[i])
+						url = f"https://apoyoensaludyeducacion.pythonanywhere.com/guardarcongreso/{nombre}&{carnet}&{descripcion}&{idpago}"
+						response = requests.get(url)
+						# Verifica si la solicitud fue exitosa
+						if response.status_code == 200:
+							# Obtén el contenido de la página
+							content = response.text
+							print(content)
+					idpago = int(idpago)
+					idpago = str(idpago)
+					number = idpago.rjust(7, '0')
+					img = qrcode.make(number)
+					type(img)  # qrcode.image.pil.PilImage
+					ruta = PATH_FILE + f"static{mi_string}codbars{mi_string}{idpago}.png"
+					img.save(ruta)
+			finally:
+				conexion.close()
+		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+			print("Ocurrió un error al conectar: ", e)
+		return redirect(url_for('imprimir', idpagos=idpago))
+	return render_template('confirmacioncongreso.html', title="Confirmación Congreso", carnet = carnet, nombre = nombre, cursos = cursos, congreso = congreso, carrera = carrera, cantidad=cantidad, concepto = concepto, logeado=logeado)
 
 @app.route('/pag', methods=['GET', 'POST'])
 def pag():
@@ -4161,7 +4240,7 @@ def pagosadmin():
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'SELECT p.idcodigos, p.cod, p.concepto, c.codigo, p.precio, p.manual, p.practica, p.pagos, p.pagose, p.uniformes from codigos p left join carreras c on p.idcarrera = c.idcarreras ORDER by p.concepto asc'
+				consulta = 'SELECT p.idcodigos, p.cod, p.concepto, c.codigo, p.precio, p.manual, p.practica, p.pagos, p.pagose, p.uniformes, p.congreso from codigos p left join carreras c on p.idcarrera = c.idcarreras ORDER by p.concepto asc'
 				cursor.execute(consulta)
 				codigos = cursor.fetchall()
 		finally:
@@ -4219,11 +4298,14 @@ def nuevocodigo():
 		except:
 			pagose = 0
 		try:
+			congreso = request.form["congreso"]
+		except:
+			congreso = 0
+		try:
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
-					consulta = f"insert into codigos(concepto, cod, idcarrera, precio, activo, manual, practica, pagos, pagose, uniformes) values('{concepto}', '{codigo}', {carrera}, {precio}, 1, {manual}, {practica},{pagos}, {pagose}, null);"
-					print(consulta)
+					consulta = f"insert into codigos(concepto, cod, idcarrera, precio, activo, manual, practica, pagos, pagose, uniformes, congreso) values('{concepto}', '{codigo}', {carrera}, {precio}, 1, {manual}, {practica},{pagos}, {pagose}, null, {congreso});"
 					cursor.execute(consulta)
 				conexion.commit()
 			finally:
@@ -4285,10 +4367,14 @@ def editarcodigo(id):
 		except:
 			pagose = 0
 		try:
+			congreso = request.form["congreso"]
+		except:
+			congreso = 0
+		try:
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
-					consulta = f"update codigos set concepto = '{concepto}', cod = '{codigo}', idcarrera = {carrera}, precio = {precio}, manual = {manual}, practica = {practica}, pagos = {pagos}, pagose = {pagose} where idcodigos = {id};"
+					consulta = f"update codigos set concepto = '{concepto}', cod = '{codigo}', idcarrera = {carrera}, precio = {precio}, manual = {manual}, practica = {practica}, pagos = {pagos}, pagose = {pagose}, congreso = {congreso} where idcodigos = {id};"
 					cursor.execute(consulta)
 				conexion.commit()
 			finally:
