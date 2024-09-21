@@ -1,76 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    {% if title %}
-        <title>Sistema de caja - {{ title }}</title>
-    {% else %}
-        <title>Sistema de caja</title>
-    {% endif %}
-         <link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	{% if title %}
+	<title>Sistema de caja - {{ title }}</title>
+	{% else %}
+	<title>Sistema de caja</title>
+	{% endif %}
+	<link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
 	<style type="text/css">
-	body {
-		background: #ffffff;
-		margin-top: 5rem;
-	}
-	table {
-		border: 0px;
-		width: 100%;
-	}
-	td, th {
-		font-size: 14px;
-		padding-left: 8px;
-		padding-right: 8px;
-		padding-top: 0px;
-		padding-bottom: 0px;
-		height: 30px;
-	}
+		body {
+			background: #ffffff;
+			margin-top: 5rem;
+		}
 
-	td {
-		border-bottom: #000000 1px solid;
-		text-align: center;
-		vertical-align: bottom;
-	}
+		table {
+			border: 0px;
+			width: 100%;
+		}
 
-	th {
-		text-align: left;
-		vertical-align: bottom;
-	}
-	h1, h2, h3, h4, h5, h6 {
-		color: #000000;
-	}
-	p {
-		size: 12px;
-	}
-	.tabla {
-		border: #000000 1px solid;
-		text-align: center;
-		vertical-align: middle;
-		height: 20px;
-	}
-	.tdtabla {
-		border: #000000 1px solid;
-		text-align: left;
-		vertical-align: middle;
-		height: 35px;
-	}
-	.tdtablaev {
-		border: #000000 1px solid;
-		text-align: left;
-		vertical-align: middle;
-		height: 20px;
-	}
-</style>
+		td,
+		th {
+			font-size: 14px;
+			padding-left: 8px;
+			padding-right: 8px;
+			padding-top: 0px;
+			padding-bottom: 0px;
+			height: 30px;
+		}
+
+		td {
+			border-bottom: #000000 1px solid;
+			text-align: center;
+			vertical-align: bottom;
+		}
+
+		th {
+			text-align: left;
+			vertical-align: bottom;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			color: #000000;
+		}
+
+		p {
+			size: 12px;
+		}
+
+		.tabla {
+			border: #000000 1px solid;
+			text-align: center;
+			vertical-align: middle;
+			height: 20px;
+		}
+
+		.tdtabla {
+			border: #000000 1px solid;
+			text-align: left;
+			vertical-align: middle;
+			height: 35px;
+		}
+
+		.tdtablaev {
+			border: #000000 1px solid;
+			text-align: left;
+			vertical-align: middle;
+			height: 20px;
+		}
+	</style>
 </head>
+
 <body>
-    <main role="main" class="container">
+	<main role="main" class="container">
 		<div style="width: 70%; float: left;">
-			<h5>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>TÉCNICO UNIVERSITARIO EN HEMODIÁLISIS<br>ASISTENCIA A PRÁCTICA - HEMODIÁLISIS</h5>
+			<h5>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>TÉCNICO UNIVERSITARIO EN HEMODIÁLISIS<br>ASISTENCIA A
+				PRÁCTICA - HEMODIÁLISIS</h5>
 		</div>
 		<div style="width: 25%; float: right;">
-			<img src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\logofacisasalud.jpg" width="80%"> 
+			<img src="{{path}}static\logofacisasalud.jpg" width="100%">
 		</div>
 		<br><br><br><br><br>
 		<table>
@@ -104,21 +121,22 @@
 			{% for i in range(25) %}
 			<tr>
 				<td class="tdtabla">{{i + 1}}</td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
 			</tr>
 			{% endfor %}
 		</table>
 		<br><br>
 		<div style="width: 70%; float: left;">
-			<h5>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>TÉCNICO UNIVERSITARIO EN HEMODIÁLISIS<br>ASISTENCIA A PRÁCTICA - HEMODIÁLISIS</h5>
+			<h5>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>TÉCNICO UNIVERSITARIO EN HEMODIÁLISIS<br>ASISTENCIA A
+				PRÁCTICA - HEMODIÁLISIS</h5>
 		</div>
 		<div style="width: 25%; float: right;">
-			<img src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\logofacisasalud.jpg" width="80%"> 
+			<img src="{{path}}static\logofacisasalud.jpg" width="100%">
 		</div>
 		<br><br><br><br><br>
 		<table>
@@ -152,20 +170,21 @@
 			{% for i in range(25) %}
 			<tr>
 				<td class="tdtabla">{{i + 1}}</td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
-				<td class="tdtabla" ></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
+				<td class="tdtabla"></td>
 			</tr>
 			{% endfor %}
 		</table><br>
 		<div style="width: 70%; float: left;">
-			<h5>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>TÉCNICO UNIVERSITARIO EN HEMODIÁLISIS<br>ASISTENCIA A PRÁCTICA</h5>
+			<h5>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>TÉCNICO UNIVERSITARIO EN HEMODIÁLISIS<br>ASISTENCIA A
+				PRÁCTICA</h5>
 		</div>
 		<div style="width: 25%; float: right;">
-			<img src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\logofacisasalud.jpg" width="80%"> 
+			<img src="{{path}}static\logofacisasalud.jpg" width="100%">
 		</div>
 		<br><br><br><br><br>
 		<table>
@@ -181,12 +200,16 @@
 			</tr>
 		</table><br>
 		<h6><strong>Descripción:</strong></h6>
-		<p style="text-align: justify;">Práctica donde permite que el estudiante tenga oportunidad de poder aprender y realizar las acciones de cuidado al paciente con tratamiento de Hemodiálisis y poner en práctica los conocimientos teóricos, brindar un tratamiento individualizado a cada paciente cumpliendo con las órdenes médicas, proporcionar la salud al paciente y familia.</p>
+		<p style="text-align: justify;">Práctica donde permite que el estudiante tenga oportunidad de poder aprender y
+			realizar las acciones de cuidado al paciente con tratamiento de Hemodiálisis y poner en práctica los
+			conocimientos teóricos, brindar un tratamiento individualizado a cada paciente cumpliendo con las órdenes
+			médicas, proporcionar la salud al paciente y familia.</p>
 		<h6><strong>Objetivos:</strong></h6>
 		<ul>
 			<li style="text-align: justify;">Realizar la conexión del paciente con la maquina de hemodiálisis.</li>
 			<li style="text-align: justify;">Participar en la promoción de la salud y autocuidado del paciente.</li>
-			<li style="text-align: justify;">Brindar una atención integral al paciente con fundamento ético, moral y aplicando conocimientos científicos en la unidad de hemodiálisis.</li>
+			<li style="text-align: justify;">Brindar una atención integral al paciente con fundamento ético, moral y
+				aplicando conocimientos científicos en la unidad de hemodiálisis.</li>
 		</ul>
 		<table class="tabla">
 			<tr>
@@ -196,7 +219,8 @@
 			<tr>
 				<th class="tabla" rowspan="21" style="width: 5%;">1</th>
 				<th class="tabla" rowspan="21" style="width: 20%;">Habilidades técnicas a realizar en la práctica</th>
-				<td class="tdtablaev" style="width: 60%;">Se orienta en el área de práctica de la unidad de Hemodiálisis.</td>
+				<td class="tdtablaev" style="width: 60%;">Se orienta en el área de práctica de la unidad de
+					Hemodiálisis.</td>
 				<td class="tdtablaev" style="width: 15%;"></td>
 			</tr>
 			<tr>
@@ -232,7 +256,8 @@
 				<td class="tdtablaev"></td>
 			</tr>
 			<tr>
-				<td class="tdtablaev">Realiza la conexión del paciente a la máquina de hemodiálisis a través de las lineas.</td>
+				<td class="tdtablaev">Realiza la conexión del paciente a la máquina de hemodiálisis a través de las
+					lineas.</td>
 				<td class="tdtablaev"></td>
 			</tr>
 			<tr>
@@ -304,7 +329,8 @@
 			<tr>
 				<th class="tabla" rowspan="2">3</th>
 				<th class="tabla" rowspan="2">Presentación Personal</th>
-				<td class="tdtablaev">Porta el uniforme correctamente de acuerdo a normas de la unidad de Hemodiálisis.</td>
+				<td class="tdtablaev">Porta el uniforme correctamente de acuerdo a normas de la unidad de Hemodiálisis.
+				</td>
 				<td class="tdtablaev"></td>
 			</tr>
 			<tr>
@@ -316,7 +342,8 @@
 		<table>
 			<tr>
 				<th class="tabla" rowspan="7" style="width: 5%;">4</th>
-				<th class="tabla" rowspan="7" style="width: 20%;">Es responsable en el cumplimiento de sus actividades</th>
+				<th class="tabla" rowspan="7" style="width: 20%;">Es responsable en el cumplimiento de sus actividades
+				</th>
 				<td class="tdtablaev" style="width: 60%;">Es puntual para asistir a práctica.</td>
 				<td class="tdtablaev" style="width: 15%;"></td>
 			</tr>
@@ -333,11 +360,13 @@
 				<td class="tdtablaev"></td>
 			</tr>
 			<tr>
-				<td class="tdtablaev">Establece una buena comunicación con usuarios, familiares, personal de la unidad y compañeros.</td>
+				<td class="tdtablaev">Establece una buena comunicación con usuarios, familiares, personal de la unidad y
+					compañeros.</td>
 				<td class="tdtablaev"></td>
 			</tr>
 			<tr>
-				<td class="tdtablaev">Demuestra amabilidad, cortesía y respeto al dar atención al usuario y familiares.</td>
+				<td class="tdtablaev">Demuestra amabilidad, cortesía y respeto al dar atención al usuario y familiares.
+				</td>
 				<td class="tdtablaev"></td>
 			</tr>
 			<tr>
@@ -369,7 +398,8 @@
 		</table>
 		<table>
 			<tr>
-				<td class="tdtablaev" style="width: 55%;"><strong>Criterio de evaluación</strong><br>El punteo minimo es 0 y el máximo 2.5 por cada reglón componente de la calificación</td>
+				<td class="tdtablaev" style="width: 55%;"><strong>Criterio de evaluación</strong><br>El punteo minimo es
+					0 y el máximo 2.5 por cada reglón componente de la calificación</td>
 				<th class="tabla" style="width: 30%;">TOTAL</th>
 				<th class="tabla" style="width: 15%;"></th>
 			</tr>
@@ -401,7 +431,7 @@
 			<tr>
 				<th style="width: 5%;">Firma: </th>
 				<td style="width: 45%;"></td>
-				<th  style="width: 5%;">Carnet: </th>
+				<th style="width: 5%;">Carnet: </th>
 				<td style="width: 45%;"></td>
 			</tr>
 		</table>
@@ -417,7 +447,7 @@
 			<tr>
 				<th style="width: 5%;">Firma: </th>
 				<td style="width: 45%;"></td>
-				<th  style="width: 5%;">Sello: </th>
+				<th style="width: 5%;">Sello: </th>
 				<td style="width: 45%;"></td>
 			</tr>
 		</table>
@@ -436,11 +466,20 @@
 			</tr>
 		</table>
 		<br><br><br>
-		<center><p>Quetzaltenango, {{year}}</p></center>
-    </main>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
+		<center>
+			<p>Quetzaltenango, {{year}}</p>
+		</center>
+	</main>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+	<script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
 </body>
+
 </html>

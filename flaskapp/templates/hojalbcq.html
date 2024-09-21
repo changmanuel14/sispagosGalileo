@@ -1,82 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    {% if title %}
-        <title>Sistema de caja - {{ title }}</title>
-    {% else %}
-        <title>Sistema de caja</title>
-    {% endif %}
-         <link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+		integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+	{% if title %}
+	<title>Sistema de caja - {{ title }}</title>
+	{% else %}
+	<title>Sistema de caja</title>
+	{% endif %}
+	<link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
 	<style type="text/css">
-	body {
-		background: #ffffff;
-		margin-top: 5rem;
-	}
-	table {
-		border: 0px;
-		width: 100%;
-	}
-	td, th {
-		font-size: 14px;
-		padding-left: 8px;
-		padding-right: 8px;
-		padding-top: 0px;
-		padding-bottom: 0px;
-		height: 30px;
-	}
+		body {
+			background: #ffffff;
+			margin-top: 5rem;
+		}
 
-	li {
-		font-size: 14px;
-	}
+		table {
+			border: 0px;
+			width: 100%;
+		}
 
-	td {
-		border-bottom: #000000 1px solid;
-		text-align: center;
-		vertical-align: bottom;
-	}
-	h1, h2, h3, h4, h5, h6 {
-		color: #000000;
-	}
-	p{
-		size: 12px;
-	}
+		td,
+		th {
+			font-size: 14px;
+			padding-left: 8px;
+			padding-right: 8px;
+			padding-top: 0px;
+			padding-bottom: 0px;
+			height: 30px;
+		}
 
-	.tabla {
-		border: #000000 1px solid;
-		text-align: center;
-		vertical-align: middle;
-	}
+		li {
+			font-size: 14px;
+		}
 
-	.tdthtabla {
-		height: 52px;
-		text-align: center;
-	}
+		td {
+			border-bottom: #000000 1px solid;
+			text-align: center;
+			vertical-align: bottom;
+		}
 
-	.tdthtabla1 {
-		height: 40px;
-		text-align: center;
-	}
-	.tdthtabla2 {
-		height: 20px;
-		text-align: center;
-	}
-</style>
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6 {
+			color: #000000;
+		}
+
+		p {
+			size: 12px;
+		}
+
+		.tabla {
+			border: #000000 1px solid;
+			text-align: center;
+			vertical-align: middle;
+		}
+
+		.tdthtabla {
+			height: 52px;
+			text-align: center;
+		}
+
+		.tdthtabla1 {
+			height: 40px;
+			text-align: center;
+		}
+
+		.tdthtabla2 {
+			height: 20px;
+			text-align: center;
+		}
+	</style>
 </head>
+
 <body>
-    <main role="main" class="container">
+	<main role="main" class="container">
 		{% for i in range(cantidad) %}
 		<div style="width: 70%; float: left;">
-			<h6>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>LICENCIATURA EN QUÍMICA BIOLÓGICA<br>Ejercicio Profesional Supervisado</h6>
+			<h6>UNIVERSIDAD GALILEO<br>SEDE QUETZALTENANGO<br>LICENCIATURA EN QUÍMICA BIOLÓGICA<br>Ejercicio Profesional
+				Supervisado</h6>
 		</div>
 
 		<div style="width: 25%; float: right;">
-			<img src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\logofacisasalud.jpg" width="80%"> 
+			<img src="{{path}}static\logofacisasalud.jpg" width="100%">
 		</div>
 		<br><br><br><br><br>
-		<p style="display: inline;">Hoja No. </p><p style="border-bottom: #000000 1px solid; display: inline; padding-left: 10px;padding-right: 10px;">{{idhojas[i]}}</p><br>
+		<p style="display: inline;">Hoja No. </p>
+		<p style="border-bottom: #000000 1px solid; display: inline; padding-left: 10px;padding-right: 10px;">
+			{{idhojas[i]}}</p><br>
 		<table>
 			<tr>
 				<th style="width: 20%;">Nombre: </th>
@@ -109,7 +126,8 @@
 				<td class="tabla tdthtabla" style="width: 10%;"></td>
 				<td class="tabla tdthtabla" style="width: 15%;"></td>
 				<td class="tabla tdthtabla" style="width: 15%;"></td>
-				<td class="tabla tdthtabla" style="width: 15%;"></th>
+				<td class="tabla tdthtabla" style="width: 15%;">
+					</th>
 				<td class="tabla tdthtabla" style="width: 20%;"></td>
 				<td class="tabla tdthtabla" style="width: 20%;"></td>
 			</tr>
@@ -120,11 +138,14 @@
 		<br>
 
 		<div style="width: 70%; float: left;">
-			<center><h6>UNIVERSIDAD GALILEO<br>FACULTAD DE CIENCIAS DE LA SALUD<br>SEDE QUETZALTENANGO<br>LICENCIATURA EN QUÍMICA BIOLÓGICA</h6></center>
+			<center>
+				<h6>UNIVERSIDAD GALILEO<br>FACULTAD DE CIENCIAS DE LA SALUD<br>SEDE QUETZALTENANGO<br>LICENCIATURA EN
+					QUÍMICA BIOLÓGICA</h6>
+			</center>
 		</div>
 
 		<div style="width: 25%; float: right;">
-			<img src="C:\Users\galileoserver\Documents\sispagosGalileo\flaskapp\static\logofacisasalud.jpg" width="75%"> 
+			<img src="{{path}}static\logofacisasalud.jpg" width="75%">
 		</div>
 		<br><br><br>
 		<table>
@@ -153,14 +174,21 @@
 				<td style="width: 20%;"></td>
 			</tr>
 		</table>
-		<center><h5><strong>Instrucciones</strong></h5></center>
+		<center>
+			<h5><strong>Instrucciones</strong></h5>
+		</center>
 		<ol>
-			<li>En las áreas relativas a CALIFICACIÓN, para cada uno de los parámetros de evaluación, marque con una X la opción que a su criterio considere apropiada, de acuerdo con los criterios de INTERPRETACIÓN.</li>
-			<li>Su evaluación es muy importante para calificar apropiadamente al practicante; por lo que se le ruega hacerlo a conciencia.</li>
+			<li>En las áreas relativas a CALIFICACIÓN, para cada uno de los parámetros de evaluación, marque con una X
+				la opción que a su criterio considere apropiada, de acuerdo con los criterios de INTERPRETACIÓN.</li>
+			<li>Su evaluación es muy importante para calificar apropiadamente al practicante; por lo que se le ruega
+				hacerlo a conciencia.</li>
 			<li>En el cuadro RESUMEN, coloque los puntos obtenidos en cada parámetro y súmelos.</li>
-			<li>En el cuadro CALIFICACIÓN TOTAL, anote el punteo total de desempeño y el de la muestra desconocida y calcule el promedio.</li>
-			<li>De acuerdo al promedio obtenido por el practicante, anote la calificación final (aprobado o reprobado) para el área que se evalúa.</li>
-			<li>La evaluación sólo es válida si está completa y debidamente <strong>firmada y sellada</strong> por el jefe de la unidad de práctica.</li>
+			<li>En el cuadro CALIFICACIÓN TOTAL, anote el punteo total de desempeño y el de la muestra desconocida y
+				calcule el promedio.</li>
+			<li>De acuerdo al promedio obtenido por el practicante, anote la calificación final (aprobado o reprobado)
+				para el área que se evalúa.</li>
+			<li>La evaluación sólo es válida si está completa y debidamente <strong>firmada y sellada</strong> por el
+				jefe de la unidad de práctica.</li>
 		</ol>
 		<table class="tabla">
 			<tr>
@@ -282,7 +310,9 @@
 			</tr>
 		</table>
 		<div style="width: 40%; float: left; padding-right: 25px;">
-			<center><h5>RESUMEN</h5></center>
+			<center>
+				<h5>RESUMEN</h5>
+			</center>
 			<table class="tabla">
 				<tr>
 					<th class="tabla" style="width: 75%; height: 15px;">PARÁMETRO</th>
@@ -331,7 +361,9 @@
 			</table>
 		</div>
 		<div style="width: 15%; float: left; padding-right: 25px;">
-			<center><h5 style="color: #ffffff;">RESUMEN</h5></center>
+			<center>
+				<h5 style="color: #ffffff;">RESUMEN</h5>
+			</center>
 			<table class="tabla">
 				<tr>
 					<th class="tabla">Muestra desconocida<br> (0 - 100)</th>
@@ -342,7 +374,9 @@
 			</table>
 		</div>
 		<div style="width: 45%; float: left; padding-right: 25px;">
-			<center><h5 style="color: #ffffff;">RESUMEN</h5></center>
+			<center>
+				<h5 style="color: #ffffff;">RESUMEN</h5>
+			</center>
 			<table class="tabla">
 				<tr>
 					<th class="tabla" colspan="2">CALIFICACIÓN TOTAL</th>
@@ -361,7 +395,9 @@
 				</tr>
 			</table>
 			<br>
-			<center><h5>INTERPRETACIÓN</h5></center>
+			<center>
+				<h5>INTERPRETACIÓN</h5>
+			</center>
 			<table class="tabla">
 				<tr>
 					<th class="tabla" style="width: 50%;">PUNTEO</th>
@@ -387,11 +423,18 @@
 		{% endfor %}
 
 
-        
-    </main>
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
+
+	</main>
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+		integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+		integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+		crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+		integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+		crossorigin="anonymous"></script>
+	<script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
 </body>
+
 </html>

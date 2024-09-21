@@ -2229,7 +2229,7 @@ def hojalbcq(idpagos):
 		print("Ocurrió un error al conectar: ", e)
 	fechaact = date.today()
 	year = fechaact.year
-	rendered = render_template('hojalbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas)
+	rendered = render_template('hojalbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas, path=PATH_FILE)
 	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'margin-bottom': '35mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -2278,7 +2278,7 @@ def epslbcq(idpagos):
 	fechaact = date.today()
 	year = fechaact.year
 	
-	rendered = render_template('epslbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas)
+	rendered = render_template('epslbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas, path=PATH_FILE)
 	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'footer-right': 'Página [page] de [topage]', 'margin-bottom': '40mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -2331,7 +2331,7 @@ def hojalenq(idpagos):
 	elif '6)' in practica[2]:
 		template = 'hojalenq6.html'
 	#Se genera el PDF
-	rendered = render_template(template, title="Hoja de Práctica ", practica = practica, year = year)
+	rendered = render_template(template, title="Hoja de Práctica ", practica = practica, year = year, path=PATH_FILE)
 	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'footer-right': 'Página [page] de [topage]', 'margin-bottom': '40mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -2356,6 +2356,7 @@ def hojathdq(idpagos):
 			if j.isdigit():
 				varaux = varaux + str(j)
 		newarray.append(varaux)
+
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
@@ -2373,7 +2374,7 @@ def hojathdq(idpagos):
 	fechaact = date.today()
 	year = fechaact.year
 	#Se genera el PDF
-	rendered = render_template('hojathdq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year)
+	rendered = render_template('hojathdq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, path = PATH_FILE)
 	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -2415,7 +2416,7 @@ def hojadialisis(idpagos):
 	fechaact = date.today()
 	year = fechaact.year
 	#Se genera el PDF
-	rendered = render_template('hojadialisis.html', title="Hoja de Práctica Dialisis Peritoneal", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year)
+	rendered = render_template('hojadialisis.html', title="Hoja de Práctica Dialisis Peritoneal", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, path=PATH_FILE)
 	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -2464,7 +2465,7 @@ def hojatlcq(idpagos):
 	fechaact = date.today()
 	year = fechaact.year
 	#Se Genera el PDF
-	rendered = render_template('hojatlcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, idhojas = idhojas, meses = meses)
+	rendered = render_template('hojatlcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, idhojas = idhojas, meses = meses, path = PATH_FILE)
 	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'margin-bottom': '35mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -2510,7 +2511,7 @@ def prepracticatradq(idpagos):
 	fechaact = date.today()
 	year = fechaact.year
 	#Se genera PDF
-	rendered = render_template('prepracticatradq.html', title="Pre-Práctica TRADQ ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros)
+	rendered = render_template('prepracticatradq.html', title="Pre-Práctica TRADQ ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros, path=PATH_FILE)
 	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-bottom': '35mm','margin-right': '10mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -2558,7 +2559,7 @@ def practicatoptq(idpagos):
 	fechaact = date.today()
 	year = fechaact.year
 	#Se genera PDF
-	rendered = render_template('practicatoptq.html', title="Práctica TOPTQ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros, fecha =fecha)
+	rendered = render_template('practicatoptq.html', title="Práctica TOPTQ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros, fecha =fecha, path=PATH_FILE)
 	options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-bottom': '35mm','margin-right': '10mm'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -4005,6 +4006,7 @@ def repgen():
 	if request.method == "POST":
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
+		datanombre = datanombre.replace(" ", "%")
 		datafechaini = request.form["fechaini"]
 		datafechafin = request.form["fechafin"]
 		dataconcepto = request.form["concepto"]
