@@ -149,7 +149,7 @@
 								<td>{{i[2]}}</td>
 								<td>Q.{{i[3]}}</td>
 								<td><input type="text" class="form-control" name="resumen{{i[4]}}" style="font-size: small;"
-										title="Recibo {{i[1]}}">
+										title="Recibo {{i[1]}}" placeholder="Recibo {{i[1]}}">
 								</td>
 								<td>
 									<select class="form-control" id="empresa{{i[4]}}" name="empresa{{i[4]}}" style="font-size: small;">
@@ -278,8 +278,8 @@
 							<td>{{i[2]}}</td>
 							<td>{{i[4]}}</td>
 							<td>Q{{i[3]}}</td>
-							<td><a class="btn btn-warning" href="/editarfactura/{{i[5]}}" role="button">Editar</a></td>
-							<td><a class="btn btn-danger" href="/eliminarfactura/{{i[5]}}" role="button">Eliminar</a>
+							<td><a class="btn btn-warning" href="/editarfactura/{{i[5]}}" role="button" title="Editar"><i class="fas fa-pen" style="color: white;"></a></td>
+							<td><a class="btn btn-danger" href="/eliminarfactura/{{i[5]}}" role="button" title="Eliminar"><i class="fas fa-trash"></i></a>
 							</td>
 						</tr>
 						{% endfor %}
