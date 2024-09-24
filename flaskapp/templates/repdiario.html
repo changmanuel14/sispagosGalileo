@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
+<style>
+	td {
+		font-size: small;
+	}
+</style>
 <div class="page-wrapper chiller-theme toggled">
 	<a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
 		<i class="fas fa-bars"></i>
@@ -143,11 +148,11 @@
 								<td>{{i[1]}}</td>
 								<td>{{i[2]}}</td>
 								<td>Q.{{i[3]}}</td>
-								<td><input type="text" class="form-control" name="resumen{{i[4]}}"
+								<td><input type="text" class="form-control" name="resumen{{i[4]}}" style="font-size: small;"
 										title="Recibo {{i[1]}}">
 								</td>
 								<td>
-									<select class="form-control" id="empresa{{i[4]}}" name="empresa{{i[4]}}">
+									<select class="form-control" id="empresa{{i[4]}}" name="empresa{{i[4]}}" style="font-size: small;">
 										<option value="">Seleccione empresa</option>
 										<option value="Óptica">Óptica</option>
 										<option value="Óptica Tarjeta">Óptica Tarjeta</option>
@@ -207,7 +212,7 @@
 					<br><br>
 					<h4>Desplegado</h4>
 					<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-					<table class="table table-bordered sortable table-responsive">
+					<table class="table table-bordered sortable table-responsive" style="width: fit-content;">
 						<tr>
 							<th>Nombre</th>
 							<th>Carnet</th>
@@ -215,9 +220,9 @@
 							<th>Concepto</th>
 							<th>Descripción</th>
 							<th>Total</th>
-							<th>Usuario</th>
-							<th>Recibo</th>
-							<th>Empresa</th>
+							<th>User</th>
+							<th style="width: 15%;">Recibo</th>
+							<th style="width: 15%;">Empresa</th>
 							<th colspan="3">Opciones</th>
 						</tr>
 						{% for i in data %}
@@ -229,9 +234,9 @@
 							<td>{{i[4]}}</td>
 							<td>Q{{i[5]}}</td>
 							<td>{{i[7]}}</td>
-							<td><input type="text" class="form-control" name="re{{i[6]}}" title="Recibo {{i[6]}}"></td>
+							<td><input type="text" class="form-control" name="re{{i[6]}}" title="Recibo {{i[6]}}" placeholder="Recibo {{i[6]}}" style="font-size: small;"></td>
 							<td>
-								<select class="form-control" id="empr{{i[6]}}" name="empr{{i[6]}}">
+								<select class="form-control" id="empr{{i[6]}}" name="empr{{i[6]}}" style="font-size: small;">
 									<option value="">Seleccione empresa</option>
 									<option value="Óptica">Óptica</option>
 									<option value="Óptica Tarjeta">Óptica Tarjeta</option>
@@ -242,10 +247,10 @@
 									<option value="Dr. Rodolfo Juarez">Dr. Rodolfo Juarez</option>
 								</select>
 							</td>
-							<td><a class="btn btn-warning" href="/editarpago/{{i[6]}}" role="button">Editar</a></td>
-							<td><a class="btn btn-danger" href="/eliminarpago/{{i[6]}}" role="button">Eliminar</a></td>
+							<td><a class="btn btn-warning" href="/editarpago/{{i[6]}}" role="button" title="Editar"><i class="fas fa-pen" style="color: white;"></a></td>
+							<td><a class="btn btn-danger" href="/eliminarpago/{{i[6]}}" role="button" title="Eliminar"><i class="fas fa-trash"></i></a></td>
 							<td><a class="btn btn-info" href="/imprimir/{{i[6]}}" role="button"
-									target=”_blank”>Imprimir</a></td>
+									target=”_blank” title="Imprimir Ticket"><i class="fas fa-print"></a></td>
 						</tr>
 						{% endfor %}
 					</table>
