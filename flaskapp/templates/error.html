@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+    <h1>Oops! Algo salió mal</h1>
+    <div class="alert alert-{{ error_category }}">
+        {{ error_message }}
+    </div>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            <a href="{{ url_for('repgen') }}">Regresar a Listado General</a>
+        </small>
+    </div>
+</div>
+{% endblock content %}

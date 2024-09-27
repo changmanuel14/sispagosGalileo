@@ -1,172 +1,90 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="page-wrapper chiller-theme toggled">
-    <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
-        <i class="fas fa-bars"></i>
-    </a>
-    <nav id="sidebar" class="sidebar-wrapper">
-        <div class="sidebar-content">
-            <div class="sidebar-brand">
-                <div id="close-sidebar">
-                    <i class="fas fa-times"></i>
-                </div>
-            </div>
-            <!-- sidebar-header  -->
-            <div class="sidebar-menu">
-                <ul>
-                    <br>
-                    <li>
-                        <a href="/i">
-                            <span>Inscripciones</span>
-                        </a>
-                    </li>
-					<li>
-                        <a href="/auxenf">
-                            <span>Auxiliar de Enfermeria</span>
-                        </a>
-                    </li>
-					<li>
-                        <a href="/optica">
-                            <span>Óptica</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/laboratorio">
-                            <span>Laboratorio</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/academia">
-                            <span>Academia</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/p">
-                            <span>Practica</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/m">
-                            <span>Manuales</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/pag">
-                            <span>Pagos</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/ingles">
-                            <span>Ingles</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/extra">
-                            <span>Pagos Extra</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/parqueo">
-                            <span>Parqueo</span>
-                        </a>
-                    </li>
-					<li>
-                        <a href="/u">
-                            <span>Uniformes</span>
-                        </a>
-                    </li>
-					<li>
-                        <a href="/grad">
-                            <span>Graduacion</span>
-                        </a>
-                    </li>
-					<li>
-						<a href="/congreso">
-							<span>Congreso</span>
-						</a>
-					</li>
-    </nav>
-    <!-- sidebar-wrapper  -->
-    <main class="page-content" id="main">
-        <div class="container">
-            <center>
-                <h1>Auxiliar de Enfermeria</h1>
-            </center>
-            <hr>
-            <form action="" method="POST">
-				<input type="hidden" id="cant" name="cant" value="0" readonly>
-                <div class="form-row">
-					<div class="col-md-6">
-						<label for="carnet">Carnet</label>
-						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
-					</div>
-					<div class="col-md-6">
-						<label for="nombre">Nombre</label>
-						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
-							onblur="mayusculas()" required>
-					</div>
+<main class="page-content" id="main">
+	<div class="container">
+		<center>
+			<h1>Auxiliar de Enfermeria</h1>
+		</center>
+		<hr>
+		<form action="" method="POST">
+			<input type="hidden" id="cant" name="cant" value="0" readonly>
+			<div class="form-row">
+				<div class="col-md-6">
+					<label for="carnet">Carnet</label>
+					<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" required>
 				</div>
-				<table class="table table-bordered">
-					<tr>
-						<th>Inscripción</th>
-						<td>
-							<div class="form-check">
-								<div class="form-row">
-									<div class="col-4" style="vertical-align: middle;">
-										<input class="form-check-input" type="checkbox" id="insc" name="insc" value="1" onchange="check()">
-										<label class="form-check-label" for="insc" id="linsc">Seleccione si se ingresa Inscripción al curso</label>
-									</div>
-									<div class="col-8" style="vertical-align: middle;">
-										<input type="number" class="form-control" name="promocion" id="promocion" placeholder="Promoción" disabled>
-									</div>
+				<div class="col-md-6">
+					<label for="nombre">Nombre</label>
+					<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre"
+						onblur="mayusculas()" required>
+				</div>
+			</div>
+			<table class="table table-bordered">
+				<tr>
+					<th>Inscripción</th>
+					<td>
+						<div class="form-check">
+							<div class="form-row">
+								<div class="col-4" style="vertical-align: middle;">
+									<input class="form-check-input" type="checkbox" id="insc" name="insc" value="1"
+										onchange="check()">
+									<label class="form-check-label" for="insc" id="linsc">Seleccione si se ingresa
+										Inscripción al curso</label>
+								</div>
+								<div class="col-8" style="vertical-align: middle;">
+									<input type="number" class="form-control" name="promocion" id="promocion"
+										placeholder="Promoción" disabled>
 								</div>
 							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>Mensualidades</th>
-						<td>
-							<div id="myDiv">
-								<input type="text" id="mes0" name="mes0" class="form-control" placeholder="Mes" list="meses" onchange="calcularmora()">
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>Mora</th>
-						<td>
-							<div class="form-check">
-								<div class="form-row">
-									<div class="col-4" style="vertical-align: middle;">
-										<input class="form-check-input" type="checkbox" id="ifmora" name="ifmora" value="1" onchange="calcularmora()">
-										<label class="form-check-label" for="ifmora" id="lifmora">Seleccione si calcula mora</label>
-									</div>
-									<div class="col-8" style="vertical-align: middle;">
-										<input type="number" step="0.01" id="mora" name="mora" class="form-control" placeholder="Mora">
-									</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>Mensualidades</th>
+					<td>
+						<div id="myDiv">
+							<input type="text" id="mes0" name="mes0" class="form-control" placeholder="Mes" list="meses"
+								onchange="calcularmora()">
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th>Mora</th>
+					<td>
+						<div class="form-check">
+							<div class="form-row">
+								<div class="col-4" style="vertical-align: middle;">
+									<input class="form-check-input" type="checkbox" id="ifmora" name="ifmora" value="1"
+										onchange="calcularmora()">
+									<label class="form-check-label" for="ifmora" id="lifmora">Seleccione si calcula
+										mora</label>
+								</div>
+								<div class="col-8" style="vertical-align: middle;">
+									<input type="number" step="0.01" id="mora" name="mora" class="form-control"
+										placeholder="Mora">
 								</div>
 							</div>
-							
-						</td>
-					</tr>
-				</table>
-                <br>
-                <center>
-					<input class="btn btn-primary" type="submit" value="Aceptar">
-					<button type="button" class="btn btn-success" onclick="agregar()">Agregar Campo</button> 
-					<button type="button" class="btn btn-danger" onclick="eliminar()">Eliminar Campo</button>
-				</center>
-                <br>
-                <hr>
-            </form>
-            <datalist id="meses">
-                {% for i in meses %}
-                <option>{{i}}</option>
-                {% endfor %}
-            </datalist>
-        </div>
-    </main>
-    <!-- page-content" -->
-</div>
+						</div>
+
+					</td>
+				</tr>
+			</table>
+			<br>
+			<center>
+				<input class="btn btn-primary" type="submit" value="Aceptar">
+				<button type="button" class="btn btn-success" onclick="agregar()">Agregar Campo</button>
+				<button type="button" class="btn btn-danger" onclick="eliminar()">Eliminar Campo</button>
+			</center>
+			<br>
+			<hr>
+		</form>
+		<datalist id="meses">
+			{% for i in meses %}
+			<option>{{i}}</option>
+			{% endfor %}
+		</datalist>
+	</div>
+</main>
 <script type="text/javascript">
 	function check() {
 		var check = document.getElementById('insc')
@@ -177,36 +95,36 @@
 			promocion.disabled = true
 		}
 	}
-    function mayusculas() {
-        var nombre = document.getElementById('nombre').value
-        nombre = nombre.toUpperCase()
-        document.getElementById('nombre').value = nombre
-    }
-    function eliminar() {
-        var num = parseInt(document.getElementById('cant').value)
-        if (num > 0) {
-            var input = document.getElementById('mes' + String(num))
-            var div = document.getElementById('myDiv')
-            var brs = div.getElementsByTagName('br')
-            var largo = brs.length
-            input.remove()
-            document.getElementById('cant').value = num - 1
-        }
-    }
-    function agregar() {
-        var div = document.getElementById('myDiv')
-        var input = document.createElement('input')
-        var num = parseInt(document.getElementById('cant').value) + 1
-        document.getElementById('cant').value = num
-        input.type = 'text'
-        input.id = 'mes' + String(num)
-        input.name = 'mes' + String(num)
-        input.className = 'form-control'
-        input.placeholder = 'Mes'
-        input.setAttribute('list', 'meses');
+	function mayusculas() {
+		var nombre = document.getElementById('nombre').value
+		nombre = nombre.toUpperCase()
+		document.getElementById('nombre').value = nombre
+	}
+	function eliminar() {
+		var num = parseInt(document.getElementById('cant').value)
+		if (num > 0) {
+			var input = document.getElementById('mes' + String(num))
+			var div = document.getElementById('myDiv')
+			var brs = div.getElementsByTagName('br')
+			var largo = brs.length
+			input.remove()
+			document.getElementById('cant').value = num - 1
+		}
+	}
+	function agregar() {
+		var div = document.getElementById('myDiv')
+		var input = document.createElement('input')
+		var num = parseInt(document.getElementById('cant').value) + 1
+		document.getElementById('cant').value = num
+		input.type = 'text'
+		input.id = 'mes' + String(num)
+		input.name = 'mes' + String(num)
+		input.className = 'form-control'
+		input.placeholder = 'Mes'
+		input.setAttribute('list', 'meses');
 		input.setAttribute('onchange', 'calcularmora()');
-        div.appendChild(input)
-    }
+		div.appendChild(input)
+	}
 	function calcularmora() {
 		var myDiv = document.getElementById("myDiv");
 		var inputs = myDiv.querySelectorAll("input");
@@ -214,30 +132,30 @@
 		var fechaActual = new Date();
 		var fechaAnterior = new Date();
 		var arreglo = {{ meses | tojson }};
-		var totaldias = 0;
-		var mes = 0;
-		inputs.forEach((input) => {
-			if (input.value.length > 0){
-				for (var j = 0; j<12;j++){
-					if (arreglo[j] == input.value){
-						mes = j;
-					}
+	var totaldias = 0;
+	var mes = 0;
+	inputs.forEach((input) => {
+		if (input.value.length > 0) {
+			for (var j = 0; j < 12; j++) {
+				if (arreglo[j] == input.value) {
+					mes = j;
 				}
-				var anio = fechaAnterior.getFullYear();
-				var dia = 5;
-				var fechaAnterior1 = new Date(anio, mes, dia);
-				var diferenciaEnMilisegundos = fechaActual - fechaAnterior1;
-				var diasTranscurridos = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
-				if (diasTranscurridos > 0) totaldias = totaldias + diasTranscurridos;
 			}
-		});
-		var mora = document.getElementById("mora");
-		var ifmora = document.getElementById("ifmora");
-		if (ifmora.checked) {
-			mora.value = totaldias * 5;
-		} else {
-			mora.value = 0
+			var anio = fechaAnterior.getFullYear();
+			var dia = 5;
+			var fechaAnterior1 = new Date(anio, mes, dia);
+			var diferenciaEnMilisegundos = fechaActual - fechaAnterior1;
+			var diasTranscurridos = Math.floor(diferenciaEnMilisegundos / (1000 * 60 * 60 * 24));
+			if (diasTranscurridos > 0) totaldias = totaldias + diasTranscurridos;
 		}
+	});
+	var mora = document.getElementById("mora");
+	var ifmora = document.getElementById("ifmora");
+	if (ifmora.checked) {
+		mora.value = totaldias * 5;
+	} else {
+		mora.value = 0
+	}
 		
 	}
 </script>

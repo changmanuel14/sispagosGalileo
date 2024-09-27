@@ -98,9 +98,13 @@ body {
 	left: 0px;
 }
 
-@media screen and (min-width: 768px) {
-	.page-wrapper.toggled .page-content {
-		padding-left: 0;
+@media (max-width: 768px) {
+	.navbar-nav {
+		margin-top: 10px;
+	}
+
+	.content-section {
+		padding: 15px;
 	}
 }
 
