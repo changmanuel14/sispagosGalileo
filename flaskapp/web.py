@@ -592,52 +592,24 @@ def eliminarpago(idpago):
 		print("Ocurrió un error al eliminar el pago.")
 	return redirect(url_for('repdiario'))
 
-#Seguir aqui
 @app.route("/editarpago/<idpago>", methods=['GET', 'POST'])
 @login_required
 def editarpago(idpago):
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				consulta = f'SELECT p.idcod, p.nombre, p.carnet, p.total, p.fecha, p.extra from codigos c inner join pagos p on p.idcod = c.idcodigos where p.idpagos = {idpago};'
-				cursor.execute(consulta)
-				datapago = cursor.fetchall()
-				datapago = datapago[0]
-				consulta = 'SELECT idcodigos, concepto from codigos order by concepto;'
-				cursor.execute(consulta)
-				codigos = cursor.fetchall()
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
+	datapago = get_query_one('SELECT p.idcod, p.nombre, p.carnet, p.total, p.fecha, p.extra FROM codigos c INNER JOIN pagos p ON p.idcod = c.idcodigos WHERE p.idpagos = %s', (idpago,))
+	codigos = get_query_all('SELECT idcodigos, concepto FROM codigos ORDER BY concepto')
+	
 	if request.method == 'POST':
-		carnet = request.form["carnet"]
-		nombre = request.form["nombre"]
+		carnet = request.form.get("carnet") or datapago[2]
+		nombre = request.form.get("nombre") or datapago[1]
 		codigo = request.form["codigo"]
-		extra = request.form["extra"]
+		extra = request.form.get("extra") or datapago[5]
 		fecha = request.form["fecha"]
-		total = request.form["total"]
-		if len(carnet) < 1:
-			carnet = datapago[2]
-		if len(nombre) < 1:
-			nombre = datapago[1]
-		if len(extra) < 1:
-			extra = datapago[5]
-		if len(total) < 1:
-			total = datapago[3]
-
-		try:
-			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-			try:
-				with conexion.cursor() as cursor:
-					consulta = 'UPDATE pagos set nombre=%s, carnet=%s, total=%s, fecha=%s, extra=%s, idcod=%s, user=%s where idpagos=%s;'
-					cursor.execute(consulta, (nombre, carnet,total, fecha, extra, codigo, session['idusercaja'], idpago))
-				conexion.commit()
-			finally:
-				conexion.close()
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
+		total = request.form.get("total") or datapago[3]
+		result = execute_query('UPDATE pagos SET nombre=%s, carnet=%s, total=%s, fecha=%s, extra=%s, idcod=%s, user=%s WHERE idpagos=%s',
+			(nombre, carnet, total, fecha, extra, codigo, session['idusercaja'], idpago))
+		
+		if result is None:
+			print("Ocurrió un error al actualizar el pago.")
 		return redirect(url_for('repdiario'))
 	return render_template('editarpago.html', title='Editar Pago', logeado=session['logeadocaja'], datapago=datapago, codigos=codigos, barranav=2)
 
