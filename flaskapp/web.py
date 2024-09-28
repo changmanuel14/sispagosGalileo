@@ -30,6 +30,7 @@ def login_required(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
 		if 'logeadocaja' not in session:
+			session['logeadocaja'] = 0
 			return redirect(url_for('login'))
 		return f(*args, **kwargs)
 	return decorated_function
@@ -648,6 +649,7 @@ def login():
 	if 'logeadocaja' in session:
 		logeado = session['logeadocaja']
 	else:
+		session['logeadocaja'] = 0
 		logeado = 0
 	if logeado != 0:
 		return redirect(url_for('pagos'))
