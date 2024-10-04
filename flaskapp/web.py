@@ -231,14 +231,13 @@ def repauxenf():
 	fechaact = date.today()
 	year = fechaact.year
 	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s GROUP BY p.nombre ORDER BY p.nombre;"
-	print(consulta)
 	nombres = get_query_all(consulta, (f"%%{year}%%",))
 	datos = []
-	print(nombres)
 	for nombre, carnet in nombres:
-		data = [nombre, carnet]
+		carnet = get_query_one("SELECT carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.nombre = %s and p.carnet != 0 ORDER BY p.nombre ASC;", (nombre))
+		data = [nombre, carnet[0]]
 		for mes in meses:
-			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s AND p.carnet = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre, carnet))
+			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre))
 			data.append(pago[0] if pago else "Pend")
 		datos.append(data)
 	return render_template('repauxenf.html', title="Reporte Auxiliares de Enfermeria", datos = datos, meses = meses, logeado=session['logeadocaja'], barranav=2)
@@ -250,14 +249,13 @@ def repauxenfexcel():
 	fechaact = date.today()
 	year = fechaact.year
 	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s GROUP BY p.nombre ORDER BY p.nombre;"
-	print(consulta)
 	nombres = get_query_all(consulta, (f"%%{year}%%",))
 	datos = []
-	print(nombres)
 	for nombre, carnet in nombres:
-		data = [nombre, carnet]
+		carnet = get_query_one("SELECT carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.nombre = %s and p.carnet != 0 ORDER BY p.nombre ASC;", (nombre))
+		data = [nombre, carnet[0]]
 		for mes in meses:
-			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s AND p.carnet = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre, carnet))
+			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre))
 			data.append(pago[0] if pago else "Pend")
 		datos.append(data)
 	output = io.BytesIO()
