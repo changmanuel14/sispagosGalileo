@@ -571,14 +571,11 @@ def confirmacionlab(nombre, carnet, dataexamenes):
 			cod_lab = cod_lab[0]
 			idpagos = []
 			for examen in dataaux:
-				id_pago = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+				execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 					(cod_lab, nombre, carnet, examen[3], date.today(), f"{examen[2]} - {examen[1]}", 0, session['idusercaja']))
-				if id_pago:
-					max_id = get_query_one("SELECT MAX(idpagos) FROM pagos")
-					if max_id:
-						idpagos.append(max_id[0])
-			if idpagos:
-				return redirect(url_for('imprimir', idpagos=idpagos))
+				max_id = get_query_one("SELECT MAX(idpagos) FROM pagos")
+				idpagos.append(max_id[0])
+		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacionlab.html', title='Confirmación Laboratorio', logeado=session['logeadocaja'],
 							dataaux=dataaux, nombre=nombre, carnet=carnet, cantidad=cantidad, total=total, barranav=1)
 
