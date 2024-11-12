@@ -230,14 +230,13 @@ def repauxenf():
 	fechaact = date.today()
 	year = fechaact.year
 	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s GROUP BY p.nombre ORDER BY p.nombre;"
-	print(consulta)
 	nombres = get_query_all(consulta, (f"%%{year}%%",))
 	datos = []
-	print(nombres)
 	for nombre, carnet in nombres:
-		data = [nombre, carnet]
+		carnet = get_query_one("SELECT carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.nombre = %s and p.carnet != 0 ORDER BY p.nombre ASC;", (nombre))
+		data = [nombre, carnet[0]]
 		for mes in meses:
-			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s AND p.carnet = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre, carnet))
+			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre))
 			data.append(pago[0] if pago else "Pend")
 		datos.append(data)
 	return render_template('repauxenf.html', title="Reporte Auxiliares de Enfermeria", datos = datos, meses = meses, logeado=session['logeadocaja'], barranav=2)
@@ -249,14 +248,13 @@ def repauxenfexcel():
 	fechaact = date.today()
 	year = fechaact.year
 	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s GROUP BY p.nombre ORDER BY p.nombre;"
-	print(consulta)
 	nombres = get_query_all(consulta, (f"%%{year}%%",))
 	datos = []
-	print(nombres)
 	for nombre, carnet in nombres:
-		data = [nombre, carnet]
+		carnet = get_query_one("SELECT carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.nombre = %s and p.carnet != 0 ORDER BY p.nombre ASC;", (nombre))
+		data = [nombre, carnet[0]]
 		for mes in meses:
-			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s AND p.carnet = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre, carnet))
+			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre))
 			data.append(pago[0] if pago else "Pend")
 		datos.append(data)
 	output = io.BytesIO()
@@ -572,14 +570,11 @@ def confirmacionlab(nombre, carnet, dataexamenes):
 			cod_lab = cod_lab[0]
 			idpagos = []
 			for examen in dataaux:
-				id_pago = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+				execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 					(cod_lab, nombre, carnet, examen[3], date.today(), f"{examen[2]} - {examen[1]}", 0, session['idusercaja']))
-				if id_pago:
-					max_id = get_query_one("SELECT MAX(idpagos) FROM pagos")
-					if max_id:
-						idpagos.append(max_id[0])
-			if idpagos:
-				return redirect(url_for('imprimir', idpagos=idpagos))
+				max_id = get_query_one("SELECT MAX(idpagos) FROM pagos")
+				idpagos.append(max_id[0])
+		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacionlab.html', title='Confirmación Laboratorio', logeado=session['logeadocaja'],
 							dataaux=dataaux, nombre=nombre, carnet=carnet, cantidad=cantidad, total=total, barranav=1)
 
