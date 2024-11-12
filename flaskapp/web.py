@@ -22,8 +22,7 @@ from pymysql.cursors import DictCursor
 app = Flask(__name__)
 app.secret_key = 'd589d3d0d15d764ed0a98ff5a37af547'
 route_files = Blueprint("route_files", __name__)
-mi_string = chr(92)
-PATH_FILE = getcwd() + f'{mi_string}flaskapp{mi_string}'
+PATH_FILE = path.join(path.dirname(__file__), 'flaskapp')
 usuariosadministrativo = [2,3,4,7]
 
 def login_required(f):
@@ -618,34 +617,27 @@ def editarpago(idpago):
 @app.route('/home', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	if 'logeadocaja' in session:
-		logeado = session['logeadocaja']
-	else:
-		session['logeadocaja'] = 0
-		logeado = 0
-	if logeado != 0:
+	session.setdefault('logeadocaja', 0)
+	
+	if session['logeadocaja'] != 0:
 		return redirect(url_for('pagos'))
+	
 	if request.method == 'POST':
 		user = request.form["user"]
 		pwd = request.form["pwd"]
-		try:
-			with get_db_connection() as conexion:
-				with conexion.cursor() as cursor:
-					consulta = f"SELECT iduser, nombre, apellido FROM user WHERE user = '{user}' and pwd = md5('{pwd}')"
-					cursor.execute(consulta)
-					data = cursor.fetchall()
-					if len(data) == 0:
-						return render_template('login.html', title='Iniciar sesión', logeado=session['logeadocaja'], mensaje="Datos inválidos, intente nuevamente")
-					else:
-						session['logeadocaja'] = 1
-						session['idusercaja'] = data[0][0]
-						session['nombreusercaja'] = data[0][1]
-						session['apellidousercaja'] = data[0][2]
-						session['usercaja'] = user
-						return redirect(url_for('pagos'))
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
-	return render_template('login.html', title='Iniciar sesión', logeado=session['logeadocaja'], mensaje="")
+		data = get_query_one("SELECT iduser, nombre, apellido FROM user WHERE user = %s AND pwd = md5(%s)", (user, pwd))
+		
+		if data:
+			session['logeadocaja'] = 1
+			session['idusercaja'] = data[0]
+			session['nombreusercaja'] = data[1]
+			session['apellidousercaja'] = data[2]
+			session['usercaja'] = user
+			return redirect(url_for('pagos'))
+		else:
+			return render_template('login.html', title='Iniciar sesión', mensaje="Datos inválidos, intente nuevamente")
+	
+	return render_template('login.html', title='Iniciar sesión', mensaje="")
 
 @app.route("/logout")
 def logout():
@@ -661,380 +653,202 @@ def logout():
 def crearusuario():
 	if session['idusercaja'] not in usuariosadministrativo:
 		return redirect(url_for('login'))
-	mensaje = ''
+	
 	if request.method == 'POST':
 		nombre = request.form["nombre"]
 		apellido = request.form["apellido"]
 		user = request.form["user"]
 		pwd = request.form["pwd"]
 		iniciales = request.form["iniciales"]
-		try:
-			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-			try:
-				with conexion.cursor() as cursor:
-					consulta = "INSERT INTO user(nombre, apellido, user, pwd, iniciales) values (%s, %s, %s, MD5(%s), %s);"
-					cursor.execute(consulta, (nombre, apellido, user, pwd, iniciales))
-				conexion.commit()
-			finally:
-				conexion.close()
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
+		result = execute_query("INSERT INTO user(nombre, apellido, user, pwd, iniciales) VALUES (%s, %s, %s, MD5(%s), %s)",
+			(nombre, apellido, user, pwd, iniciales))
+		
+		if result is None:
+			print("Ocurrió un error al crear el usuario.")
 		return redirect(url_for('login'))
-	return render_template('crearusuario.html', title='Nuevo Usuario', mensaje=mensaje, barranav=3)
+	return render_template('crearusuario.html', title='Nuevo Usuario', mensaje='', barranav=3)
 
 @app.route('/optica', methods=['GET', 'POST'])
 @login_required
 def optica():
 	if request.method == 'POST':
-		carnet = request.form["carnet"]
-		nombre = request.form["nombre"]
-		aro = request.form["aro"]
-		lente = request.form["lente"]
-		try:
-			exavis = request.form["exavis"]
-		except:
-			exavis = 0
-		try:
-			exaviseps = request.form["exaviseps"]
-		except:
-			exaviseps = 0
-		try:
-			exavisjornada = request.form["exavisjornada"]
-		except:
-			exavisjornada = 0
-		if len(aro) < 1:
-			aro = 0
-		if len(lente) < 1:
-			lente = 0
-		return redirect(url_for('confirmacionopt', carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis, exaviseps = exaviseps, exavisjornada = exavisjornada))
+		carnet = request.form.get("carnet", "")
+		nombre = request.form.get("nombre", "")
+		aro = request.form.get("aro", "0")
+		lente = request.form.get("lente", "0")
+		exavis = request.form.get("exavis", "0")
+		exaviseps = request.form.get("exaviseps", "0")
+		exavisjornada = request.form.get("exavisjornada", "0")
+		aro = aro if aro else "0"
+		lente = lente if lente else "0"
+		return redirect(url_for('confirmacionopt', carnet=carnet, nombre=nombre, aro=aro, lente=lente, exavis=exavis, exaviseps=exaviseps, exavisjornada=exavisjornada))
 	return render_template('optica.html', title="Óptica", logeado=session['logeadocaja'], barranav=1)
 
 @app.route('/verventasoptica', methods=['GET', 'POST'])
 @login_required
 def verventasoptica():
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				consulta = "select nombre, nit, precioaro, preciolente, total, idpagooptica from pagooptica;"
-				cursor.execute(consulta)
-				ventas = cursor.fetchall()
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
+	ventas = get_query_all("SELECT nombre, nit, precioaro, preciolente, total, idpagooptica FROM pagooptica")
+	if ventas is None:
+		print("Ocurrió un error al obtener las ventas de óptica.")
+		ventas = []  # Aseguramos que ventas sea una lista vacía si hay error
 	return render_template('verventasoptica.html', title="Ventas Óptica", logeado=session['logeadocaja'], ventas=ventas, barranav=1)
 
 @app.route('/recibirpagooptica/<id>', methods=['GET', 'POST'])
 @login_required
 def recibirpagooptica(id):
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				consulta = "select nombre, nit, precioaro, preciolente, total from pagooptica where idpagooptica = %s;"
-				cursor.execute(consulta, id)
-				venta = cursor.fetchone()
-				if float(venta[2]) > 0:
-					consulta = 'select idcodigos from codigos where cod = "OPTARO"'
-					cursor.execute(consulta)
-					datos = cursor.fetchall()
-					idaro = datos[0][0]
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (idaro, venta[0], venta[1], venta[2], date.today(), "Aro - Optica",0, session['idusercaja']))
-					conexion.commit()
-				if float(venta[3]) > 0:
-					consulta = 'select idcodigos from codigos where cod = "OPTLEN"'
-					cursor.execute(consulta)
-					datos = cursor.fetchall()
-					idlente = datos[0][0]
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
-					cursor.execute(consulta, (idlente, venta[0], venta[1], venta[3], date.today(), "Lente - Optica",0, session['idusercaja']))
-					conexion.commit()
-				consulta = "delete from pagooptica where idpagooptica = %s;"
-				cursor.execute(consulta, id)
-				conexion.commit()
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
+	venta = get_query_one("SELECT nombre, nit, precioaro, preciolente, total FROM pagooptica WHERE idpagooptica = %s",(id,))
+	if venta:
+		if float(venta[2]) > 0:
+			idaro = get_query_one("SELECT idcodigos FROM codigos WHERE cod = 'OPTARO'")
+			if idaro:
+				execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+					(idaro[0], venta[0], venta[1], venta[2], date.today(), "Aro - Optica", 0, session['idusercaja']))
+		if float(venta[3]) > 0:
+			idlente = get_query_one("SELECT idcodigos FROM codigos WHERE cod = 'OPTLEN'")
+			if idlente:
+				execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+					(idlente[0], venta[0], venta[1], venta[3], date.today(), "Lente - Optica", 0, session['idusercaja']))
+		execute_query("DELETE FROM pagooptica WHERE idpagooptica = %s", (id,))
+	else:
+		print(f"No se encontró la venta con id {id}")
 	return redirect(url_for('optica'))
 
 @app.route('/confirmacionopt/<carnet>&<nombre>&<aro>&<lente>&<exavis>&<exaviseps>&<exavisjornada>', methods=['GET', 'POST'])
 @login_required
-def confirmacionopt(carnet, nombre, aro, lente, exavis, exaviseps,exavisjornada):
-	examen = 0
+def confirmacionopt(carnet, nombre, aro, lente, exavis, exaviseps, exavisjornada):
 	if request.method == "POST":
-		try:
-			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-			try:
-				with conexion.cursor() as cursor:
-					if exavis != 0 and exavis != '0':
-						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
-						cursor.execute(consulta)
-						datos = cursor.fetchall()
-						idexamen = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0, session['idusercaja']))
-						conexion.commit()
-						examen = 1
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						pagoexamen = cursor.fetchone()
-						pagoexamen = pagoexamen[0]
-					if exaviseps != 0 and exaviseps != '0':
-						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
-						cursor.execute(consulta)
-						datos = cursor.fetchall()
-						idexamen = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idexamen, nombre, carnet, 40, date.today(), "Examen de la Vista EPS",0, session['idusercaja']))
-						conexion.commit()
-						examen = 1
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						pagoexamen = cursor.fetchone()
-						pagoexamen = pagoexamen[0]
-					if exavisjornada != 0 and exavisjornada != '0':
-						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
-						cursor.execute(consulta)
-						datos = cursor.fetchall()
-						idexamen = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idexamen, nombre, carnet, 25, date.today(), "Examen de la Vista Jornada",0, session['idusercaja']))
-						conexion.commit()
-						examen = 1
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						pagoexamen = cursor.fetchone()
-						pagoexamen = pagoexamen[0]
-					if float(aro) > 0:
-						consulta = 'select idcodigos from codigos where cod = "OPTARO"'
-						cursor.execute(consulta)
-						datos = cursor.fetchall()
-						idaro = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idaro, nombre, carnet, aro, date.today(), "Aro - Optica",0, session['idusercaja']))
-						conexion.commit()
-					if float(lente) > 0:
-						consulta = 'select idcodigos from codigos where cod = "OPTLEN"'
-						cursor.execute(consulta)
-						datos = cursor.fetchall()
-						idlente = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
-						cursor.execute(consulta, (idlente, nombre, carnet, lente, date.today(), "Lente - Optica",0, session['idusercaja']))
-						conexion.commit()
-			finally:
-				conexion.close()
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
+		examen = 0
+		pagoexamen = None
+		if exavis not in ['0', 0]:
+			idexamen = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "EXAVIS"')[0]
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+				(idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista", 0, session['idusercaja']))
+			examen = 1
+			pagoexamen = get_query_one("SELECT MAX(idpagos) FROM pagos")[0]
+		elif exaviseps not in ['0', 0]:
+			idexamen = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "EXAVIS"')[0]
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+				(idexamen, nombre, carnet, 40, date.today(), "Examen de la Vista EPS", 0, session['idusercaja']))
+			examen = 1
+			pagoexamen = get_query_one("SELECT MAX(idpagos) FROM pagos")[0]
+		elif exavisjornada not in ['0', 0]:
+			idexamen = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "EXAVIS"')[0]
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+				(idexamen, nombre, carnet, 25, date.today(), "Examen de la Vista Jornada", 0, session['idusercaja']))
+			examen = 1
+			pagoexamen = get_query_one("SELECT MAX(idpagos) FROM pagos")[0]
+		if float(aro) > 0:
+			idaro = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "OPTARO"')[0]
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+				(idaro, nombre, carnet, aro, date.today(), "Aro - Optica", 0, session['idusercaja']))
+		if float(lente) > 0:
+			idlente = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "OPTLEN"')[0]
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+				(idlente, nombre, carnet, lente, date.today(), "Lente - Optica", 0, session['idusercaja']))
 		if examen == 0:
 			return redirect(url_for('optica'))
 		else:
 			return redirect(url_for('imprimir', idpagos=pagoexamen))
-	return render_template('confirmacionopt.html', title="Confirmación Óptica", carnet = carnet, nombre = nombre, aro=aro, lente=lente, exavis=exavis, exaviseps=exaviseps,logeado=session['logeadocaja'], barranav=1)
+	return render_template('confirmacionopt.html', title="Confirmación Óptica", carnet=carnet, nombre=nombre, aro=aro, lente=lente, exavis=exavis, exaviseps=exaviseps, logeado=session['logeadocaja'], barranav=1)
 
 @app.route('/i', methods=['GET', 'POST'])
 @login_required
 def i():
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				cursor.execute("SELECT idinscripciones, inscripcion, precio, internet FROM inscripciones order by inscripcion asc;")
-				carreras = cursor.fetchall()
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
+	carreras = get_query_all("SELECT idinscripciones, inscripcion, precio, internet FROM inscripciones ORDER BY inscripcion ASC;")
+	if carreras is None:
+		return redirect(url_for('error_page', message="Error al obtener datos de inscripciones", category='error'))
 	if request.method == 'POST':
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
 		datacarrera = request.form["carrera"]
-		mesextra = request.form["mesextra"]
-		if len(mesextra) < 1:
-			mesextra = 0
-		try:
-			rinsc = request.form["rinsc"]
-		except:
-			rinsc = 0
-		try:
-			rint = request.form["rint"]
-		except:
-			rint = 0
-		try:
-			rrein = request.form["rrein"]
-		except:
-			rrein = 0
-		try:
-			exavis = request.form["exavis"]
-		except:
-			exavis = 0
-		return redirect(url_for('confirmacioni', carrera = datacarrera, carnet = datacarnet, nombre = datanombre, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra, exavis=exavis))
+		mesextra = request.form.get("mesextra", "0")
+		if not mesextra:
+			mesextra = "0"
+		rinsc = request.form.get("rinsc", "0")
+		rint = request.form.get("rint", "0")
+		rrein = request.form.get("rrein", "0")
+		exavis = request.form.get("exavis", "0")
+		return redirect(url_for('confirmacioni', carrera=datacarrera, carnet=datacarnet, nombre=datanombre, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra, exavis=exavis))
 	return render_template('inscripciones.html', title="Inscripciones", carreras=carreras, logeado=session['logeadocaja'], barranav=1)
 
 @app.route('/confirmacioni/<carrera>&<carnet>&<nombre>&<rinsc>&<rint>&<rrein>&<mesextra>&<exavis>', methods=['GET', 'POST'])
 @login_required
 def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis):
-	carrera = str(carrera)
-	carnet = str(carnet)
-	nombre = str(nombre)
-	rinsc = int(rinsc)
-	rint = int(rint)
-	rrein = int(rrein)
-	exavis = int(exavis)
-	mesextra = int(mesextra)
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				consulta = f'SELECT i.inscripcion, i.precio, i.internet, c.codigo FROM inscripciones i inner join carreras c on i.idcarrera = c.idcarreras WHERE i.idinscripciones = {carrera};'
-				cursor.execute(consulta)
-				data = cursor.fetchall()
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
-	imprimir = 0
+	carrera, carnet, nombre = map(str, (carrera, carnet, nombre))
+	rinsc, rint, rrein, exavis, mesextra = map(int, (rinsc, rint, rrein, exavis, mesextra))
+	data = get_query_one('SELECT i.inscripcion, i.precio, i.internet, c.codigo FROM inscripciones i INNER JOIN carreras c ON i.idcarrera = c.idcarreras WHERE i.idinscripciones = %s', (carrera,))
+	if data is None:
+		return redirect(url_for('error_page', message="Error al obtener datos de la carrera", category='error'))
+
 	if request.method == "POST":
-		try:
-			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-			try:
-				with conexion.cursor() as cursor:
-					if rinsc != 0:
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (1, nombre, carnet, data[0][1], date.today(), data[0][0],0, session['idusercaja']))
-						conexion.commit()
-					if rint != 0:
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
-						cursor.execute(consulta, (2, nombre, carnet, data[0][2], date.today(), "Internet " +str(data[0][3]), 0, session['idusercaja']))
-						conexion.commit()
-						imprimir = 1
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						pagoexamen = cursor.fetchone()
-						pagoexamen = pagoexamen[0]
-					if rrein != 0:
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (3, nombre, carnet, 100, date.today(), "Internet Reinscripcion " +str(data[0][3]),0, session['idusercaja']))
-						conexion.commit()
-						imprimir = 1
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						pagoexamen = cursor.fetchone()
-						pagoexamen = pagoexamen[0]
-					if mesextra != 0:
-						consulta = 'select idcodigos from codigos where cod = "MENE"'
-						cursor.execute(consulta)
-						datos = cursor.fetchall()
-						idcodigo = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s, %s);"
-						cursor.execute(consulta, (idcodigo, nombre, carnet, mesextra, date.today(), "Mensualidad Extra" +str(data[0][3]),0, session['idusercaja']))
-						conexion.commit()
-					if exavis != 0:
-						consulta = 'select idcodigos from codigos where cod = "EXAVIS"'
-						cursor.execute(consulta)
-						datos = cursor.fetchall()
-						idexamen = datos[0][0]
-						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo, user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-						cursor.execute(consulta, (idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista",0, session['idusercaja']))
-						conexion.commit()
-						imprimir = 1
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						pagoexamen = cursor.fetchone()
-						pagoexamen = pagoexamen[0]
-			finally:
-				conexion.close()
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
+		imprimir = 0
+		pagoexamen = []
+		if rinsc:
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+						(1, nombre, carnet, data[1], date.today(), data[0], 0, session['idusercaja']))
+		if rint:
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+						(2, nombre, carnet, data[2], date.today(), f"Internet {data[3]}", 0, session['idusercaja']))
+			imprimir = 1
+			pagoexamen.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+		if rrein:
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+						(3, nombre, carnet, 100, date.today(), f"Internet Reinscripcion {data[3]}", 0, session['idusercaja']))
+			imprimir = 1
+			pagoexamen.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+		if mesextra:
+			idcodigo = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "MENE"')[0]
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+						(idcodigo, nombre, carnet, mesextra, date.today(), f"Mensualidad Extra{data[3]}", 0, session['idusercaja']))
+		if exavis:
+			idexamen = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "EXAVIS"')[0]
+			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+					(idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista", 0, session['idusercaja']))
+			imprimir = 1
+			pagoexamen.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
 		if imprimir == 0:
 			return redirect(url_for('i'))
 		else:
 			return redirect(url_for('imprimir', idpagos=pagoexamen))
-	return render_template('confirmacioni.html', title="Confirmación", carrera = carrera, carnet = carnet, nombre = nombre, data=data, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra, logeado=session['logeadocaja'], barranav=1)
+	return render_template('confirmacioni.html', title="Confirmación", carrera=carrera, carnet=carnet, nombre=nombre, data=data, rinsc=rinsc, rint=rint, rrein=rrein, mesextra=mesextra, logeado=session['logeadocaja'], barranav=1)
 
 @app.route('/repi', methods=['GET', 'POST'])
 @login_required
 def repi():
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				cursor.execute("SELECT idcarreras, codigo FROM carreras;")
-			# Con fetchall traemos todas las filas
-				carreras = cursor.fetchall()
-				consulta = '''select p.nombre, p.carnet, p.fecha, c.codigo, d.precio from pagos p 
-				inner join codigos d on p.idcod = d.idcodigos
-				inner join carreras c on d.idcarrera = c.idcarreras
-				where p.idcod < 13 and p.idcod >= 1
-				order by p.fecha asc, c.codigo desc'''
-				cursor.execute(consulta)
-			# Con fetchall traemos todas las filas
-				data = cursor.fetchall()
-				suma = 0
-				for i in data:
-					suma = suma + i[4]
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
-	return render_template('repi.html', title="Reporte inscripciones", data = data, suma=suma, carreras=carreras, logeado=session['logeadocaja'], barranav=2)
+	carreras = get_query_all("SELECT idcarreras, codigo FROM carreras;")
+	data = get_query_all('SELECT p.nombre, p.carnet, p.fecha, c.codigo, d.precio FROM pagos p INNER JOIN codigos d ON p.idcod = d.idcodigos INNER JOIN carreras c ON d.idcarrera = c.idcarreras WHERE p.idcod < 13 AND p.idcod >= 1 ORDER BY p.fecha ASC, c.codigo DESC')
+	if carreras is None or data is None:
+		return redirect(url_for('error_page', message="Error al obtener datos para el reporte", category='error'))
+	suma = sum(row[4] for row in data)
+	return render_template('repi.html', title="Reporte inscripciones", data=data, suma=suma, carreras=carreras, logeado=session['logeadocaja'], barranav=2)
 
 @app.route('/extra', methods=['GET', 'POST'])
 @login_required
 def extra():
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				cursor.execute("SELECT idcodigos, cod, concepto FROM codigos WHERE pagose = 1 ORDER BY concepto asc;")
-			# Con fetchall traemos todas las filas
-				data = cursor.fetchall()
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
+	data = get_query_all("SELECT idcodigos, cod, concepto FROM codigos WHERE pagose = 1 ORDER BY concepto ASC")
+	if data is None:
+		return redirect(url_for('error_page', message="Error al obtener datos de códigos", category='error'))
 	if request.method == 'POST':
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
 		descripcion = request.form["descripcion"]
 		dataextra = request.form["extra"]
-		data = dataextra.split(',')
-		extraid = data[0]
-		extracod = data[1]
-		return redirect(url_for('confirmacionextra', carnet = datacarnet, nombre = datanombre, idp = extraid, cod = extracod, descripcion = descripcion))
-	return render_template('extra.html', title="Pagos extra", data = data, logeado=session['logeadocaja'], barranav=1)
+		extraid, extracod = dataextra.split(',')
+		return redirect(url_for('confirmacionextra', carnet=datacarnet, nombre=datanombre, idp=extraid, cod=extracod, descripcion=descripcion))
+	return render_template('extra.html', title="Pagos extra", data=data, logeado=session['logeadocaja'], barranav=1)
 
 @app.route('/confirmacionextra/<carnet>&<nombre>&<idp>&<cod>&<descripcion>', methods=['GET', 'POST'])
 @login_required
 def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 	idp = int(idp)
-	carnet = str(carnet)
-	nombre = str(nombre)
-	cod = str(cod)
-	descripcion = str(descripcion)
+	carnet, nombre, cod, descripcion = map(str, (carnet, nombre, cod, descripcion))
 	if request.method == "POST":
-		try:
-			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-			try:
-				with conexion.cursor() as cursor:
-					consulta1 = f'SELECT precio FROM codigos WHERE idcodigos = "{idp}"'
-					cursor.execute(consulta1)
-					precios1 = cursor.fetchall()
-					consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-					cursor.execute(consulta, (idp, nombre, carnet, precios1[0][0], date.today(), descripcion,0,session['idusercaja']))
-					conexion.commit()
-					consulta = "Select MAX(idpagos) from pagos;"
-					cursor.execute(consulta)
-					pagos = cursor.fetchone()
-					idpago = pagos[0]
-			finally:
-				conexion.close()
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
-		return redirect(url_for('imprimir', idpagos = idpago))
-	return render_template('confirmacionextra.html', title="Confirmación", carnet = carnet, nombre = nombre, idp = idp, cod = cod, logeado=session['logeadocaja'], descripcion=descripcion, barranav=1)
+		precio = get_query_one('SELECT precio FROM codigos WHERE idcodigos = %s', (idp,))
+		execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+			(idp, nombre, carnet, precio[0], date.today(), descripcion, 0, session['idusercaja']))
+		idpago = get_query_one("SELECT MAX(idpagos) FROM pagos")[0]
+		return redirect(url_for('imprimir', idpagos=idpago))
+	return render_template('confirmacionextra.html', title="Confirmación", carnet=carnet, nombre=nombre, idp=idp, cod=cod, logeado=session['logeadocaja'], descripcion=descripcion, barranav=1)
 
 @app.route('/repextra', methods=['GET', 'POST'])
 @login_required
@@ -1963,7 +1777,7 @@ def confirmacioncongreso(carnet, nombre, curso, carrera, congreso, concepto):
 					number = idpago.rjust(7, '0')
 					img = qrcode.make(number)
 					type(img)  # qrcode.image.pil.PilImage
-					ruta = PATH_FILE + f"static{mi_string}codbars{mi_string}{idpago}.png"
+					ruta = path.join(PATH_FILE, 'static', 'codbars', f'{idpago}.png')
 					img.save(ruta)
 			finally:
 				conexion.close()
@@ -2881,7 +2695,7 @@ def repgen():
 	if request.method == "POST":
 		datacarnet = request.form["carnet"]
 		datanombre = request.form["nombre"]
-		datanombre = datanombre.replace(" ", "%")
+		datanombre1 = datanombre.replace(" ", "%")
 		datafechaini = request.form["fechaini"]
 		datafechafin = request.form["fechafin"]
 		dataconcepto = request.form["concepto"]
@@ -2893,7 +2707,7 @@ def repgen():
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
-					consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto, p.empresa FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like "%{datanombre}%" and p.carnet like "%{datacarnet}%"'
+					consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto, p.empresa FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like "%{datanombre1}%" and p.carnet like "%{datacarnet}%"'
 					if len(datafechaini) != 0:
 						consulta = consulta + f' and p.fecha >= "{datafechaini}"'
 					if len(datafechafin) != 0:
@@ -3056,23 +2870,32 @@ def imprimir(idpagos):
 				varaux = varaux + str(j)
 		newarray.append(varaux)
 	datagen = []
+	dataind = []
 	suma = 0
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
+				eliminar = []
 				for i in range(numpagos):
-					consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.total, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE p.idpagos = {newarray[i]};'
+					consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.total, u.iniciales, p.idpagos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE p.idpagos = {newarray[i]};'
 					cursor.execute(consulta)
 				# Con fetchall traemos todas las filas
 					data = cursor.fetchone()
-					suma = suma + float(data[5])
-					datagen.append(data)
+					if 'Internet' in data[3]:
+						dataind.append(data)
+						eliminar.append(i)
+					else:
+						suma = suma + float(data[5])
+						datagen.append(data)
+				for i in eliminar:
+					newarray.pop(i)
+					numpagos = numpagos - 1
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma, numpagos=numpagos, newarray=newarray, ruta = PATH_FILE)
+	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma, numpagos=numpagos, newarray=newarray, ruta = PATH_FILE, dataind=dataind)
 	options = {'enable-local-file-access': None, 'page-size': 'A8', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '5mm', 'margin-top': '0', 'margin-bottom': '0', 'encoding': 'utf-8'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
@@ -3661,7 +3484,7 @@ def nuevaequivalencia(mensaje):
 									pdf = FPDF('P', 'mm', 'Letter')  # Ajustar a tamaño Carta
 									pdf.add_page()
 									pdf.image(imagen_path, 0, 0, 215.9, 279.4)
-									auxRuta = path.join(PATH_FILE, f"static{mi_string}uploads{mi_string}carta_{idequivalencia}.pdf")
+									auxRuta = path.join(PATH_FILE, 'static', 'uploads', f'carta_{idequivalencia}.pdf')
 									pdf.output(auxRuta, 'F')
 									os.remove(imagen_path)
 							else:
@@ -3670,7 +3493,7 @@ def nuevaequivalencia(mensaje):
 								cursor.execute(consulta)
 								idequivalencia = cursor.fetchone()
 								idequivalencia = idequivalencia[0]
-								carta.save(path.join(PATH_FILE, f"static{mi_string}uploads{mi_string}carta_{idequivalencia}.pdf"))
+								carta.save(path.join(PATH_FILE, 'static', 'uploads', f'carta_{idequivalencia}.pdf'))
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
