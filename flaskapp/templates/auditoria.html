@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<!-- Bootstrap CSS -->
+	<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<!-- Bootstrap JS -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
+	<script src="{{ url_for('static', filename='fancyTable.js') }}"></script>
+	{% if title %}
+	<title>Sistema de caja - {{ title }}</title>
+	{% else %}
+	<title>Sistema de caja</title>
+	{% endif %}
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+
+		.clear {
+			clear: both;
+		}
+
+		#page-wrap {
+			width: 800px;
+			margin: 40px auto 60px;
+		}
+
+		#pic {
+			float: right;
+			margin: -30px 0 0 0;
+		}
+
+		#page-wrap h2 {
+			font-size: 20px;
+			margin: 0 0 6px 0;
+			position: relative;
+		}
+
+		#page-wrap h2 span {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+			font-style: italic;
+			font-family: Georgia, Serif;
+			font-size: 16px;
+			color: #999;
+			font-weight: normal;
+		}
+
+		#page-wrap a:hover {
+			border-bottom-style: solid;
+			color: black;
+		}
+
+		#page-wrap ul {
+			margin: 0 0 32px 17px;
+		}
+
+		#page-wrap #objective {
+			width: 500px;
+			float: left;
+		}
+
+		#page-wrap #objective p {
+			font-family: Georgia, Serif;
+			font-style: italic;
+			color: #666;
+		}
+
+		#page-wrap dt {
+			font-style: italic;
+			font-weight: bold;
+			font-size: 18px;
+			text-align: right;
+			padding: 0 26px 0 0;
+			width: 150px;
+			float: left;
+			height: 200px;
+			border-right: 1px solid #999;
+		}
+
+		#page-wrap dd {
+			width: 600px;
+			float: right;
+		}
+
+		#page-wrap dd.clear {
+			float: none;
+			margin: 0;
+			height: 15px;
+		}
+	</style>
+	<style type="text/css">
+		body {
+			background: #ffffff;
+			color: #ffffff;
+			margin-top: 5rem;
+		}
+
+		table,
+		th,
+		td {
+			border: 1px solid black;
+			color: #000000;
+			border-collapse: collapse;
+		}
+
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			border: 1px solid #000000;
+		}
+
+		td,
+		th {
+			font-size: 16px;
+			border: 1px solid #000000;
+			text-align: left;
+			padding: 8px;
+		}
+
+		h1,
+		h2,
+		h3,
+		h4,
+		h5,
+		h6,
+        label {
+			color: #000000;
+		}
+	</style>
+	<link rel="icon" href="https://informatica.galileo.edu/images/favicon.ico">
+</head>
+
+<body>
+
+	<main role="main" class="container">
+		<div class="container">
+			<center>
+				<h1>Reporte General</h1>
+			</center>
+			<hr>
+			<form action="" method="POST">
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="carnet">Carnet</label>
+						<input type="text" class="form-control" name="carnet" id="carnet" placeholder="Carnet" value="{{datacarnet}}">
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre" value="{{datanombre}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="fechaini">Fecha Inicio</label>
+						<input type="date" class="form-control" name="fechaini" id="fechaini" value="{{datafechaini}}">
+					</div>
+					<div class="col-md-6">
+						<label for="nombre">Fecha Finalización</label>
+						<input type="date" class="form-control" id="fechafin" name="fechafin" value="{{datafechafin}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="concepto">Concepto</label>
+						<input type="text" class="form-control" name="concepto" id="concepto" placeholder="Concepto" value="{{dataconcepto}}">
+					</div>
+					<div class="col-md-6">
+						<label for="descripcion">Descripción</label>
+						<input type="text" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" value="{{datadescripcion}}">
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="col-md-6">
+						<label for="recibo">Recibo</label>
+						<input type="text" class="form-control" name="recibo" id="recibo" placeholder="Recibo" value="{{datarecibo}}">
+					</div>
+					<div class="col-md-6">
+						<label for="empresa">Empresa</label>
+						<input type="text" class="form-control" name="empresa" id="empresa" placeholder="Empresa" value="{{dataempresa}}">
+					</div>
+				</div>
+				<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+				<br>
+				<center>
+					<button onclick="submit" class="btn btn-primary" name="accion" value="1">Buscar</button>
+				</center>
+			
+
+			<h4>Resultados encontrados: {{conteo}}</h4>
+			{% if conteo > 0 %}
+			<center>
+				<button onclick="submit" class="btn btn-primary" name="accion" value="2">Generar PDF</button>
+			</center>
+			{% endif %}
+			</form>
+			<table class="table table-striped sortable table-responsive" id="sampleTable">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Carnet</th>
+                        <th>Fecha</th>
+                        <th>Concepto</th>
+                        <th>Descripción</th>
+                        <th>Recibo</th>
+                        <th>Total</th>
+                        <th>Empresa</th>
+                        <th>Devolución</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in data %}
+                    <tr>
+                        <td>{{i[0]}}</td>
+                        <td>{{i[1]}}</td>
+                        <td>{{i[2]}}</td>
+                        <td>{{i[3]}}</td>
+                        <td>{{i[4]}}</td>
+                        <td>{{i[5]}}</td>
+                        <td>Q. {{i[6]}}</td>
+                        <td>{{i[9]}}</td>
+                        {% if i[8] == 0 %}
+                        <td>Sin Devolución</td>
+                        {% else %}
+                        <td>Devuelto</td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+			</table>
+	</main>
+	<script>
+		$(document).ready(function () {
+			$("#sampleTable").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: true,
+                perPage:20
+			});
+		});
+	</script>
+	<br>
+	<script src="https://kit.fontawesome.com/20d4419baa.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
