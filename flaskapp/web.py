@@ -2409,18 +2409,31 @@ def matriztlcq():
 	year = fechaact.year
 	fechainicio = date(year, 1,1)
 	fechafin = date(year, 12,31)
-	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+	meses = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
 				estudiantes = []
-				consulta = f"Select p.carnet from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%Practica TLCQ%' group by p.carnet order by p.nombre"
+				filtro_meses = " OR ".join([f"p.extra LIKE '%{mes}%'" for mes in meses])
+				consulta = f"""
+					SELECT p.carnet
+					FROM pagos p
+					INNER JOIN codigos c ON p.idcod = c.idcodigos
+					WHERE p.fecha >= '{fechainicio}' 
+					AND p.fecha <= '{fechafin}' 
+					AND c.concepto LIKE '%Practica TLCQ%'
+					AND ({filtro_meses})
+					GROUP BY p.carnet
+					ORDER BY p.nombre;
+				"""
 				cursor.execute(consulta)
 		# Con fetchall traemos todas las filas
 				carnets = cursor.fetchall()
+				print(carnets)
 				for i in carnets:
 					aux = ["",""]
+					entra = 0
 					for j in meses:
 						consulta = f"SELECT nombre, carnet, DATE_FORMAT(p.fecha,'%d/%m/%Y') FROM pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%Practica TLCQ%' and p.extra like '%{j}%' and p.carnet like'%{i[0]}%' group by p.carnet order by p.nombre"
 						cursor.execute(consulta)
@@ -2431,9 +2444,12 @@ def matriztlcq():
 							aux[0] = data[0][0]
 							aux[1] = data[0][1]
 							aux.append(data[0][2])
+							entra = 1
 						else:
 							aux.append("Pend")
-					estudiantes.append(aux)
+						print(aux)
+					if entra == 1:
+						estudiantes.append(aux)
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
