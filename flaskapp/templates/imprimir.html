@@ -8,6 +8,7 @@
     </style>
 </head>
 <body>
+    {% if cantgen > 0 %}
     <h1 >Ticket de Pago</h1>
     <h2>Fecha: {{datagen[0][2]}}</h2>
     <h2>Nombre: {{datagen[0][0]}}</h2>
@@ -41,6 +42,7 @@
 	</center>
 	{% endfor %}
     <center><h6>.....................................................</h6></center>
+    {% endif %}
     {% for i in dataind %}
     <br>
     <h1 >Ticket de Pago</h1>

@@ -3023,7 +3023,6 @@ def imprimir(idpagos):
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				eliminar = []
 				for i in range(numpagos):
 					consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.total, u.iniciales, p.idpagos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE p.idpagos = {newarray[i]};'
 					cursor.execute(consulta)
@@ -3031,18 +3030,16 @@ def imprimir(idpagos):
 					data = cursor.fetchone()
 					if 'Internet' in data[3]:
 						dataind.append(data)
-						eliminar.append(i)
 					else:
 						suma = suma + float(data[5])
 						datagen.append(data)
-				for i in eliminar:
-					newarray.pop(i)
-					numpagos = numpagos - 1
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 		print("Ocurrió un error al conectar: ", e)
-	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma, numpagos=numpagos, newarray=newarray, ruta = PATH_FILELOGO, dataind=dataind)
+	cantgen = len(datagen)
+	cantind = len(dataind)
+	rendered = render_template('imprimir.html', title="Reporte diario", datagen = datagen, suma=suma, numpagos=numpagos, newarray=newarray, ruta = PATH_FILELOGO, dataind=dataind, cantgen=cantgen, cantidn=cantind)
 	options = {'enable-local-file-access': None, 'page-size': 'A8', 'orientation': 'Portrait', 'margin-left': '0', 'margin-right': '5mm', 'margin-top': '0', 'margin-bottom': '0', 'encoding': 'utf-8'}
 	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
