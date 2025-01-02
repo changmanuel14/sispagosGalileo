@@ -2959,7 +2959,7 @@ def auditoria():
 			workbook.save(output)
 			output.seek(0)
 			return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=reportegeneral.xls"})
-	return render_template('auditoria.html', title="Reporte general", data=data, logeado=session['logeadocaja'], conteo=conteo, datacarnet=datacarnet, datanombre=datanombre, datafechaini=datafechaini, datafechafin=datafechafin, dataconcepto=dataconcepto, datadescripcion=datadescripcion, datarecibo=datarecibo, dataempresa=dataempresa)
+	return render_template('auditoria.html', title="Reporte general", data=data, conteo=conteo, datacarnet=datacarnet, datanombre=datanombre, datafechaini=datafechaini, datafechafin=datafechafin, dataconcepto=dataconcepto, datadescripcion=datadescripcion, datarecibo=datarecibo, dataempresa=dataempresa)
 
 @app.route('/pagos')
 @login_required
