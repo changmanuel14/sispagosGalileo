@@ -2301,7 +2301,7 @@ def repdiariopdf():
 def matrizlenq():
 	fechaact = date.today()
 	year = fechaact.year
-	fechainicio = date(year, 1,1)
+	fechainicio = date(year-1, 1,1)
 	fechafin = date(year, 12,31)
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -2371,7 +2371,8 @@ def editarpracticalenq(carnet, semestre):
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				consulta = f'SELECT idpracticalenq, nombre, carnet, fechainicio, fechafin, lugar, lugar2, lugar3 from practicalenq where carnet = "{carnet}" and practica like "{semestre})%" and year(fecha) = year(CURDATE());'
+				consulta = f'SELECT idpracticalenq, nombre, carnet, fechainicio, fechafin, lugar, lugar2, lugar3 from practicalenq where carnet = "{carnet}" and practica like "{semestre})%";'
+				print(consulta)
 				cursor.execute(consulta)
 				datapractica = cursor.fetchall()
 		finally:
