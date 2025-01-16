@@ -1566,10 +1566,8 @@ def m():
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
 @login_required
 def confirmacionm(carnet, nombre, curso, mid, mcod):
-	numsmanualeslbcq = [2,4,6,8]
-	numsmanualestlcq = [2,4]
-	nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 290], ['MICROBIOLOGIA GENERAL', 440], ['BACTERIOLOGIA', 435], ['INMUNOLOGIA BASICA', 305], ['BIOQUIMICA CLINICA', 275], ['MICOLOGIA', 260], ['MICROBIOLOGIA APLICADA I', 260], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 265]]
-	nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 325], ['INMUNOLOGIA Y BANCO DE SANGRE', 300], ['MICROBIOLOGIA', 280], ['PRUEBAS ESPECIALES', 330]]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 255], ['QUIMICA GENERAL I', 175], ['PARASITOLOGIA', 225], ['QUIMICA INORGANICA', 175], ['BIOQUIMICA GENERAL', 305], ['HEMATOLOGIA BASICA', 275], ['HEMATOLOGIA CLINICA', 325], ['MICROBIOLOGIA CLINICA AVANZADA', 245], ['BANCO DE SANGRE', 315], ['MICROBIOLOGIA APLICADA II', 285]]
+	nombremanualesindtlcq = [['BACTERIOLOGIA', 385], ['QUIMICA CLINICA', 295]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
@@ -1608,12 +1606,17 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 							total = 175
 							if carrera == 'LBCQ':
 								for j in nombremanualesindlbcq:
+									print(unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip())
+									print(unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip())
 									if unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip() == unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip():
+										print("Si")
 										total = j[1]
 										if cursos[i] == j[0]:
 											pass
 										else:
 											cursos[i] = j[0]
+									else:
+										print("No")
 							elif carrera == "TLCQ":
 								for j in nombremanualesindtlcq:
 									if unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip() == unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip():
@@ -1642,20 +1645,21 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 
 @app.route('/repm', methods=['GET', 'POST'])
 def repm():
-	fechainicio = '2024-07-01'
+	fechainicio = '2025-01-01'
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				numsmanualeslbcq = [2,4,6,8]
-				numsmanualestlcq = [2,4]
-				nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 265], ['QUIMICA GENERAL II', 175], ['MICROBIOLOGIA GENERAL', 415], ['QUIMICA ORGANICA', 175], ['BACTERIOLOGIA', 410],  ['BIOQUIMICA CLINICA', 250], ['INMUNOLOGIA BASICA', 280],['MICOLOGIA', 235], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 335], ['MICROBIOLOGIA APLICADA I', 235]]
-				nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 300], ['INMUNOLOGIA Y BANCO DE SANGRE', 275], ['MICROBIOLOGIA', 255], ['PRUEBAS ESPECIALES', 305]]
+				numsmanualeslbcq = [1,3,5,7,9]
+				numsmanualestlcq = [1,3]
+				nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 255], ['QUIMICA GENERAL I', 175], ['PARASITOLOGIA', 225], ['QUIMICA INORGANICA', 175], ['BIOQUIMICA GENERAL', 305], ['HEMATOLOGIA BASICA', 275], ['HEMATOLOGIA CLINICA', 325], ['MICROBIOLOGIA CLINICA AVANZADA', 245], ['BANCO DE SANGRE', 315], ['MICROBIOLOGIA APLICADA II', 285]]
+				nombremanualesindtlcq = [['BACTERIOLOGIA', 385], ['QUIMICA CLINICA', 295]]
 				manualeslbcq = []
 				manualestlcq = []
 				manualesindlbcq = []
 				manualesindtlcq = []
 				for i in numsmanualeslbcq:
+					print(i)
 					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITLBCQ{i}' and p.devuelto = 0"
 					cursor.execute(consulta)
 					manuales = cursor.fetchall()
@@ -1676,8 +1680,6 @@ def repm():
 					manuales = cursor.fetchall()
 					manualesindtlcq.append(manuales)
 			# Con fetchall traemos todas las filas
-			#print(manualesindlbcq[1][1])
-			print(manualesindtlcq)
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
