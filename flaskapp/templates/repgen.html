@@ -168,17 +168,19 @@
 			{% endif %}
 			</form>
 			<table class="table table-striped sortable table-responsive" id="sampleTable">
-				<tr>
-					<th>Nombre</th>
-					<th>Carnet</th>
-					<th>Fecha</th>
-					<th>Concepto</th>
-					<th>Descripción</th>
-					<th>Recibo</th>
-					<th>Total</th>
-					<th>Empresa</th>
-					<th>Devolución</th>
-				</tr>
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Carnet</th>
+						<th>Fecha</th>
+						<th>Concepto</th>
+						<th>Descripción</th>
+						<th>Recibo</th>
+						<th>Total</th>
+						<th>Empresa</th>
+						<th>Devolución</th>
+					</tr>
+				</thead>
 				{% for i in data %}
 				<tr>
 					<td>{{i[0]}}</td>
@@ -207,6 +209,7 @@
 		$("#sampleTable").fancyTable({
 			inputPlaceholder: 'Buscar',
 			pagination: true,
+			sortable: true,
 			perPage:20
 		});
 	});
