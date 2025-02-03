@@ -871,9 +871,6 @@ def repextra():
 @app.route('/p', methods=['GET', 'POST'])
 @login_required
 def p():
-	numeros = []
-	for i in range(10):
-		numeros.append(i+1)
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -917,7 +914,7 @@ def p():
 			if(len(aux) > 0):
 				datames.append(aux)
 		return redirect(url_for('confirmacionp', carnet = datacarnet, nombre = datanombre, datames= datames, pid = pid, pcod = pcod, cantidad=cantidad, lugar=datalugar, fechainicio = datafechainicio, fechafin=datafechafin, lugar2 = datalugar2, lugar3 = datalugar3))
-	return render_template('practica.html', title="Practica",  carreras=carreras, numeros=numeros, meses=meses, logeado=session['logeadocaja'], barranav=1)
+	return render_template('practica.html', title="Practica",  carreras=carreras, meses=meses, logeado=session['logeadocaja'], barranav=1)
 
 @app.route('/confirmacionp/<carnet>&<nombre>&<datames>&<pid>&<pcod>&<cantidad>&<lugar>&<fechainicio>&<fechafin>&<lugar2>&<lugar3>', methods=['GET', 'POST'])
 @login_required
@@ -990,7 +987,22 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 							idpago = cursor.fetchone()
 							idpago = idpago[0]
 							idpagos.append(idpago)
-						elif ('TRADQ' in pcod and 'Prepractica' in pcod) or ('TOPTQ' in pcod):
+						elif 'TOPTQ' in pcod:
+							if '5 Especial' in meses[i]:
+								preciotoptq = 1000
+							elif '5' in meses[i]:
+								preciotoptq = 800
+							else:
+								preciotoptq = precioasig
+							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+							cursor.execute(consulta, (precios1[0][0], nombre, carnet, preciotoptq, date.today(), meses[i],0,session['idusercaja']))
+							conexion.commit()
+							consulta = "Select MAX(idpagos) from pagos;"
+							cursor.execute(consulta)
+							idpago = cursor.fetchone()
+							idpago = idpago[0]
+							idpagos.append(idpago)
+						elif 'TRADQ' in pcod and 'Prepractica' in pcod:
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
 							conexion.commit()
@@ -1512,7 +1524,12 @@ def practicatoptq(idpagos):
 				aux = data[2]
 				fecha = data[3]
 				aux = str(aux).split(':')
-				numeros.append(int(aux[1]))
+				try:
+					numeros.append(int(aux[1]))
+				except:
+					aux[1] =  aux[1].replace(" ", "")
+					numeros.append(aux[1])
+				print(numeros)
 		finally:
 			conexion.close()
 	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
