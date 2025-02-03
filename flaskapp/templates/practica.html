@@ -174,10 +174,19 @@
 	<option value="{{i}}">
 		{% endfor %}
 </datalist>
-<datalist id="modulos">
-	{% for i in numeros %}
-	<option value="{{i}}">
-		{% endfor %}
+<datalist id="modulostoptq">
+	<option value="2"></option>
+	<option value="3"></option>
+	<option value="4"></option>
+	<option value="5"></option>
+	<option value="5 Especial"></option>
+	<option value="9"></option>
+</datalist>
+<datalist id="modulostradq">
+	<option value="1"></option>
+	<option value="2"></option>
+	<option value="3"></option>
+	<option value="4"></option>
 </datalist>
 <datalist id="pracenf">
 	<option value="1) Práctica Hospitalaria - Pago 1"></option>
@@ -255,10 +264,14 @@
 				else if (aux.includes('Optometria')) desc.value = 'Pago de EPS TOPTQ';
 				else desc.value = 'Pago de Práctica TRADQ';
 				datalenq.style.display = 'none'
-			} else if (aux.includes('TOPTQ') && !(aux.includes('EPS')) || aux.includes('TRADQ')) {
+			} else if (aux.includes('TOPTQ') && !(aux.includes('EPS'))) {
 				desc.placeholder = 'Módulo'
-				desc.setAttribute('list', 'modulos')
+				desc.setAttribute('list', 'modulostoptq')
 				datalenq.style.display = 'none'
+			} else if (aux.includes('TRADQ')) {
+					desc.placeholder = 'Módulo'
+					desc.setAttribute('list', 'modulostradq')
+					datalenq.style.display = 'none'
 			} else if (aux.includes('TUEVQ')) {
 				desc.setAttribute('list', '')
 				desc.placeholder = 'Monto'
