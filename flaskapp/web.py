@@ -992,6 +992,8 @@ def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainici
 								preciotoptq = 1000
 							elif '5' in meses[i]:
 								preciotoptq = 800
+							elif '9' in meses[i]:
+								preciotoptq = 1000
 							else:
 								preciotoptq = precioasig
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
