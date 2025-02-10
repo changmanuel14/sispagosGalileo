@@ -1585,8 +1585,8 @@ def m():
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
 @login_required
 def confirmacionm(carnet, nombre, curso, mid, mcod):
-	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 255], ['QUIMICA GENERAL I', 175], ['PARASITOLOGIA', 225], ['QUIMICA INORGANICA', 175], ['BIOQUIMICA GENERAL', 305], ['HEMATOLOGIA BASICA', 275], ['HEMATOLOGIA CLINICA', 325], ['MICROBIOLOGIA CLINICA AVANZADA', 245], ['BANCO DE SANGRE', 315], ['MICROBIOLOGIA APLICADA II', 285]]
-	nombremanualesindtlcq = [['BACTERIOLOGIA', 385], ['QUIMICA CLINICA', 295]]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 280], ['QUIMICA GENERAL I', 200], ['PARASITOLOGIA', 250], ['QUIMICA INORGANICA', 200], ['BIOQUIMICA GENERAL', 330], ['HEMATOLOGIA BASICA', 300], ['HEMATOLOGIA CLINICA', 350], ['MICROBIOLOGIA CLINICA AVANZADA', 270], ['BANCO DE SANGRE', 340], ['MICROBIOLOGIA APLICADA II', 310]]
+	nombremanualesindtlcq = [['BACTERIOLOGIA', 410], ['QUIMICA CLINICA', 320]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
