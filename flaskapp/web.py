@@ -1622,7 +1622,7 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 					idpagos = []
 					for i in range(cantidad):
 						if kit == False:
-							total = 175
+							total = 200
 							if carrera == 'LBCQ':
 								for j in nombremanualesindlbcq:
 									print(unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip())
