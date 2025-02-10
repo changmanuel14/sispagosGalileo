@@ -1884,6 +1884,7 @@ def confirmaciongrad(tipo, carnet, nombre, cant):
 	cant = int(cant)
 	carnet = str(carnet)
 	nombre = str(nombre)
+	idpagos = []
 	if request.method == "POST":
 		try:
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
@@ -1910,6 +1911,10 @@ def confirmaciongrad(tipo, carnet, nombre, cant):
 						consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 						cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "",0,session['idusercaja']))
 						conexion.commit()
+						consulta = "Select MAX(idpagos) from pagos;"
+						cursor.execute(consulta)
+						idpago = cursor.fetchone()
+						idpagos.append(idpago[0])
 						if cant > 0:
 							consulta1 = 'SELECT idcodigos, precio FROM codigos WHERE cod = "ALGRAAUXENF"'
 							cursor.execute(consulta1)
@@ -1922,13 +1927,13 @@ def confirmaciongrad(tipo, carnet, nombre, cant):
 							consulta = "Select MAX(idpagos) from pagos;"
 							cursor.execute(consulta)
 							idpago = cursor.fetchone()
-							idpago = idpago[0]
+							idpagos.append(idpago[0])
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		if tipo == 3:
-			return redirect(url_for('imprimir', idpagos=idpago))
+			return redirect(url_for('imprimir', idpagos=idpagos))
 		else:
 			return redirect(url_for('grad'))
 	return render_template('confirmaciongrad.html', title="Confirmación", nombre = nombre, carnet = carnet, tipo = tipo, logeado=session['logeadocaja'], cant = cant, barranav=1)
