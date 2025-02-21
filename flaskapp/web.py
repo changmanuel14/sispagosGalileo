@@ -345,7 +345,8 @@ def repauxenfexcel():
 @login_required
 def ingles(mensaje=0):
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-	cuotas = get_query_all('SELECT idcodigos, precio FROM codigos WHERE cod LIKE "%MAINGLES%" ORDER BY cod ASC')
+	cuotas = get_query_all('SELECT idcodigos, precio FROM codigos WHERE cod LIKE %s ORDER BY cod ASC',("%MAINGLES%",))
+	print(cuotas)
 	if request.method == 'POST':
 		carnet = request.form.get("carnet", 0)
 		nombre = request.form.get("nombre", "")
