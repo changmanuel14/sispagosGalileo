@@ -345,7 +345,8 @@ def repauxenfexcel():
 @login_required
 def ingles(mensaje=0):
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-	cuotas = get_query_all('SELECT idcodigos, precio FROM codigos WHERE cod LIKE "%MAINGLES%" ORDER BY cod ASC')
+	cuotas = get_query_all('SELECT idcodigos, precio FROM codigos WHERE cod LIKE %s ORDER BY cod ASC',("%MAINGLES%",))
+	print(cuotas)
 	if request.method == 'POST':
 		carnet = request.form.get("carnet", 0)
 		nombre = request.form.get("nombre", "")
@@ -1622,7 +1623,7 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 					idpagos = []
 					for i in range(cantidad):
 						if kit == False:
-							total = 175
+							total = 200
 							if carrera == 'LBCQ':
 								for j in nombremanualesindlbcq:
 									print(unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip())
