@@ -16,6 +16,7 @@
 		<div class="table-responsive">
 			<table class="sortable table table-bordered table-responsive">
 				<tr>
+					<th>No.</th>
 					<th style="width:auto;">Nombre</th>
 					<th style="width:auto;">Carnet</th>
 					{% for i in meses %}
@@ -24,6 +25,7 @@
 				</tr>
 				{% for i in datos %}
 				<tr>
+					<td>{{ loop.index }}</td>
 					<td>{{i[0]}}</td>
 					<td>{{i[1]}}</td>
 					{% for j in i[2:] %}

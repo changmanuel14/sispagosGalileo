@@ -230,7 +230,7 @@ def repauxenf():
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	fechaact = date.today()
 	year = fechaact.year
-	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s GROUP BY p.nombre ORDER BY p.nombre;"
+	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s AND carnet != 0 GROUP BY p.nombre ORDER BY p.nombre;"
 	nombres = get_query_all(consulta, (f"%%{year}%%",))
 	datos = []
 	for nombre, carnet in nombres:
@@ -248,7 +248,7 @@ def repauxenfexcel():
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	fechaact = date.today()
 	year = fechaact.year
-	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s GROUP BY p.nombre ORDER BY p.nombre;"
+	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s AND carnet != 0 GROUP BY p.nombre ORDER BY p.nombre;"
 	nombres = get_query_all(consulta, (f"%%{year}%%",))
 	datos = []
 	for nombre, carnet in nombres:
