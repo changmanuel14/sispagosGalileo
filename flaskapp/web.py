@@ -381,11 +381,12 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
 	cantidad = len(meses)
 	datainsc = []
 	datamen = []
-	datainsc = get_query_one('SELECT idcodigos, precio FROM codigos WHERE cod LIKE "%MAINGLES%"')
+	total = 0
+	datainsc = get_query_all('SELECT idcodigos, precio FROM codigos WHERE cod LIKE %s ORDER BY cod ASC',("%MAINGLES%",))
 	if plan == 1:
-		datamen = get_query_one('SELECT idcodigos, precio FROM codigos WHERE cod LIKE "%MEINGLEST%"')
+		datamen = get_query_all('SELECT idcodigos, precio FROM codigos WHERE cod LIKE %s ORDER BY cod ASC',("%MEINGLEST%",))
 	else:
-		datamen = get_query_one('SELECT idcodigos, precio FROM codigos WHERE cod LIKE "%MEINGLESS%"')
+		datamen = get_query_all('SELECT idcodigos, precio FROM codigos WHERE cod LIKE %s ORDER BY cod ASC',("%MEINGLESS%",))
 	pagoant = False
 	for mes in meses:
 		data = get_query_all('SELECT idpagos FROM pagos WHERE nombre = %s AND INSTR(extra, %s) > 0 and carnet = %s and INSTR(extra, %s) > 0', (nombre, mes, carnet, ciclomen))
