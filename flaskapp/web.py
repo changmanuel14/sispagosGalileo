@@ -345,7 +345,7 @@ def repauxenfexcel():
 @login_required
 def ingles(mensaje=0):
 	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-	cuotas = get_query_all('SELECT idcodigos, precio FROM codigos WHERE cod LIKE %s ORDER BY cod ASC',("%MAINGLES%",))
+	cuotas = get_query_all('SELECT idcodigos, precio FROM codigos WHERE cod LIKE %s ORDER BY cod ASC',("%MAINGLESA%",))
 	print(cuotas)
 	if request.method == 'POST':
 		carnet = request.form.get("carnet", 0)
@@ -377,15 +377,14 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
 	plan = int(plan)
 	insc = int(insc)
 	ciclomen = int(ciclomen)
+	total = 0
 	meses = datameses.split(",") if datameses != 'None' else []
 	cantidad = len(meses)
-	datainsc = []
-	datamen = []
-	datainsc = get_query_one('SELECT idcodigos, precio FROM codigos WHERE cod LIKE "%MAINGLES%"')
+	datainsc = get_query_one('SELECT idcodigos, precio FROM codigos WHERE cod = "MAINGLESA"')
 	if plan == 1:
-		datamen = get_query_one('SELECT idcodigos, precio FROM codigos WHERE cod LIKE "%MEINGLEST%"')
+		datamen = get_query_one("SELECT idcodigos, precio FROM codigos WHERE cod = 'MEINGLESTB'")
 	else:
-		datamen = get_query_one('SELECT idcodigos, precio FROM codigos WHERE cod LIKE "%MEINGLESS%"')
+		datamen = get_query_one('SELECT idcodigos, precio FROM codigos WHERE cod = "MEINGLESS"')
 	pagoant = False
 	for mes in meses:
 		data = get_query_all('SELECT idpagos FROM pagos WHERE nombre = %s AND INSTR(extra, %s) > 0 and carnet = %s and INSTR(extra, %s) > 0', (nombre, mes, carnet, ciclomen))
@@ -395,21 +394,20 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
 	if pagoant:
 		return redirect(url_for('auxenf', mensaje=1))
 	if insc == 1:
-		total += sum(float(datainsc[i][1]) for i in range(2))
-	total += sum(float(j[1]) for j in datamen) * cantidad
+		total += int(datainsc[1])
+	for i in meses:
+		total += float(datamen[1])
 
 	if request.method == 'POST':
 		idpagos = []
 		if insc == 1:
-			for i in range(2):
-				execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
-					(datainsc[i][0], nombre, carnet, datainsc[i][1], date.today(), f'Ciclo: {ciclo}', 0, session['idusercaja']))
-				idpagos.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
-			for mes in meses:
-				for j in datamen:
-					execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
-						(j[0], nombre, carnet, j[1], date.today(), f'Mes: {mes}, Ciclo: {ciclomen}', 0, session['idusercaja']))
-					idpagos.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+			execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
+				(datainsc[0], nombre, carnet, datainsc[1], date.today(), f'Ciclo: {ciclo}', 0, session['idusercaja']))
+			idpagos.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+		for mes in meses:
+			execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
+				(datamen[0], nombre, carnet, datamen[1], date.today(), f'Mes: {mes}, Ciclo: {ciclomen}', 0, session['idusercaja']))
+			idpagos.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
 		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacioningles.html', title='Confirmación Ingles', logeado=session['logeadocaja'], nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datainsc=datainsc, insc=insc, meses=meses, ciclo=ciclo, barranav=1)
 
@@ -426,15 +424,14 @@ def repingles():
 	for n in range(4):
 		ciclo = n + 1
 		datos = []
-		
-		nombres = get_query_all("SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE %s AND p.extra LIKE %s AND (p.extra LIKE %s OR p.extra LIKE %s OR p.extra LIKE %s) AND p.fecha > DATE_SUB(CURDATE(), INTERVAL 10 MONTH) AND p.extra NOT LIKE %s GROUP BY p.nombre ORDER BY p.nombre", 
-					('%Mensualidad Ingles Trimestral (A)%', f'%{ciclo}%', f'%{mesesbase[n][0]}%', f'%{mesesbase[n][1]}%', f'%{mesesbase[n][2]}%', '%Retirado%'))
+		nombres = get_query_all("SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.cod LIKE %s AND p.extra LIKE %s AND (p.extra LIKE %s OR p.extra LIKE %s OR p.extra LIKE %s) AND p.fecha > DATE_SUB(CURDATE(), INTERVAL 10 MONTH) AND p.extra NOT LIKE %s GROUP BY p.nombre ORDER BY p.nombre", 
+					('%MEINGLESTB%', f'%{ciclo}%', f'%{mesesbase[n][0]}%', f'%{mesesbase[n][1]}%', f'%{mesesbase[n][2]}%', '%Retirado%'))
 		if nombres:
 			for nombre, carnet in nombres:
 				data = [nombre, carnet]
 				for mes in mesesbase[n]:
-					pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE %s AND p.extra LIKE %s AND p.extra LIKE %s AND p.nombre LIKE %s AND p.fecha > DATE_SUB(CURDATE(), INTERVAL 10 MONTH) ORDER BY p.nombre ASC", 
-						('%Mensualidad Ingles Trimestral (A)%', f'%{mes}%', f'%{ciclo}%', f'%{nombre}%'))
+					pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.cod LIKE %s AND p.extra LIKE %s AND p.extra LIKE %s AND p.nombre LIKE %s AND p.fecha > DATE_SUB(CURDATE(), INTERVAL 10 MONTH) ORDER BY p.nombre ASC", 
+						('%MEINGLESTB%', f'%{mes}%', f'%{ciclo}%', f'%{nombre}%'))
 					data.append(pago[0] if pago else "Pend")
 				datos.append(data)
 		datagen.append(datos)
@@ -453,15 +450,14 @@ def repinglesexcel():
 	for n in range(4):
 		ciclo = n + 1
 		datos = []
-		
-		nombres = get_query_all("SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE %s AND p.extra LIKE %s AND (p.extra LIKE %s OR p.extra LIKE %s OR p.extra LIKE %s) AND p.fecha > DATE_SUB(CURDATE(), INTERVAL 10 MONTH) AND p.extra NOT LIKE %s GROUP BY p.nombre ORDER BY p.nombre", 
-					('%Mensualidad Ingles Trimestral (A)%', f'%{ciclo}%', f'%{mesesbase[n][0]}%', f'%{mesesbase[n][1]}%', f'%{mesesbase[n][2]}%', '%Retirado%'))
+		nombres = get_query_all("SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.cod LIKE %s AND p.extra LIKE %s AND (p.extra LIKE %s OR p.extra LIKE %s OR p.extra LIKE %s) AND p.fecha > DATE_SUB(CURDATE(), INTERVAL 10 MONTH) AND p.extra NOT LIKE %s GROUP BY p.nombre ORDER BY p.nombre", 
+					('%MEINGLESTB%', f'%{ciclo}%', f'%{mesesbase[n][0]}%', f'%{mesesbase[n][1]}%', f'%{mesesbase[n][2]}%', '%Retirado%'))
 		if nombres:
 			for nombre, carnet in nombres:
 				data = [nombre, carnet]
 				for mes in mesesbase[n]:
-					pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE %s AND p.extra LIKE %s AND p.extra LIKE %s AND p.nombre LIKE %s AND p.fecha > DATE_SUB(CURDATE(), INTERVAL 10 MONTH) ORDER BY p.nombre ASC", 
-						('%Mensualidad Ingles Trimestral (A)%', f'%{mes}%', f'%{ciclo}%', f'%{nombre}%'))
+					pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.cod LIKE %s AND p.extra LIKE %s AND p.extra LIKE %s AND p.nombre LIKE %s AND p.fecha > DATE_SUB(CURDATE(), INTERVAL 10 MONTH) ORDER BY p.nombre ASC", 
+						('%MEINGLESTB%', f'%{mes}%', f'%{ciclo}%', f'%{nombre}%'))
 					data.append(pago[0] if pago else "Pend")
 				datos.append(data)
 		datagen.append(datos)
