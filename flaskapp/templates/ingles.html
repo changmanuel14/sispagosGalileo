@@ -103,16 +103,13 @@
 		var select = document.getElementById('plan')
 		var label = document.getElementById('linsc')
 		var arreglo = {{ cuotas | tojson }};
-	if (parseInt(select.value) == 1) {
-		var total = parseFloat(arreglo[1][1]) + parseFloat(arreglo[0][1])
-		label.innerHTML = "Q" + String(total.toFixed(2))
-	} else if (parseInt(select.value) == 2) {
-		var total = parseFloat(arreglo[1][1]) + parseFloat(arreglo[0][1])
-		label.innerHTML = "Q" + String(total.toFixed(2))
-	} else {
-		label.innerHTML = "Q0.00"
+		if (parseInt(select.value) == 1 || parseInt(select.value) == 2) {
+			var total = parseFloat(arreglo[0][1])
+			label.innerHTML = "Q" + String(total.toFixed(2))
+		} else {
+			label.innerHTML = "Q0.00"
+		}
 	}
-    }
 	function mayusculas() {
 		var nombre = document.getElementById('nombre').value
 		nombre = nombre.toUpperCase()
