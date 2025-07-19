@@ -162,31 +162,31 @@
 							<hr>
 							<ul class="nav nav-tabs">
 								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#lbcq1">LBCQ I</a>
+									<a class="nav-link" data-toggle="tab" href="#lbcq2">LBCQ II</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#lbcq3">LBCQ III</a>
+									<a class="nav-link" data-toggle="tab" href="#lbcq4">LBCQ IV</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#lbcq5">LBCQ V</a>
+									<a class="nav-link" data-toggle="tab" href="#lbcq6">LBCQ VI</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#lbcq7">LBCQ VII</a>
+									<a class="nav-link" data-toggle="tab" href="#lbcq8">LBCQ VIII</a>
 								</li>
-								<li class="nav-item">
+								<!-- <li class="nav-item">
 									<a class="nav-link" data-toggle="tab" href="#lbcq9">LBCQ IX</a>
+								</li> -->
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#tlcq2">TLCQ II</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#tlcq1">TLCQ I</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" data-toggle="tab" href="#tlcq3">TLCQ III</a>
+									<a class="nav-link" data-toggle="tab" href="#tlcq4">TLCQ IV</a>
 								</li>
 							</ul>
 							<div class="tab-content">
-								<div id="lbcq1" class="tab-pane fade">
+								<div id="lbcq2" class="tab-pane fade">
 									<br>
-									<h3>LBCQ I</h3>
+									<h3>LBCQ II</h3>
 									<br>
 									<hr>
 									<h4>Kit Completo</h4>
@@ -214,7 +214,7 @@
 									</table>
 									<br>
 									<br>
-									<h4>Biología General I</h4>
+									<h4>Biología General II</h4>
 									<table class="table table-striped sortable table-responsive" id="tlbcq2a">
 										<thead>
 											<th>No.</th>
@@ -239,7 +239,7 @@
 									</table>
 									<br>
 									<br>
-									<h4>Química General I</h4>
+									<h4>Química General II</h4>
 									<table class="table table-striped sortable table-responsive" id="tlbcq2b">
 										<thead>
 											<th>No.</th>
@@ -263,9 +263,9 @@
 										</tbody>
 									</table>
 								</div>
-								<div id="lbcq3" class="tab-pane fade">
+								<div id="lbcq4" class="tab-pane fade">
 									<br>
-									<h3>LBCQ III</h3>
+									<h3>LBCQ IV</h3>
 									<br>
 									<hr>
 									<h4>Kit Completo</h4>
@@ -292,7 +292,7 @@
 										</tbody>
 									</table>
 									<br><br>
-									<h4>Parasitología</h4>
+									<h4>Microbiología General</h4>
 									<table class="table table-striped sortable table-responsive" id="tlbcq4a">
 										<thead>
 											<th>No.</th>
@@ -316,7 +316,7 @@
 										</tbody>
 									</table>
 									<br><br>
-									<h4>Química Inorgánica</h4>
+									<h4>Química Orgánica</h4>
 									<table class="table table-striped sortable table-responsive" id="tlbcq4b">
 										<thead>
 											<th>No.</th>
@@ -340,9 +340,9 @@
 										</tbody>
 									</table>
 								</div>
-								<div id="lbcq5" class="tab-pane fade">
+								<div id="lbcq6" class="tab-pane fade">
 									<br>
-									<h3>LBCQ V</h3>
+									<h3>LBCQ VI</h3>
 									<br>
 									<hr>
 									<h4>Kit Completo</h4>
@@ -369,7 +369,7 @@
 										</tbody>
 									</table>
 									<br><br>
-									<h4>Bioquímica General</h4>
+									<h4>Bacteriología</h4>
 									<table class="table table-striped sortable table-responsive" id="tlbcq6a">
 										<thead>
 											<tr>
@@ -395,7 +395,7 @@
 										</tbody>
 									</table>
 									<br><br>
-									<h4>Hematología Básica</h4>
+									<h4>Bioquímica Clínica</h4>
 									<table class="table table-striped sortable table-responsive" id="tlbcq6b">
 										<thead>
 											<th>No.</th>
@@ -418,10 +418,34 @@
 											{% endfor %}
 										</tbody>
 									</table>
+									<br><br>
+									<h4>Inmunología Básica</h4>
+									<table class="table table-striped sortable table-responsive" id="tlbcq6b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesindlbcq[6] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
 								</div>
-								<div id="lbcq7" class="tab-pane fade">
+								<div id="lbcq8" class="tab-pane fade">
 									<br>
-									<h3>LBCQ VII</h3>
+									<h3>LBCQ VIII</h3>
 									<br>
 									<hr>
 									<h4>Kit Completo</h4>
@@ -448,32 +472,8 @@
 										</tbody>
 									</table>
 									<br><br>
-									<h4>Hematología Clínica</h4>
+									<h4>Interpretación de Pruebas Bioquímicas</h4>
 									<table class="table table-striped sortable table-responsive" id="tlbcq8a">
-										<thead>
-											<th>No.</th>
-											<th>Nombre</th>
-											<th>Carnet</th>
-											<th>Fecha</th>
-											<th>Codigo</th>
-											<th>Descripción</th>
-										</thead>
-										<tbody>
-											{% for i in manualesindlbcq[6] %}
-											<tr>
-												<td>{{ loop.index }}</td>
-												<td>{{ i[0] }}</td>
-												<td>{{ i[1] }}</td>
-												<td>{{ i[2] }}</td>
-												<td>{{ i[3] }}</td>
-												<td>{{ i[4] }}</td>
-											</tr>
-											{% endfor %}
-										</tbody>
-									</table>
-									<br><br>
-									<h4>Microbiología Clínica Avanzada</h4>
-									<table class="table table-striped sortable table-responsive" id="tlbcq8b">
 										<thead>
 											<th>No.</th>
 											<th>Nombre</th>
@@ -495,8 +495,56 @@
 											{% endfor %}
 										</tbody>
 									</table>
+									<br><br>
+									<h4>Micología</h4>
+									<table class="table table-striped sortable table-responsive" id="tlbcq8b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesindlbcq[8] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Microbiologìa Aplicada I</h4>
+									<table class="table table-striped sortable table-responsive" id="tlbcq8b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesindlbcq[9] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
 								</div>
-								<div id="lbcq9" class="tab-pane fade">
+								<!-- <div id="lbcq9" class="tab-pane fade">
 									<br>
 									<h3>LBCQ IX</h3>
 									<br>
@@ -572,10 +620,10 @@
 											{% endfor %}
 										</tbody>
 									</table>
-								</div>
-								<div id="tlcq1" class="tab-pane fade">
+								</div> -->
+								<div id="tlcq2" class="tab-pane fade">
 									<br>
-									<h3>TLCQ I</h3>
+									<h3>TLCQ II</h3>
 									<br>
 									<hr>
 									<h4>Kit Completo</h4>
@@ -602,9 +650,9 @@
 										</tbody>
 									</table>
 								</div>
-								<div id="tlcq3" class="tab-pane fade">
+								<div id="tlcq4" class="tab-pane fade">
 									<br>
-									<h3>TLCQ III</h3>
+									<h3>TLCQ IV</h3>
 									<br>
 									<hr>
 									<h4>Kit Completo</h4>
@@ -631,7 +679,7 @@
 										</tbody>
 									</table>
 									<br><br>
-									<h4>Bacteriología</h4>
+									<h4>Hematología y Coagulacíon</h4>
 									<table class="table table-striped sortable table-responsive" id="ttlcq4a">
 										<thead>
 											<th>No.</th>
@@ -655,7 +703,7 @@
 										</tbody>
 									</table>
 									<br><br>
-									<h4>Química Clínica</h4>
+									<h4>Inmunología y Banco de Sangre</h4>
 									<table class="table table-striped sortable table-responsive" id="ttlcq4b">
 										<thead>
 											<th>No.</th>
@@ -666,7 +714,55 @@
 											<th>Descripción</th>
 										</thead>
 										<tbody>
-											{% for i in manualesindtlcq[1] %}
+											{% for i in manualesindtlcq[2] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Microbiología</h4>
+									<table class="table table-striped sortable table-responsive" id="ttlcq4b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesindtlcq[3] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+									<br><br>
+									<h4>Pruebas Especiales</h4>
+									<table class="table table-striped sortable table-responsive" id="ttlcq4b">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesindtlcq[4] %}
 											<tr>
 												<td>{{ loop.index }}</td>
 												<td>{{ i[0] }}</td>

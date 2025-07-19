@@ -1575,8 +1575,8 @@ def m():
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
 @login_required
 def confirmacionm(carnet, nombre, curso, mid, mcod):
-	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 280], ['QUIMICA GENERAL I', 200], ['PARASITOLOGIA', 250], ['QUIMICA INORGANICA', 200], ['BIOQUIMICA GENERAL', 330], ['HEMATOLOGIA BASICA', 300], ['HEMATOLOGIA CLINICA', 350], ['MICROBIOLOGIA CLINICA AVANZADA', 270], ['BANCO DE SANGRE', 340], ['MICROBIOLOGIA APLICADA II', 310]]
-	nombremanualesindtlcq = [['BACTERIOLOGIA', 410], ['QUIMICA CLINICA', 320]]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 335], ['QUIMICA GENERAL II', 225], ['MICROBIOLOGIA GENERAL', 565], ['QUIMICA ORGANICA', 225], ['BIOQUIMICA CLINICA', 325], ['BACTERIOLOGIA', 555], ['INMUNOLOGIA BASICA', 370], ['MICOLOGIA', 300], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 380]]
+	nombremanualesindtlcq = [['MICROBIOLOGIA', 335], ['HEMATOLOGIA Y COAGULACION', 370], ['INMUNOLOGIA Y BANCO DE SANGRE', 365], ['PRUEBAS ESPECIALES', 380]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
@@ -1659,10 +1659,10 @@ def repm():
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				numsmanualeslbcq = [1,3,5,7,9]
-				numsmanualestlcq = [1,3]
-				nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 255], ['QUIMICA GENERAL I', 175], ['PARASITOLOGIA', 225], ['QUIMICA INORGANICA', 175], ['BIOQUIMICA GENERAL', 305], ['HEMATOLOGIA BASICA', 275], ['HEMATOLOGIA CLINICA', 325], ['MICROBIOLOGIA CLINICA AVANZADA', 245], ['BANCO DE SANGRE', 315], ['MICROBIOLOGIA APLICADA II', 285]]
-				nombremanualesindtlcq = [['BACTERIOLOGIA', 385], ['QUIMICA CLINICA', 295]]
+				numsmanualeslbcq = [2,4,6,8]
+				numsmanualestlcq = [2,4]
+				nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 335], ['QUIMICA GENERAL II', 225], ['MICROBIOLOGIA GENERAL', 565], ['QUIMICA ORGANICA', 225], ['BIOQUIMICA CLINICA', 325], ['BACTERIOLOGIA', 555], ['INMUNOLOGIA BASICA', 370], ['MICOLOGIA', 300], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 380]]
+				nombremanualesindtlcq = [['MICROBIOLOGIA', 335], ['HEMATOLOGIA Y COAGULACION', 370], ['INMUNOLOGIA Y BANCO DE SANGRE', 365], ['PRUEBAS ESPECIALES', 380]]
 				manualeslbcq = []
 				manualestlcq = []
 				manualesindlbcq = []
@@ -1954,7 +1954,7 @@ def reportes():
 					facturas = float(facturas[0])
 				else:
 					facturas = 0
-				consulta = f'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = CURDATE() and p.recibo = 0 and p.user = {session["idusercaja"]} group by c.cod order by c.cod asc, p.nombre asc;'
+				consulta = f'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = CURDATE() and p.recibo = 0 and p.recibo REGEXP "^[0-9]+$" and p.user = {session["idusercaja"]} group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				sumas = cursor.fetchall()
 				sumtotal = 0
@@ -2116,7 +2116,7 @@ def repdiario():
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), c.idcodigos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = CURDATE() and p.recibo = 0 group by c.cod order by c.cod asc, p.nombre asc;'
+				consulta = 'SELECT c.cod, c.concepto, count(p.total), round(sum(p.total),2), c.idcodigos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fecha = CURDATE() and p.recibo = 0 and p.recibo REGEXP "^[0-9]+$" group by c.cod order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				resumen = cursor.fetchall()
 				consulta = "select f.documento, f.proveedor, f.descripcion, f.monto, u.iniciales, f.idfactura from factura f inner join user u on f.usuario = u.iduser where f.fecha = CURDATE();"
@@ -2130,7 +2130,7 @@ def repdiario():
 				cursor.execute(consulta)
 				boletasig = cursor.fetchone()
 				boletasig = boletasig[0]
-				consulta = 'SELECT p.nombre, p.carnet, p.fecha, c.concepto, p.extra, round(p.total,2), p.idpagos, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fecha = CURDATE() and p.recibo = 0 order by c.cod asc, p.nombre asc;'
+				consulta = 'SELECT p.nombre, p.carnet, p.fecha, c.concepto, p.extra, round(p.total,2), p.idpagos, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fecha = CURDATE() and p.recibo = 0 and p.recibo REGEXP "^[0-9]+$" order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
 				data = cursor.fetchall()
@@ -2886,7 +2886,7 @@ def auditoria():
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
 		if int(accion) == 1:
-			return render_template('auditoria.html', title="Reporte general", data=data, logeado=session['logeadocaja'], conteo=conteo, datacarnet=datacarnet, datanombre=datanombre, datafechaini=datafechaini, datafechafin=datafechafin, dataconcepto=dataconcepto, datadescripcion=datadescripcion, datarecibo=datarecibo, dataempresa=dataempresa)
+			return render_template('auditoria.html', title="Reporte general", data=data, logeado=0, conteo=conteo, datacarnet=datacarnet, datanombre=datanombre, datafechaini=datafechaini, datafechafin=datafechafin, dataconcepto=dataconcepto, datadescripcion=datadescripcion, datarecibo=datarecibo, dataempresa=dataempresa)
 		elif int(accion) == 2:
 			output = io.BytesIO()
 			workbook = xlwt.Workbook(encoding="utf-8")
