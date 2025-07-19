@@ -386,13 +386,6 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
 	else:
 		datamen = get_query_one('SELECT idcodigos, precio FROM codigos WHERE cod LIKE %s ORDER BY cod ASC',("%MEINGLESS%",))
 	pagoant = False
-	for mes in meses:
-		data = get_query_all('SELECT idpagos FROM pagos WHERE nombre = %s AND INSTR(extra, %s) > 0 and carnet = %s and INSTR(extra, %s) > 0', (nombre, mes, carnet, ciclomen))
-		if data:
-			pagoant = True
-			break
-	if pagoant:
-		return redirect(url_for('auxenf', mensaje=1))
 	if insc == 1:
 		total += int(datainsc[1])
 	for i in meses:
