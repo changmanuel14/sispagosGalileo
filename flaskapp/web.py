@@ -545,7 +545,6 @@ def confirmacionlab(nombre, carnet, dataexamenes):
 	examenes = [examen.split(",") for examen in dataexamenes.split(";") if examen]
 	cantidad = len(examenes)
 	total = sum(float(examen[1]) for examen in examenes)
-	
 	dataaux = []
 	for id_examen, precio in examenes:
 		query_info = get_query_one(
@@ -593,7 +592,6 @@ def editarpago(idpago):
 		total = request.form.get("total") or datapago[3]
 		result = execute_query('UPDATE pagos SET nombre=%s, carnet=%s, total=%s, fecha=%s, extra=%s, idcod=%s, user=%s WHERE idpagos=%s',
 			(nombre, carnet, total, fecha, extra, codigo, session['idusercaja'], idpago))
-		
 		if result is None:
 			print("Ocurrió un error al actualizar el pago.")
 		return redirect(url_for('repdiario'))
@@ -839,437 +837,408 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 @app.route('/repextra', methods=['GET', 'POST'])
 @login_required
 def repextra():
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				consulta = '''select p.nombre, p.carnet, p.fecha, c.cod, p.total from pagos p 
-				inner join codigos c on p.idcod = c.idcodigos
-				where p.idcod = 61 or p.idcod = 66 or p.idcod = 67 or p.idcod = 68 order by p.fecha asc'''
-				cursor.execute(consulta)
-			# Con fetchall traemos todas las filas
-				data = cursor.fetchall()
-				suma = 0
-				for i in data:
-					suma = suma + i[4]
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
-	return render_template('repextra.html', title="Reporte Pagos Extra", data = data, suma=suma, logeado=session['logeadocaja'], barranav=2)
+    consulta = '''select p.nombre, p.carnet, p.fecha, c.cod, p.total from pagos p 
+                inner join codigos c on p.idcod = c.idcodigos
+                where p.idcod in (61, 66, 67, 68) order by p.fecha asc'''
+    data = get_query_all(consulta)
+    suma = 0
+    if data:
+        for i in data:
+            suma = suma + i[4]
+    else:
+        data = []  # Aseguramos que data sea una lista vacía si get_query_all devuelve None
+    return render_template('repextra.html', title="Reporte Pagos Extra", data=data, suma=suma, logeado=session['logeadocaja'], barranav=2)
 
 @app.route('/p', methods=['GET', 'POST'])
 @login_required
 def p():
-	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				cursor.execute("SELECT idcodigos, cod, concepto FROM pagossis.codigos WHERE practica = 1 ORDER BY cod asc;")
-			# Con fetchall traemos todas las filas
-				carreras = cursor.fetchall()
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
-	if request.method == 'POST':
-		datacarnet = request.form["carnet"]
-		datanombre = request.form["nombre"]
-		datacarrera = request.form["carrera"]
-		datalugar = request.form["lugar1"]
-		datalugar2 = request.form["lugar2"]
-		datalugar3 = request.form["lugar3"]
-		if len(datalugar) < 1:
-			datalugar = 0
-		if len(datalugar2) < 1:
-			datalugar2 = 0
-		if len(datalugar3) < 1:
-			datalugar3 = 0
-		datafechainicio = request.form["fechainicio"]
-		if len(datafechainicio) < 1:
-			datafechainicio = '0000-00-00'
-		datafechafin = request.form["fechafin"]
-		if len(datafechafin) < 1:
-			datafechafin = '0000-00-00'
-		data = datacarrera.split(',')
-		pid = data[0]
-		pcod = data[1]
-		cantidad = request.form["cant"]
-		cantidad = int(cantidad)
-		datames = []
-		for i in range(cantidad):
-			aux1 = f'mes{i+1}'
-			aux = request.form[aux1]
-			if(len(aux) > 0):
-				datames.append(aux)
-		return redirect(url_for('confirmacionp', carnet = datacarnet, nombre = datanombre, datames= datames, pid = pid, pcod = pcod, cantidad=cantidad, lugar=datalugar, fechainicio = datafechainicio, fechafin=datafechafin, lugar2 = datalugar2, lugar3 = datalugar3))
-	return render_template('practica.html', title="Practica",  carreras=carreras, meses=meses, logeado=session['logeadocaja'], barranav=1)
+    meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+    carreras = get_query_all("SELECT idcodigos, cod, concepto FROM codigos WHERE practica = 1 ORDER BY cod asc;")
+    if carreras is None:
+        carreras = []
+    
+    if request.method == 'POST':
+        datacarnet = request.form["carnet"]
+        datanombre = request.form["nombre"]
+        datacarrera = request.form["carrera"]
+        datalugar = request.form["lugar1"]
+        datalugar2 = request.form["lugar2"]
+        datalugar3 = request.form["lugar3"]
+        if len(datalugar) < 1:
+            datalugar = 0
+        if len(datalugar2) < 1:
+            datalugar2 = 0
+        if len(datalugar3) < 1:
+            datalugar3 = 0
+        datafechainicio = request.form["fechainicio"]
+        if len(datafechainicio) < 1:
+            datafechainicio = '0000-00-00'
+        datafechafin = request.form["fechafin"]
+        if len(datafechafin) < 1:
+            datafechafin = '0000-00-00'
+        data = datacarrera.split(',')
+        pid = data[0]
+        pcod = data[1]
+        cantidad = int(request.form["cant"])
+        datames = []
+        for i in range(cantidad):
+            aux1 = f'mes{i+1}'
+            aux = request.form[aux1]
+            if len(aux) > 0:
+                datames.append(aux)
+        return redirect(url_for('confirmacionp', carnet=datacarnet, nombre=datanombre, datames=datames, pid=pid, pcod=pcod, cantidad=cantidad, 
+                            lugar=datalugar, fechainicio=datafechainicio, fechafin=datafechafin, lugar2=datalugar2, lugar3=datalugar3))
+    return render_template('practica.html', title="Practica", carreras=carreras, meses=meses, logeado=session['logeadocaja'], barranav=1)
 
 @app.route('/confirmacionp/<carnet>&<nombre>&<datames>&<pid>&<pcod>&<cantidad>&<lugar>&<fechainicio>&<fechafin>&<lugar2>&<lugar3>', methods=['GET', 'POST'])
 @login_required
-def confirmacionp(carnet, nombre, datames, pid, pcod,cantidad, lugar, fechainicio, fechafin, lugar2, lugar3):
-	carnet = str(carnet)
-	cantidad = int(cantidad)
-	nombre = str(nombre)
-	pid = int(pid)
-	agregar = False
-	meses=datames.split(',')
-	for i in range(len(meses)):
-		if 'LBCQ' in pcod or 'TLCQ' in pcod or 'MGGQ' in pcod:
-			try:
-				meses[i] = 'Mes: ' + str(meses[i].split("\'")[1])
-			except:
-				meses[i] = 'Mes: ' + str(meses[i])
-		elif 'TOPTQ' in pcod or ('TRADQ' in pcod and 'Pre' in pcod):
-			try:
-				meses[i] = 'Módulo: ' + str(meses[i].split("\'")[1])
-			except:
-				meses[i] = 'Módulo: ' + str(meses[i])
-		else:
-			try:
-				meses[i] = str(meses[i].split("'")[1])
-			except:
-				meses[i] = meses[i]
-	if request.method == "POST":
-		try:
-			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-			try:
-				with conexion.cursor() as cursor:
-					consulta1 = f'SELECT idcodigos, precio, concepto FROM codigos WHERE idcodigos = "{pid}"'
-					cursor.execute(consulta1)
-					precios1 = cursor.fetchall()
-					precioasig = float(precios1[0][1])
-					idpagos = []
-					idpracticas = []
-					for i in range(cantidad):
-						if 'TUEVQ' in pcod:
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, meses[i], date.today(), 'Practica TUEVQ',0,session['idusercaja']))
-							conexion.commit()
-						elif 'LBCQ' in pcod:
-							if 'Banco' in pcod:
-								consulta = "INSERT INTO practicalbcq(nombre, carnet, idcodigo, fecha, descripcion, user) VALUES (%s,%s,%s,CURDATE(),%s,%s);"
-								cursor.execute(consulta, (nombre, carnet, pid, meses[i],session['idusercaja']))
-								conexion.commit()
-								consulta = "Select MAX(idpracticalbcq) from practicalbcq;"
-								cursor.execute(consulta)
-								idpago = cursor.fetchone()
-								idpago = idpago[0]
-								idpagos.append(idpago)
-							else:
-								consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-								cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
-								consulta = "INSERT INTO practicalbcq(nombre, carnet, idcodigo, fecha, descripcion, user) VALUES (%s,%s,%s,CURDATE(),%s,%s);"
-								cursor.execute(consulta, (nombre, carnet, pid, meses[i],session['idusercaja']))
-								conexion.commit()
-								consulta = "Select MAX(idpracticalbcq) from practicalbcq;"
-								cursor.execute(consulta)
-								idpago = cursor.fetchone()
-								idpago = idpago[0]
-								idpagos.append(idpago)
-						elif 'THDQ' in pcod or 'TLCQ' in pcod or 'Diálisis' in pcod:
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
-							conexion.commit()
-							consulta = "Select MAX(idpagos) from pagos;"
-							cursor.execute(consulta)
-							idpago = cursor.fetchone()
-							idpago = idpago[0]
-							idpagos.append(idpago)
-						elif 'TOPTQ' in pcod:
-							if '5 Especial' in meses[i]:
-								preciotoptq = 1000
-							elif '5' in meses[i]:
-								preciotoptq = 800
-							elif '9' in meses[i]:
-								preciotoptq = 1000
-							else:
-								preciotoptq = precioasig
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, preciotoptq, date.today(), meses[i],0,session['idusercaja']))
-							conexion.commit()
-							consulta = "Select MAX(idpagos) from pagos;"
-							cursor.execute(consulta)
-							idpago = cursor.fetchone()
-							idpago = idpago[0]
-							idpagos.append(idpago)
-						elif 'TRADQ' in pcod and 'Prepractica' in pcod:
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
-							conexion.commit()
-							consulta = "Select MAX(idpagos) from pagos;"
-							cursor.execute(consulta)
-							idpago = cursor.fetchone()
-							idpago = idpago[0]
-							idpagos.append(idpago)
-						else:
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							if 'LENQ' in precios1[0][2] and 'Pago 3' in meses[i]:
-								precioasig = 200
-								if lugar == 0 or fechainicio == '0000-00-00' or fechafin == '0000-00-00':
-									imprimir = False
-								else:
-									imprimir = True
-							else:
-								imprimir = False
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i],0,session['idusercaja']))
-							if 'LENQ' in precios1[0][2]:
-								consulta = "INSERT INTO practicalenq(nombre,carnet,practica,lugar,fechainicio,fechafin,fecha,lugar2, lugar3) VALUES (%s,%s,%s,%s,%s,%s,CURDATE(),%s,%s);"
-								cursor.execute(consulta, (nombre, carnet, meses[i], lugar, fechainicio,fechafin,lugar2,lugar3))
-								consulta = "Select MAX(idpracticalenq) from practicalenq;"
-								cursor.execute(consulta)
-								idpractica = cursor.fetchone()
-								idpracticas = idpractica[0]
-								consulta = "Select MAX(idpagos) from pagos;"
-								cursor.execute(consulta)
-								idpago = cursor.fetchone()
-								idpago = idpago[0]
-								idpagos.append(idpago)
-							conexion.commit()
-			finally:
-				conexion.close()
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
-		if 'LBCQ' in pcod:
-			if 'EPS' in pcod:
-				return redirect(url_for('epslbcq', idpagos = idpagos))
-			else:
-				return redirect(url_for('hojalbcq', idpagos = idpagos))
-		elif 'LENQ' in pcod:
-			if imprimir:
-				return redirect(url_for('hojalenq', idpagos = idpracticas))
-			else:
-				return redirect(url_for('imprimir', idpagos = idpagos))
-		elif 'THDQ' in pcod:
-			return redirect(url_for('hojathdq', idpagos = idpagos))
-		elif 'Diálisis' in pcod:
-			return redirect(url_for('hojadialisis', idpagos = idpagos))
-		elif 'TLCQ' in pcod:
-			return redirect(url_for('hojatlcq', idpagos = idpagos))
-		elif 'TRADQ' in pcod and 'Prepractica' in pcod:
-			return redirect(url_for('prepracticatradq', idpagos = idpagos))
-		elif 'TOPTQ' in pcod:
-			return redirect(url_for('practicatoptq', idpagos = idpagos))
-		else:
-			return redirect(url_for('p'))
-	return render_template('confirmacionp.html', title="Confirmación", carnet = carnet, nombre = nombre, meses = meses, pid = pid, pcod = pcod, cantidad=cantidad, logeado=session['logeadocaja'], lugar=lugar, fechainicio = fechainicio, fechafin = fechafin, lugar2 = lugar2, lugar3 = lugar3, barranav=1)
+def confirmacionp(carnet, nombre, datames, pid, pcod, cantidad, lugar, fechainicio, fechafin, lugar2, lugar3):
+    carnet = str(carnet)
+    cantidad = int(cantidad)
+    nombre = str(nombre)
+    pid = int(pid)
+    meses = datames.split(',')
+    for i in range(len(meses)):
+        if 'LBCQ' in pcod or 'TLCQ' in pcod or 'MGGQ' in pcod:
+            try:
+                meses[i] = 'Mes: ' + str(meses[i].split("\'")[1])
+            except:
+                meses[i] = 'Mes: ' + str(meses[i])
+        elif 'TOPTQ' in pcod or ('TRADQ' in pcod and 'Pre' in pcod):
+            try:
+                meses[i] = 'Módulo: ' + str(meses[i].split("\'")[1])
+            except:
+                meses[i] = 'Módulo: ' + str(meses[i])
+        else:
+            try:
+                meses[i] = str(meses[i].split("'")[1])
+            except:
+                meses[i] = meses[i]
+                
+    if request.method == "POST":
+        consulta1 = f'SELECT idcodigos, precio, concepto FROM codigos WHERE idcodigos = %s'
+        precios1 = get_query_all(consulta1, (pid,))
+        if not precios1:
+            return redirect(url_for('p'))
+        precioasig = float(precios1[0][1])
+        idpagos = []
+        idpracticas = []
+        imprimir = False
+        
+        for i in range(cantidad):
+            if 'TUEVQ' in pcod:
+                consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+                execute_query(consulta, (precios1[0][0], nombre, carnet, meses[i], date.today(), 'Practica TUEVQ', 0, session['idusercaja']))
+                
+            elif 'LBCQ' in pcod:
+                if 'Banco' in pcod:
+                    consulta = "INSERT INTO practicalbcq(nombre, carnet, idcodigo, fecha, descripcion, user) VALUES (%s,%s,%s,CURDATE(),%s,%s);"
+                    execute_query(consulta, (nombre, carnet, pid, meses[i], session['idusercaja']))
+                    
+                    consulta = "Select MAX(idpracticalbcq) from practicalbcq;"
+                    idpago = get_query_one(consulta)
+                    if idpago:
+                        idpagos.append(idpago[0])
+                else:
+                    consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+                    execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
+                    
+                    consulta = "INSERT INTO practicalbcq(nombre, carnet, idcodigo, fecha, descripcion, user) VALUES (%s,%s,%s,CURDATE(),%s,%s);"
+                    execute_query(consulta, (nombre, carnet, pid, meses[i], session['idusercaja']))
+                    
+                    consulta = "Select MAX(idpracticalbcq) from practicalbcq;"
+                    idpago = get_query_one(consulta)
+                    if idpago:
+                        idpagos.append(idpago[0])
+                        
+            elif 'THDQ' in pcod or 'TLCQ' in pcod or 'Diálisis' in pcod:
+                consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+                execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
+                
+                consulta = "Select MAX(idpagos) from pagos;"
+                idpago = get_query_one(consulta)
+                if idpago:
+                    idpagos.append(idpago[0])
+                    
+            elif 'TOPTQ' in pcod:
+                if '5 Especial' in meses[i]:
+                    preciotoptq = 1000
+                elif '5' in meses[i]:
+                    preciotoptq = 800
+                elif '9' in meses[i]:
+                    preciotoptq = 1000
+                else:
+                    preciotoptq = precioasig
+                    
+                consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+                execute_query(consulta, (precios1[0][0], nombre, carnet, preciotoptq, date.today(), meses[i], 0, session['idusercaja']))
+                
+                consulta = "Select MAX(idpagos) from pagos;"
+                idpago = get_query_one(consulta)
+                if idpago:
+                    idpagos.append(idpago[0])
+                    
+            elif 'TRADQ' in pcod and 'Prepractica' in pcod:
+                consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+                execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
+                
+                consulta = "Select MAX(idpagos) from pagos;"
+                idpago = get_query_one(consulta)
+                if idpago:
+                    idpagos.append(idpago[0])
+                    
+            else:
+                consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+                if 'LENQ' in precios1[0][2] and 'Pago 3' in meses[i]:
+                    precioasig = 200
+                    if lugar == 0 or fechainicio == '0000-00-00' or fechafin == '0000-00-00':
+                        imprimir = False
+                    else:
+                        imprimir = True
+                else:
+                    imprimir = False
+                execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
+                if 'LENQ' in precios1[0][2]:
+                    consulta = "INSERT INTO practicalenq(nombre,carnet,practica,lugar,fechainicio,fechafin,fecha,lugar2,lugar3) VALUES (%s,%s,%s,%s,%s,%s,CURDATE(),%s,%s);"
+                    execute_query(consulta, (nombre, carnet, meses[i], lugar, fechainicio, fechafin, lugar2, lugar3))
+                    
+                    consulta = "Select MAX(idpracticalenq) from practicalenq;"
+                    idpractica = get_query_one(consulta)
+                    if idpractica:
+                        idpracticas = idpractica[0]
+                        
+                    consulta = "Select MAX(idpagos) from pagos;"
+                    idpago = get_query_one(consulta)
+                    if idpago:
+                        idpagos.append(idpago[0])
+        # Redirecciones según el tipo de práctica
+        if 'LBCQ' in pcod:
+            if 'EPS' in pcod:
+                return redirect(url_for('epslbcq', idpagos=idpagos))
+            else:
+                return redirect(url_for('hojalbcq', idpagos=idpagos))
+        elif 'LENQ' in pcod:
+            if imprimir:
+                return redirect(url_for('hojalenq', idpagos=idpracticas))
+            else:
+                return redirect(url_for('imprimir', idpagos=idpagos))
+        elif 'THDQ' in pcod:
+            return redirect(url_for('hojathdq', idpagos=idpagos))
+        elif 'Diálisis' in pcod:
+            return redirect(url_for('hojadialisis', idpagos=idpagos))
+        elif 'TLCQ' in pcod:
+            return redirect(url_for('hojatlcq', idpagos=idpagos))
+        elif 'TRADQ' in pcod and 'Prepractica' in pcod:
+            return redirect(url_for('prepracticatradq', idpagos=idpagos))
+        elif 'TOPTQ' in pcod:
+            return redirect(url_for('practicatoptq', idpagos=idpagos))
+        else:
+            return redirect(url_for('p'))
+    return render_template('confirmacionp.html', title="Confirmación", carnet=carnet, nombre=nombre, meses=meses, pid=pid, pcod=pcod, cantidad=cantidad, 
+                        logeado=session['logeadocaja'], lugar=lugar, fechainicio=fechainicio, fechafin=fechafin, lugar2=lugar2, lugar3=lugar3, barranav=1)
 
 @app.route('/repp', methods=['GET', 'POST'])
 @login_required
 def repp():
-	datacarnet = ""
-	datanombre = ""
-	datafechainicio = ""
-	datafechafin = ""
-	datacarrera = ""
-	datadescripcion = ""
-	accion = 0
-	data = []
-	conteo = 0
-	if request.method == "POST":
-		datacarnet = request.form["carnet"]
-		datanombre = request.form["nombre"]
-		datafechainicio = request.form["fechaini"]
-		datafechafin = request.form["fechafin"]
-		datacarrera = request.form["carrera"]
-		datadescripcion = request.form["descripcion"]
-		accion = request.form["accion"]
-		try:
-			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-			try:
-				with conexion.cursor() as cursor:
-					consulta = f'select p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), d.cod, p.extra, p.total, p.idpagos from pagos p inner join codigos d on p.idcod = d.idcodigos inner join carreras c on d.idcarrera = c.idcarreras where d.practica = 1 and p.nombre like "%{datanombre}%" and p.carnet like "%{datacarnet}%"'
-					if len(datafechainicio) != 0:
-						consulta = consulta + f' and p.fecha >= "{datafechainicio}"'
-					if len(datafechafin) != 0:
-						consulta = consulta + f' and p.fecha <= "{datafechafin}"'
-					consulta = consulta + f' and d.cod like "%{datacarrera}%" and p.extra like "%{datadescripcion}%" order by p.fecha desc, c.codigo desc, p.nombre asc, p.extra asc;'
-					cursor.execute(consulta)
-				# Con fetchall traemos todas las filas
-					data = cursor.fetchall()
-					conteo = len(data)
-			finally:
-				conexion.close()
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
-		if int(accion) == 1:
-			return render_template('repp.html', title="Reporte Prácticas", data = data, carreras=carreras, logeado=session['logeadocaja'], conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechainicio = datafechainicio, datafechafin = datafechafin, datacarrera = datacarrera, datadescripcion = datadescripcion)
-		elif int(accion) == 2:
-			output = io.BytesIO()
-			workbook = xlwt.Workbook(encoding="utf-8")
-			sh1 = workbook.add_sheet("Reporte Prácticas")
+    datacarnet = ""
+    datanombre = ""
+    datafechainicio = ""
+    datafechafin = ""
+    datacarrera = ""
+    datadescripcion = ""
+    accion = 0
+    data = []
+    conteo = 0
+    
+    if request.method == "POST":
+        datacarnet = request.form["carnet"]
+        datanombre = request.form["nombre"]
+        datafechainicio = request.form["fechaini"]
+        datafechafin = request.form["fechafin"]
+        datacarrera = request.form["carrera"]
+        datadescripcion = request.form["descripcion"]
+        accion = request.form["accion"]
+        
+        consulta = '''SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,%s), d.cod, p.extra, p.total, p.idpagos FROM pagos p INNER JOIN codigos d ON p.idcod = d.idcodigos 
+            INNER JOIN carreras c ON d.idcarrera = c.idcarreras WHERE d.practica = 1 AND p.nombre LIKE %s AND p.carnet LIKE %s'''
+        
+        params = [f'%d/%m/%Y', f'%{datanombre}%', f'%{datacarnet}%']
+        if datafechainicio:
+            consulta += ' AND p.fecha >= %s'
+            params.append(datafechainicio)
+            
+        if datafechafin:
+            consulta += ' AND p.fecha <= %s'
+            params.append(datafechafin)
+            
+        consulta += ' AND d.cod LIKE %s AND p.extra LIKE %s ORDER BY p.fecha DESC, c.codigo DESC, p.nombre ASC, p.extra ASC'
+        params.extend([f'%{datacarrera}%', f'%{datadescripcion}%'])
+        
+        data = get_query_all(consulta, params)
+        
+        if data is None:
+            data = []
+        conteo = len(data)
+        if int(accion) == 1:
+            return render_template('repp.html', title="Reporte Prácticas", data=data, carreras=carreras, logeado=session['logeadocaja'], conteo=conteo, datacarnet=datacarnet, datanombre=datanombre, 
+                                datafechainicio=datafechainicio, datafechafin=datafechafin, datacarrera=datacarrera, datadescripcion=datadescripcion, barranav=2)
+        elif int(accion) == 2:
+            output = io.BytesIO()
+            workbook = xlwt.Workbook(encoding="utf-8")
+            sh1 = workbook.add_sheet("Reporte Prácticas")
 
-			xlwt.add_palette_colour("Orange", 0x21) # the second argument must be a number between 8 and 64
-			workbook.set_colour_RGB(0x21, 255, 165, 0) # Red — 79, Green — 129, Blue — 189
-			xlwt.add_palette_colour("Lightgreen", 0x22) # the second argument must be a number between 8 and 64
-			workbook.set_colour_RGB(0x22, 144, 238, 144) # Red — 79, Green — 129, Blue — 189
-			
-			#bordes
-			borders = xlwt.Borders()
-			borders.left = 1
-			borders.right = 1
-			borders.top = 1
-			borders.bottom = 1
+            # Configuración de colores
+            xlwt.add_palette_colour("Orange", 0x21)
+            workbook.set_colour_RGB(0x21, 255, 165, 0)
+            xlwt.add_palette_colour("Lightgreen", 0x22)
+            workbook.set_colour_RGB(0x22, 144, 238, 144)
+            
+            # Configuración de bordes
+            borders = xlwt.Borders()
+            borders.left = 1
+            borders.right = 1
+            borders.top = 1
+            borders.bottom = 1
 
-			#encabezados
-			header_font = xlwt.Font()
-			header_font.name = 'Arial'
-			header_font.bold = True
-			header_style = xlwt.XFStyle()
-			header_style.font = header_font
-			header_style.borders = borders
+            # Estilo de encabezados
+            header_font = xlwt.Font()
+            header_font.name = 'Arial'
+            header_font.bold = True
+            header_style = xlwt.XFStyle()
+            header_style.font = header_font
+            header_style.borders = borders
 
-			#contenido1
-			content_font = xlwt.Font()
-			content_font.name = 'Arial'
-			content_pattern = xlwt.Pattern()
-			content_style = xlwt.XFStyle()
-			content_style.font = content_font
-			content_style.borders = borders
-			content_style.pattern = content_pattern
+            # Estilo de contenido
+            content_font = xlwt.Font()
+            content_font.name = 'Arial'
+            content_pattern = xlwt.Pattern()
+            content_style = xlwt.XFStyle()
+            content_style.font = content_font
+            content_style.borders = borders
+            content_style.pattern = content_pattern
 
-			#titulos
-			tittle_font = xlwt.Font()
-			tittle_font.name = 'Arial'
-			tittle_font.bold = True
-			tittle_font.italic = True
-			tittle_font.height = 20*20
-			tittle_style = xlwt.XFStyle()
-			tittle_style.font = tittle_font
+            # Estilo de títulos
+            tittle_font = xlwt.Font()
+            tittle_font.name = 'Arial'
+            tittle_font.bold = True
+            tittle_font.italic = True
+            tittle_font.height = 20*20
+            tittle_style = xlwt.XFStyle()
+            tittle_style.font = tittle_font
 
-			sh1.write(0,0,"Reporte Prácticas", tittle_style)
-			sh1.write(1,0,"Total de Resultados: "+str(conteo), tittle_style)
-			sh1.write(3,0,"No.", header_style)
-			sh1.write(3,1,"Nombre", header_style)
-			sh1.write(3,2,"Carnet", header_style)
-			sh1.write(3,3,"Fecha", header_style)
-			sh1.write(3,4,"Código", header_style)
-			sh1.write(3,5,"Descripción", header_style)
-			sh1.write(3,6,"Total", header_style)
+            # Escribir encabezados del reporte
+            sh1.write(0, 0, "Reporte Prácticas", tittle_style)
+            sh1.write(1, 0, "Total de Resultados: "+str(conteo), tittle_style)
+            sh1.write(3, 0, "No.", header_style)
+            sh1.write(3, 1, "Nombre", header_style)
+            sh1.write(3, 2, "Carnet", header_style)
+            sh1.write(3, 3, "Fecha", header_style)
+            sh1.write(3, 4, "Código", header_style)
+            sh1.write(3, 5, "Descripción", header_style)
+            sh1.write(3, 6, "Total", header_style)
 
-			if len(data) > 0:
-				for i in range(len(data)):
-					sh1.write(i+4,0,i+1, content_style)
-					sh1.write(i+4,1,data[i][0], content_style)
-					sh1.write(i+4,2,data[i][1], content_style)
-					sh1.write(i+4,3,data[i][2], content_style)
-					sh1.write(i+4,4,data[i][3], content_style)
-					sh1.write(i+4,5,data[i][4], content_style)
-					sh1.write(i+4,6,"Q"+str(data[i][5]), content_style)
-			
-			sh1.col(0).width = 0x0d00 + len("No.")
-			try:
-				sh1.col(1).width = 256 * (max([len(str(row[i])) for row in data[i][0]]) + 1) * 10
-				sh1.col(2).width = 256 * (max([len(str(row[i])) for row in data[i][1]]) + 1) * 10
-				sh1.col(3).width = 256 * (max([len(str(row[i])) for row in data[i][2]]) + 1) * 10
-				sh1.col(4).width = 256 * (max([len(str(row[i])) for row in data[i][3]]) + 1) * 10
-				sh1.col(5).width = 256 * (max([len(str(row[i])) for row in data[i][4]]) + 1) * 10
-				sh1.col(6).width = 256 * (max([len(str(row[i])) for row in data[i][5]]) + 1) * 10
-				sh1.col(7).width = 256 * (max([len(str(row[i])) for row in data[i][6]]) + 1) * 10
-			except:
-				sh1.col(1).width = 256 * 20
-				sh1.col(2).width = 256 * 20
-				sh1.col(3).width = 256 * 20
-				sh1.col(4).width = 256 * 20
-				sh1.col(5).width = 256 * 20
-				sh1.col(6).width = 256 * 20
-				sh1.col(7).width = 256 * 20
-			workbook.save(output)
-			output.seek(0)
-			return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=reportepracticas.xls"})
-	return render_template('repp.html', title="Reporte Prácticas", data = data, carreras=carreras, logeado=session['logeadocaja'], conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechainicio = datafechainicio, datafechafin = datafechafin, datacarrera = datacarrera, datadescripcion = datadescripcion, barranav=2)
+            # Llenar datos
+            if data:
+                for i in range(len(data)):
+                    sh1.write(i+4, 0, i+1, content_style)
+                    sh1.write(i+4, 1, data[i][0], content_style)
+                    sh1.write(i+4, 2, data[i][1], content_style)
+                    sh1.write(i+4, 3, data[i][2], content_style)
+                    sh1.write(i+4, 4, data[i][3], content_style)
+                    sh1.write(i+4, 5, data[i][4], content_style)
+                    sh1.write(i+4, 6, "Q"+str(data[i][5]), content_style)
+            
+            # Configuración de anchos de columna
+            sh1.col(0).width = 0x0d00 + len("No.")
+            
+            try:
+                if data:
+                    max_lengths = [0] * 7
+                    for row in data:
+                        for i in range(len(row)):
+                            if i < 7:  # Asegurar que no excedemos el índice
+                                max_lengths[i] = max(max_lengths[i], len(str(row[i])))
+                    
+                    for i in range(1, 7):
+                        sh1.col(i).width = 256 * (max_lengths[i-1] + 1) * 2
+            except:
+                for i in range(1, 8):
+                    sh1.col(i).width = 256 * 20
+            
+            workbook.save(output)
+            output.seek(0)
+            
+            return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=reportepracticas.xls"})
+    return render_template('repp.html', title="Reporte Prácticas", data=data, carreras=carreras, logeado=session['logeadocaja'], conteo=conteo, datacarnet=datacarnet, datanombre=datanombre, 
+                        datafechainicio=datafechainicio, datafechafin=datafechafin, datacarrera=datacarrera, datadescripcion=datadescripcion, barranav=2)
 
 @app.route('/hojalbcq/<idpagos>', methods=['GET', 'POST'])
 @login_required
 def hojalbcq(idpagos):
-	array = idpagos.split(',')
-	newarray = []
-	cantidad = len(array)
-	for i in range(cantidad):
-		varaux = ''
-		for j in array[i]:
-			if j.isdigit():
-				varaux = varaux + str(j)
-		newarray.append(varaux)
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				meses = []
-				idhojas = []
-				for i in range(cantidad):
-					consulta = f'SELECT nombre, carnet, descripcion, idpracticalbcq FROM practicalbcq WHERE idpracticalbcq = {newarray[i]};'
-					cursor.execute(consulta)
-				# Con fetchall traemos todas las filas
-					data = cursor.fetchone()
-					nombre = data[0]
-					carnet = data[1]
-					aux = data[2]
-					aux = str(aux).split(':')
-					meses.append(aux[1])
-					idhojas.append(data[3])
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
-	fechaact = date.today()
-	year = fechaact.year
-	rendered = render_template('hojalbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas, path=PATH_FILELOGO)
-	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'margin-bottom': '35mm'}
-	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
-	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
-	response = make_response(pdf)
-	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
-	print(response)
-	return response
+    # Procesar los IDs de forma más eficiente
+    array = idpagos.split(',')
+    newarray = [''.join(char for char in item if char.isdigit()) for item in array]
+    cantidad = len(newarray)
+    query = "SELECT nombre, carnet, descripcion, idpracticalbcq FROM practicalbcq WHERE idpracticalbcq IN ({})".format(','.join(['%s'] * cantidad))
+    data = get_query_all(query, newarray)
+    if not data:
+        # Manejar el caso de error
+        return "Error al obtener los datos", 500
+    # Procesar los resultados
+    nombre = data[0][0]  # Usando el primer registro para nombre/carnet
+    carnet = data[0][1]
+    meses = []
+    idhojas = []
+    for row in data:
+        aux = str(row[2]).split(':')
+        meses.append(aux[1] if len(aux) > 1 else "")
+        idhojas.append(row[3])
+    
+    # Generar el PDF
+    fechaact = date.today()
+    year = fechaact.year
+    rendered = render_template('hojalbcq.html', title="Hoja de Práctica",cantidad=cantidad, nombre=nombre, carnet=carnet, meses=meses, year=year, idhojas=idhojas, path=PATH_FILELOGO)
+    options = {'enable-local-file-access': None, 'page-size': 'Legal', 'margin-bottom': '35mm'}
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+    pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=reportediario.pdf'
+    return response
 
 @app.route('/epslbcq/<idpagos>', methods=['GET', 'POST'])
 @login_required
 def epslbcq(idpagos):
-	array = idpagos.split(',')
-	newarray = []
-	cantidad = len(array)
-	for i in range(cantidad):
-		varaux = ''
-		for j in array[i]:
-			if j.isdigit():
-				varaux = varaux + str(j)
-		newarray.append(varaux)
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				meses = []
-				idhojas = []
-				for i in range(cantidad):
-					consulta = f'SELECT nombre, carnet, descripcion, idpracticalbcq FROM practicalbcq WHERE idpracticalbcq = {newarray[i]};'
-					cursor.execute(consulta)
-				# Con fetchall traemos todas las filas
-					data = cursor.fetchone()
-					nombre = data[0]
-					carnet = data[1]
-					aux = data[2]
-					aux = str(aux).split(':')
-					meses.append(aux[1])
-					idhojas.append(data[3])
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
-	fechaact = date.today()
-	year = fechaact.year
-	
-	rendered = render_template('epslbcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, meses = meses, year = year, idhojas=idhojas, path=PATH_FILELOGO)
-	options = {'enable-local-file-access': None, 'page-size': 'Legal', 'footer-right': 'Página [page] de [topage]', 'margin-bottom': '40mm'}
-	config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
-	pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
-	response = make_response(pdf)
-	response.headers['Content-Type'] = 'application/pdf'
-	response.headers['Content-Disposition'] = 'inline; filename=practicalenq.pdf'
-	print(response)
-	return response
+    # Procesar los IDs de forma más eficiente
+    array = idpagos.split(',')
+    newarray = [''.join(char for char in item if char.isdigit()) for item in array]
+    cantidad = len(newarray)
+    # Usar la función get_query_all para obtener todos los datos de una sola vez
+    query = "SELECT nombre, carnet, descripcion, idpracticalbcq FROM practicalbcq WHERE idpracticalbcq IN ({})".format(','.join(['%s'] * cantidad))
+    data = get_query_all(query, newarray)
+    if not data:
+        # Manejar el caso de error
+        return "Error al obtener los datos", 500
+    # Procesar los resultados
+    nombre = data[0][0]  # Usando el primer registro para nombre/carnet
+    carnet = data[0][1]
+    meses = []
+    idhojas = []
+    for row in data:
+        aux = str(row[2]).split(':')
+        meses.append(aux[1] if len(aux) > 1 else "")
+        idhojas.append(row[3])
+    # Generar el PDF
+    fechaact = date.today()
+    year = fechaact.year
+    rendered = render_template('epslbcq.html', title="Hoja de Práctica",cantidad=cantidad, nombre=nombre, carnet=carnet, meses=meses, year=year, idhojas=idhojas, path=PATH_FILELOGO)
+    options = {'enable-local-file-access': None, 'page-size': 'Legal', 'footer-right': 'Página [page] de [topage]', 'margin-bottom': '40mm'}
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+    pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=practicalenq.pdf'
+    return response
 
 @app.route('/hojalenq/<idpagos>', methods=['GET', 'POST'])
 @login_required
