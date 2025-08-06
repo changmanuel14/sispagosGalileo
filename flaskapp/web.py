@@ -1544,8 +1544,8 @@ def m():
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
 @login_required
 def confirmacionm(carnet, nombre, curso, mid, mcod):
-	nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 335], ['QUIMICA GENERAL II', 225], ['MICROBIOLOGIA GENERAL', 565], ['QUIMICA ORGANICA', 225], ['BIOQUIMICA CLINICA', 325], ['BACTERIOLOGIA', 555], ['INMUNOLOGIA BASICA', 370], ['MICOLOGIA', 300], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 380]]
-	nombremanualesindtlcq = [['MICROBIOLOGIA', 335], ['HEMATOLOGIA Y COAGULACION', 370], ['INMUNOLOGIA Y BANCO DE SANGRE', 365], ['PRUEBAS ESPECIALES', 380]]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 435], ['QUIMICA GENERAL II', 325], ['MICROBIOLOGIA GENERAL', 665], ['QUIMICA ORGANICA', 325], ['BIOQUIMICA CLINICA', 425], ['BACTERIOLOGIA', 655], ['INMUNOLOGIA BASICA', 470], ['MICOLOGIA', 400], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 480], ['MICROBIOLOGIA APLICADA I', 325]]
+	nombremanualesindtlcq = [['MICROBIOLOGIA', 435], ['HEMATOLOGIA Y COAGULACION', 470], ['INMUNOLOGIA Y BANCO DE SANGRE', 465], ['PRUEBAS ESPECIALES', 480]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
@@ -1630,8 +1630,8 @@ def repm():
 			with conexion.cursor() as cursor:
 				numsmanualeslbcq = [2,4,6,8]
 				numsmanualestlcq = [2,4]
-				nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 335], ['QUIMICA GENERAL II', 225], ['MICROBIOLOGIA GENERAL', 565], ['QUIMICA ORGANICA', 225], ['BIOQUIMICA CLINICA', 325], ['BACTERIOLOGIA', 555], ['INMUNOLOGIA BASICA', 370], ['MICOLOGIA', 300], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 380]]
-				nombremanualesindtlcq = [['MICROBIOLOGIA', 335], ['HEMATOLOGIA Y COAGULACION', 370], ['INMUNOLOGIA Y BANCO DE SANGRE', 365], ['PRUEBAS ESPECIALES', 380]]
+				nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 385], ['QUIMICA GENERAL II', 275], ['MICROBIOLOGIA GENERAL', 615], ['QUIMICA ORGANICA', 275], ['BIOQUIMICA CLINICA', 375], ['BACTERIOLOGIA', 605], ['INMUNOLOGIA BASICA', 420], ['MICOLOGIA', 350], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 430], ['MICROBIOLOGIA APLICADA I', 275]]
+				nombremanualesindtlcq = [['MICROBIOLOGIA', 385], ['HEMATOLOGIA Y COAGULACION', 420], ['INMUNOLOGIA Y BANCO DE SANGRE', 415], ['PRUEBAS ESPECIALES', 430]]
 				manualeslbcq = []
 				manualestlcq = []
 				manualesindlbcq = []
@@ -1883,18 +1883,16 @@ def confirmaciongrad(tipo, carnet, nombre, cant):
 							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
 							cursor.execute(consulta, (precios1[0][0], nombre, carnet,totalalmuerzos, date.today(), aux,0,session['idusercaja']))
 							conexion.commit()
-							consulta = "Select MAX(idpagos) from pagos;"
-							cursor.execute(consulta)
-							idpago = cursor.fetchone()
-							idpagos.append(idpago[0])
+					consulta = "Select MAX(idpagos) from pagos;"
+					cursor.execute(consulta)
+					idpago = cursor.fetchone()
+					idpagos.append(idpago[0])
+					print("Idpagos", idpagos)
 			finally:
 				conexion.close()
 		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
 			print("Ocurrió un error al conectar: ", e)
-		if tipo == 3:
-			return redirect(url_for('imprimir', idpagos=idpagos))
-		else:
-			return redirect(url_for('grad'))
+		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmaciongrad.html', title="Confirmación", nombre = nombre, carnet = carnet, tipo = tipo, logeado=session['logeadocaja'], cant = cant, barranav=1)
 
 @app.route('/reportes', methods=['GET', 'POST'])
