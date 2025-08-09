@@ -2097,7 +2097,7 @@ def repdiario():
 				cursor.execute(consulta)
 				boletasig = cursor.fetchone()
 				boletasig = boletasig[0]
-				consulta = 'SELECT p.nombre, p.carnet, p.fecha, c.concepto, p.extra, round(p.total,2), p.idpagos, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fecha = CURDATE() and p.recibo = 0 and p.recibo REGEXP "^[0-9]+$" order by c.cod asc, p.nombre asc;'
+				consulta = 'SELECT p.nombre, p.carnet, p.fecha, c.concepto, p.extra, round(p.total,2), p.idpagos, u.iniciales, p.dte FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fecha = CURDATE() and p.recibo = 0 and p.recibo REGEXP "^[0-9]+$" order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 			# Con fetchall traemos todas las filas
 				data = cursor.fetchall()
@@ -2116,6 +2116,11 @@ def repdiario():
 			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 			try:
 				with conexion.cursor() as cursor:
+					for i in data:
+						aux = f"dte{i[6]}"
+						dte = request.form[aux]
+						consulta = f'UPDATE pagos SET dte = "{dte}" WHERE idpagos = {i[6]};'
+						cursor.execute(consulta)
 					regen = request.form["regen"]
 					if regen == '0' or len(regen) < 1:
 						for i in resumen:
@@ -2158,7 +2163,7 @@ def repdiariopdf():
 			with conexion.cursor() as cursor:
 				#suma total, suma sin optica, suma sin lab, suma sin academia, suma sin auxiliares, suma sin tarjeta opt, suma sin tarjeta lab, suma sin facturas, suma sin vales
 				sumas = []
-				consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, round(p.total,2), p.idpagos, p.recibo, u.iniciales FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fecha = CURDATE() order by c.cod asc, p.nombre asc;'
+				consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, round(p.total,2), p.idpagos, p.recibo, u.iniciales, p.dte FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE fecha = CURDATE() order by c.cod asc, p.nombre asc;'
 				cursor.execute(consulta)
 				data = cursor.fetchall()
 				suma = 0

@@ -149,6 +149,7 @@
 									<th>Total</th>
 									<th>Usuario</th>
 									<th>Recibo</th>
+									<th>DTE</th>
 								</tr>
 								{% for i in data %}
 								<tr>
@@ -160,15 +161,16 @@
 									<td>Q{{i[5]}}</td>
 									<td>{{i[8]}}</td>
 									<td>{{i[7]}}</td>
+									<td>{{i[9]}}</td>
 								</tr>
 								{% endfor %}
 								<tr>
-									<th colspan="5">Total Pagos</th>
+									<th colspan="6">Total Pagos</th>
 									<th colspan="3">Q.{{suma}}</th>
 								</tr>
 								{% if contdev > 0 %}
 								<tr>
-									<th colspan="8">Devoluciones</th>
+									<th colspan="9">Devoluciones</th>
 								</tr>
 								{% for i in datadev %}
 								<tr>
@@ -180,15 +182,16 @@
 									<td>-Q{{i[5]}}</td>
 									<td>{{i[8]}}</td>
 									<td>{{i[7]}}</td>
+									<td></td>
 								</tr>
 								{% endfor %}
 								{% endif %}
 								<tr>
-									<th colspan="5">Total Devoluciones</th>
+									<th colspan="6">Total Devoluciones</th>
 									<th colspan="3">Q.{{sumadev}}</th>
 								</tr>
 								<tr>
-									<th colspan="5">Total General</th>
+									<th colspan="6">Total General</th>
 									<th colspan="3">Q.{{sumas[0]}}</th>
 								</tr>
 							</table>
