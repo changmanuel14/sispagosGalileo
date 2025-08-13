@@ -17,6 +17,7 @@ import unicodedata
 import requests
 from functools import wraps
 from pymysql.cursors import DictCursor
+from unicodedata import normalize
 #from flask_weasyprint import HTML, render_pdf
 
 app = Flask(__name__)
@@ -224,13 +225,19 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora, promocion):
 			return redirect(url_for('auxenf'))
 	return render_template('confirmacionauxenf.html', title='Confirmación Auxiliar de Enfermeria', logeado=session['logeadocaja'], nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, insc=insc, meses=meses, mora=mora, promocion=promocion, barranav=1)
 
+def quitar_acentos(cadena):
+    return ''.join(c for c in normalize('NFD', cadena) if ord(c) < 128).lower()
+
 @app.route('/repauxenf', methods=['GET', 'POST'])
 @login_required
 def repauxenf():
     meses = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ]
     fechaact = date.today()
     year = fechaact.year
+
     # 1. Obtener todos los estudiantes inscritos
     consulta = """
         SELECT p.nombre, p.carnet
@@ -245,33 +252,35 @@ def repauxenf():
     """
     nombres = get_query_all(consulta, (f"%{year}%",))
 
-    # 2. Obtener todos los pagos mensuales de todos los estudiantes de un solo jalón
+    # 2. Obtener todos los pagos mensuales de todos los estudiantes
     consulta_pagos = """
         SELECT p.nombre, p.fecha, p.extra
         FROM pagos p
         INNER JOIN codigos c ON c.idcodigos = p.idcod
         WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%'
         AND p.carnet != 0
-		AND (year(p.fecha) = %s or (year(p.fecha) = %s - 1 and month(p.fecha) >= 9));
+        AND (YEAR(p.fecha) = %s OR (YEAR(p.fecha) = %s - 1 AND MONTH(p.fecha) >= 9));
     """
-    pagos = get_query_all(consulta_pagos, (year,year))
+    pagos = get_query_all(consulta_pagos, (year, year))
 
-    # 3. Organizar los pagos en un diccionario por nombre y mes
-    pagos_dict = {}  # {"Nombre Estudiante": {"Enero": "fecha", "Febrero": "fecha", ...}}
+    # 3. Organizar los pagos en un diccionario por nombre sin acentos y mes
+    pagos_dict = {}
 
     for nombre, fecha, extra in pagos:
+        nombre_key = quitar_acentos(nombre)
         mes = next((m for m in meses if m.lower() in extra.lower()), None)
         if mes:
-            if nombre not in pagos_dict:
-                pagos_dict[nombre] = {}
-            pagos_dict[nombre][mes] = fecha.strftime("%d/%m/%Y")
+            if nombre_key not in pagos_dict:
+                pagos_dict[nombre_key] = {}
+            pagos_dict[nombre_key][mes] = fecha.strftime("%d/%m/%Y")
 
     # 4. Construir los datos finales
     datos = []
     for nombre, carnet in nombres:
+        nombre_key = quitar_acentos(nombre)
         data = [nombre, carnet]
         for mes in meses:
-            pago = pagos_dict.get(nombre, {}).get(mes, "Pend")
+            pago = pagos_dict.get(nombre_key, {}).get(mes, "Pend")
             data.append(pago)
         datos.append(data)
 
