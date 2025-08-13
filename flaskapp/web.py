@@ -251,8 +251,7 @@ def repauxenf():
         FROM pagos p
         INNER JOIN codigos c ON c.idcodigos = p.idcod
         WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%'
-        AND p.carnet != 0
-        AND YEAR(p.fecha) = %s;
+        AND p.carnet != 0;
     """
     pagos = get_query_all(consulta_pagos, (year,))
 
