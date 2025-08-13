@@ -227,20 +227,62 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora, promocion):
 @app.route('/repauxenf', methods=['GET', 'POST'])
 @login_required
 def repauxenf():
-	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-	fechaact = date.today()
-	year = fechaact.year
-	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s AND carnet != 0 GROUP BY p.nombre ORDER BY p.nombre;"
-	nombres = get_query_all(consulta, (f"%%{year}%%",))
-	datos = []
-	for nombre, carnet in nombres:
-		carnet = get_query_one("SELECT carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.nombre = %s and p.carnet != 0 ORDER BY p.nombre ASC;", (nombre))
-		data = [nombre, carnet[0]]
-		for mes in meses:
-			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre))
-			data.append(pago[0] if pago else "Pend")
-		datos.append(data)
-	return render_template('repauxenf.html', title="Reporte Auxiliares de Enfermeria", datos = datos, meses = meses, logeado=session['logeadocaja'], barranav=2)
+    meses = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+    fechaact = date.today()
+    year = fechaact.year
+    # 1. Obtener todos los estudiantes inscritos
+    consulta = """
+        SELECT p.nombre, p.carnet
+        FROM pagos p
+        INNER JOIN codigos c ON c.idcodigos = p.idcod
+        WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%'
+        AND p.extra NOT LIKE '%%Retirado%%'
+        AND p.extra LIKE %s
+        AND p.carnet != 0
+        GROUP BY p.nombre, p.carnet
+        ORDER BY p.nombre;
+    """
+    nombres = get_query_all(consulta, (f"%{year}%",))
+
+    # 2. Obtener todos los pagos mensuales de todos los estudiantes de un solo jalón
+    consulta_pagos = """
+        SELECT p.nombre, p.fecha, p.extra
+        FROM pagos p
+        INNER JOIN codigos c ON c.idcodigos = p.idcod
+        WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%'
+        AND p.carnet != 0
+        AND YEAR(p.fecha) = %s;
+    """
+    pagos = get_query_all(consulta_pagos, (year,))
+
+    # 3. Organizar los pagos en un diccionario por nombre y mes
+    pagos_dict = {}  # {"Nombre Estudiante": {"Enero": "fecha", "Febrero": "fecha", ...}}
+
+    for nombre, fecha, extra in pagos:
+        mes = next((m for m in meses if m.lower() in extra.lower()), None)
+        if mes:
+            if nombre not in pagos_dict:
+                pagos_dict[nombre] = {}
+            pagos_dict[nombre][mes] = fecha.strftime("%d/%m/%Y")
+
+    # 4. Construir los datos finales
+    datos = []
+    for nombre, carnet in nombres:
+        data = [nombre, carnet]
+        for mes in meses:
+            pago = pagos_dict.get(nombre, {}).get(mes, "Pend")
+            data.append(pago)
+        datos.append(data)
+
+    return render_template(
+        'repauxenf.html',
+        title="Reporte Auxiliares de Enfermeria",
+        datos=datos,
+        meses=meses,
+        logeado=session['logeadocaja'],
+        barranav=2
+    )
 
 @app.route('/repauxenfexcel', methods=['GET', 'POST'])
 @login_required
