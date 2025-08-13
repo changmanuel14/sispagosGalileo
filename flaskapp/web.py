@@ -296,100 +296,139 @@ def repauxenf():
 @app.route('/repauxenfexcel', methods=['GET', 'POST'])
 @login_required
 def repauxenfexcel():
-	meses = ["Enero", "Febrero","Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-	fechaact = date.today()
-	year = fechaact.year
-	consulta = "SELECT p.nombre, p.carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%' AND p.extra NOT LIKE '%%Retirado%%' AND p.extra LIKE %s AND carnet != 0 GROUP BY p.nombre ORDER BY p.nombre;"
-	nombres = get_query_all(consulta, (f"%%{year}%%",))
-	datos = []
-	for nombre, carnet in nombres:
-		carnet = get_query_one("SELECT carnet FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.nombre = %s and p.carnet != 0 ORDER BY p.nombre ASC;", (nombre))
-		data = [nombre, carnet[0]]
-		for mes in meses:
-			pago = get_query_one("SELECT DATE_FORMAT(p.fecha, '%%d/%%m/%%Y') FROM pagos p INNER JOIN codigos c ON c.idcodigos = p.idcod WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%' AND p.extra LIKE %s AND p.nombre = %s ORDER BY p.nombre ASC;", (f"%%{mes}%%", nombre))
-			data.append(pago[0] if pago else "Pend")
-		datos.append(data)
-	output = io.BytesIO()
-	workbook = xlwt.Workbook(encoding="utf-8")
-	sh1 = workbook.add_sheet("Auxiliares de Enfermeria")
+    meses = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ]
+    fechaact = date.today()
+    year = fechaact.year
 
-	xlwt.add_palette_colour("Orange", 0x21) # the second argument must be a number between 8 and 64
-	workbook.set_colour_RGB(0x21, 255, 165, 0) # Red — 79, Green — 129, Blue — 189
-	xlwt.add_palette_colour("Lightgreen", 0x22) # the second argument must be a number between 8 and 64
-	workbook.set_colour_RGB(0x22, 144, 238, 144) # Red — 79, Green — 129, Blue — 189
+    # 1. Obtener todos los estudiantes inscritos
+    consulta = """
+        SELECT p.nombre, p.carnet
+        FROM pagos p
+        INNER JOIN codigos c ON c.idcodigos = p.idcod
+        WHERE c.concepto LIKE '%%Inscripción Auxiliar de enfermeria%%'
+        AND p.extra NOT LIKE '%%Retirado%%'
+        AND p.extra LIKE %s
+        AND p.carnet != 0
+        GROUP BY p.nombre, p.carnet
+        ORDER BY p.nombre;
+    """
+    nombres = get_query_all(consulta, (f"%{year}%",))
+
+    # 2. Obtener todos los pagos mensuales de todos los estudiantes
+    consulta_pagos = """
+        SELECT p.nombre, p.fecha, p.extra
+        FROM pagos p
+        INNER JOIN codigos c ON c.idcodigos = p.idcod
+        WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%'
+        AND p.carnet != 0
+        AND (YEAR(p.fecha) = %s OR (YEAR(p.fecha) = %s - 1 AND MONTH(p.fecha) >= 9));
+    """
+    pagos = get_query_all(consulta_pagos, (year, year))
+
+    # 3. Organizar los pagos en un diccionario por nombre sin acentos y mes
+    pagos_dict = {}
+
+    for nombre, fecha, extra in pagos:
+        nombre_key = quitar_acentos(nombre)
+        mes = next((m for m in meses if m.lower() in extra.lower()), None)
+        if mes:
+            if nombre_key not in pagos_dict:
+                pagos_dict[nombre_key] = {}
+            pagos_dict[nombre_key][mes] = fecha.strftime("%d/%m/%Y")
+
+    # 4. Construir los datos finales
+    datos = []
+    for nombre, carnet in nombres:
+        nombre_key = quitar_acentos(nombre)
+        data = [nombre, carnet]
+        for mes in meses:
+            pago = pagos_dict.get(nombre_key, {}).get(mes, "Pend")
+            data.append(pago)
+        datos.append(data)
+    output = io.BytesIO()
+    workbook = xlwt.Workbook(encoding="utf-8")
+    sh1 = workbook.add_sheet("Auxiliares de Enfermeria")
+
+    xlwt.add_palette_colour("Orange", 0x21) # the second argument must be a number between 8 and 64
+    workbook.set_colour_RGB(0x21, 255, 165, 0) # Red — 79, Green — 129, Blue — 189
+    xlwt.add_palette_colour("Lightgreen", 0x22) # the second argument must be a number between 8 and 64
+    workbook.set_colour_RGB(0x22, 144, 238, 144) # Red — 79, Green — 129, Blue — 189
 	
 	#bordes
-	borders = xlwt.Borders()
-	borders.left = 1
-	borders.right = 1
-	borders.top = 1
-	borders.bottom = 1
+    borders = xlwt.Borders()
+    borders.left = 1
+    borders.right = 1
+    borders.top = 1
+    borders.bottom = 1
 
 	#encabezados
-	header_font = xlwt.Font()
-	header_font.name = 'Arial'
-	header_font.bold = True
-	header_style = xlwt.XFStyle()
-	header_style.font = header_font
-	header_style.borders = borders
+    header_font = xlwt.Font()
+    header_font.name = 'Arial'
+    header_font.bold = True
+    header_style = xlwt.XFStyle()
+    header_style.font = header_font
+    header_style.borders = borders
 
 	#contenido1
-	content_font = xlwt.Font()
-	content_font.name = 'Arial'
-	content_pattern = xlwt.Pattern()
-	content_pattern.pattern = xlwt.Pattern.SOLID_PATTERN
-	content_pattern.pattern_fore_colour = xlwt.Style.colour_map['orange']
-	content_style = xlwt.XFStyle()
-	content_style.font = content_font
-	content_style.borders = borders
-	content_style.pattern = content_pattern
+    content_font = xlwt.Font()
+    content_font.name = 'Arial'
+    content_pattern = xlwt.Pattern()
+    content_pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    content_pattern.pattern_fore_colour = xlwt.Style.colour_map['orange']
+    content_style = xlwt.XFStyle()
+    content_style.font = content_font
+    content_style.borders = borders
+    content_style.pattern = content_pattern
 
 	#contenido1
-	content_font1 = xlwt.Font()
-	content_font1.name = 'Arial'
-	content_pattern1 = xlwt.Pattern()
-	content_pattern1.pattern = xlwt.Pattern.SOLID_PATTERN
-	content_pattern1.pattern_fore_colour = xlwt.Style.colour_map['light_green']
-	content_style1 = xlwt.XFStyle()
-	content_style1.font = content_font1
-	content_style1.borders = borders
-	content_style1.pattern = content_pattern1
+    content_font1 = xlwt.Font()
+    content_font1.name = 'Arial'
+    content_pattern1 = xlwt.Pattern()
+    content_pattern1.pattern = xlwt.Pattern.SOLID_PATTERN
+    content_pattern1.pattern_fore_colour = xlwt.Style.colour_map['light_green']
+    content_style1 = xlwt.XFStyle()
+    content_style1.font = content_font1
+    content_style1.borders = borders
+    content_style1.pattern = content_pattern1
 
 	#titulos
-	tittle_font = xlwt.Font()
-	tittle_font.name = 'Arial'
-	tittle_font.bold = True
-	tittle_font.italic = True
-	tittle_font.height = 20*20
-	tittle_style = xlwt.XFStyle()
-	tittle_style.font = tittle_font
+    tittle_font = xlwt.Font()
+    tittle_font.name = 'Arial'
+    tittle_font.bold = True
+    tittle_font.italic = True
+    tittle_font.height = 20*20
+    tittle_style = xlwt.XFStyle()
+    tittle_style.font = tittle_font
 
-	sh1.write(0,0,"Auxiliares de Enfermeria", tittle_style)
-	sh1.write(3,0,"No.", header_style)
-	sh1.write(3,1,"Nombre", header_style)
-	sh1.write(3,2,"Carnet", header_style)
-	for i, mes in enumerate(meses):
-		sh1.write(3, i + 3, mes, header_style)
+    sh1.write(0,0,"Auxiliares de Enfermeria", tittle_style)
+    sh1.write(3,0,"No.", header_style)
+    sh1.write(3,1,"Nombre", header_style)
+    sh1.write(3,2,"Carnet", header_style)
+    for i, mes in enumerate(meses):
+        sh1.write(3, i + 3, mes, header_style)
 
-	for idx, data in enumerate(datos):
-		sh1.write(idx + 4, 0, idx + 1, content_style1)
-		sh1.write(idx + 4, 1, data[0], content_style1)
-		sh1.write(idx + 4, 2, data[1], content_style1)
-		for j in range(12):
-			cell_style = content_style if data[j + 2] == "Pend" else content_style1
-			sh1.write(idx + 4, j + 3, data[j + 2], cell_style)
+    for idx, data in enumerate(datos):
+        sh1.write(idx + 4, 0, idx + 1, content_style1)
+        sh1.write(idx + 4, 1, data[0], content_style1)
+        sh1.write(idx + 4, 2, data[1], content_style1)
+        for j in range(12):
+            cell_style = content_style if data[j + 2] == "Pend" else content_style1
+            sh1.write(idx + 4, j + 3, data[j + 2], cell_style)
 	
-	sh1.col(0).width = 256 * 6  # Ancho de la columna "No."
-	sh1.col(1).width = 256 * 30  # Ancho de la columna "Nombre"
-	sh1.col(2).width = 256 * 20  # Ancho de la columna "Carnet"
+    sh1.col(0).width = 256 * 6  # Ancho de la columna "No."
+    sh1.col(1).width = 256 * 30  # Ancho de la columna "Nombre"
+    sh1.col(2).width = 256 * 20  # Ancho de la columna "Carnet"
 
-	for i in range(3, 15):
-		sh1.col(i).width = 256 * 15  # Ancho de las columnas de los meses
+    for i in range(3, 15):
+        sh1.col(i).width = 256 * 15  # Ancho de las columnas de los meses
 
 	# Guardar el Excel en el buffer
-	workbook.save(output)
-	output.seek(0)
-	return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=Reporteauxenf.xls"})
+    workbook.save(output)
+    output.seek(0)
+    return Response(output, mimetype="application/ms-excel", headers={"Content-Disposition":"attachment;filename=Reporteauxenf.xls"})
 
 @app.route("/ingles", methods=['GET', 'POST'])
 @app.route("/ingles/<mensaje>", methods=['GET', 'POST'])
