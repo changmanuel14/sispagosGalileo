@@ -251,9 +251,10 @@ def repauxenf():
         FROM pagos p
         INNER JOIN codigos c ON c.idcodigos = p.idcod
         WHERE c.concepto LIKE '%%Mensualidad Auxiliar de enfermeria%%'
-        AND p.carnet != 0;
+        AND p.carnet != 0
+		AND (year(p.fecha) = %s or (year(p.fecha) = %s - 1 and month(p.fecha) >= 9));
     """
-    pagos = get_query_all(consulta_pagos, (year,))
+    pagos = get_query_all(consulta_pagos, (year,year))
 
     # 3. Organizar los pagos en un diccionario por nombre y mes
     pagos_dict = {}  # {"Nombre Estudiante": {"Enero": "fecha", "Febrero": "fecha", ...}}
