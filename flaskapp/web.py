@@ -2209,8 +2209,12 @@ def repdiario():
 					for i in data:
 						aux = f"dte{i[6]}"
 						dte = request.form[aux]
-						consulta = f'UPDATE pagos SET dte = "{dte}" WHERE idpagos = {i[6]};'
-						cursor.execute(consulta)
+						if len(dte) > 0:
+							if int(dte) == 0:
+								consulta = f'UPDATE pagos SET dte = "" WHERE idpagos = {i[6]};'
+							else:
+								consulta = f'UPDATE pagos SET dte = "{dte}" WHERE idpagos = {i[6]};'
+							cursor.execute(consulta)
 					regen = request.form["regen"]
 					if regen == '0' or len(regen) < 1:
 						for i in resumen:
