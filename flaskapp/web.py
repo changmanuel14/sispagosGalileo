@@ -1634,8 +1634,8 @@ def m():
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
 @login_required
 def confirmacionm(carnet, nombre, curso, mid, mcod):
-	nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 435], ['QUIMICA GENERAL II', 325], ['MICROBIOLOGIA GENERAL', 665], ['QUIMICA ORGANICA', 325], ['BIOQUIMICA CLINICA', 425], ['BACTERIOLOGIA', 655], ['INMUNOLOGIA BASICA', 470], ['MICOLOGIA', 400], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 480], ['MICROBIOLOGIA APLICADA I', 325]]
-	nombremanualesindtlcq = [['MICROBIOLOGIA', 435], ['HEMATOLOGIA Y COAGULACION', 470], ['INMUNOLOGIA Y BANCO DE SANGRE', 465], ['PRUEBAS ESPECIALES', 480]]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 285], ['QUIMICA GENERAL I', 200], ['PARASITOLOGIA', 300], ['QUIMICA INORGANICA', 200], ['BIOQUIMICA GENERAL', 360], ['HEMATOLOGIA BASICA', 340], ['HEMATOLOGIA CLINICA', 340], ['MICROBIOLOGIA CLINICA AVANZADA', 270], ['BANCO DE SANGRE', 350], ['MICROBIOLOGIA APLICADA II', 305]]
+	nombremanualesindtlcq = [['BACTERIOLOGIA', 510], ['QUIMICA CLINICA', 315], ['PRACTICA EN LABORATORIO', 200]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
@@ -1713,15 +1713,15 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 
 @app.route('/repm', methods=['GET', 'POST'])
 def repm():
-	fechainicio = '2025-01-01'
+	fechainicio = '2026-01-01'
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
 			with conexion.cursor() as cursor:
-				numsmanualeslbcq = [2,4,6,8]
-				numsmanualestlcq = [2,4]
-				nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 385], ['QUIMICA GENERAL II', 275], ['MICROBIOLOGIA GENERAL', 615], ['QUIMICA ORGANICA', 275], ['BIOQUIMICA CLINICA', 375], ['BACTERIOLOGIA', 605], ['INMUNOLOGIA BASICA', 420], ['MICOLOGIA', 350], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 430], ['MICROBIOLOGIA APLICADA I', 275]]
-				nombremanualesindtlcq = [['MICROBIOLOGIA', 385], ['HEMATOLOGIA Y COAGULACION', 420], ['INMUNOLOGIA Y BANCO DE SANGRE', 415], ['PRUEBAS ESPECIALES', 430]]
+				numsmanualeslbcq = [1,3,5,7,9]
+				numsmanualestlcq = [1,3]
+				nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 285], ['QUIMICA GENERAL I', 200], ['PARASITOLOGIA', 300], ['QUIMICA INORGANICA', 200], ['BIOQUIMICA GENERAL', 360], ['HEMATOLOGIA BASICA', 340], ['HEMATOLOGIA CLINICA', 340], ['MICROBIOLOGIA CLINICA AVANZADA', 270], ['BANCO DE SANGRE', 350], ['MICROBIOLOGIA APLICADA II', 305]]
+				nombremanualesindtlcq = [['BACTERIOLOGIA', 510], ['QUIMICA CLINICA', 315], ['PRACTICA EN LABORATORIO', 200]]
 				manualeslbcq = []
 				manualestlcq = []
 				manualesindlbcq = []
