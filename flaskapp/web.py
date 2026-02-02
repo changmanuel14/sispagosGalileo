@@ -1634,8 +1634,8 @@ def m():
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
 @login_required
 def confirmacionm(carnet, nombre, curso, mid, mcod):
-	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 285], ['QUIMICA GENERAL I', 200], ['PARASITOLOGIA', 300], ['QUIMICA INORGANICA', 200], ['BIOQUIMICA GENERAL', 360], ['HEMATOLOGIA BASICA', 340], ['HEMATOLOGIA CLINICA', 340], ['MICROBIOLOGIA CLINICA AVANZADA', 270], ['BANCO DE SANGRE', 350], ['MICROBIOLOGIA APLICADA II', 305]]
-	nombremanualesindtlcq = [['BACTERIOLOGIA', 510], ['QUIMICA CLINICA', 315], ['PRACTICA EN LABORATORIO', 200]]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 335], ['QUIMICA GENERAL I', 250], ['PARASITOLOGIA', 350], ['QUIMICA INORGANICA', 250], ['BIOQUIMICA GENERAL', 410], ['HEMATOLOGIA BASICA', 390], ['HEMATOLOGIA CLINICA', 390], ['MICROBIOLOGIA CLINICA AVANZADA', 320], ['BANCO DE SANGRE', 400], ['MICROBIOLOGIA APLICADA II', 355]]
+	nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 365], ['PRACTICA EN LABORATORIO', 250]]
 	carnet = str(carnet)
 	nombre = str(nombre)
 	mid = str(mid)
@@ -1720,14 +1720,13 @@ def repm():
 			with conexion.cursor() as cursor:
 				numsmanualeslbcq = [1,3,5,7,9]
 				numsmanualestlcq = [1,3]
-				nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 285], ['QUIMICA GENERAL I', 200], ['PARASITOLOGIA', 300], ['QUIMICA INORGANICA', 200], ['BIOQUIMICA GENERAL', 360], ['HEMATOLOGIA BASICA', 340], ['HEMATOLOGIA CLINICA', 340], ['MICROBIOLOGIA CLINICA AVANZADA', 270], ['BANCO DE SANGRE', 350], ['MICROBIOLOGIA APLICADA II', 305]]
-				nombremanualesindtlcq = [['BACTERIOLOGIA', 510], ['QUIMICA CLINICA', 315], ['PRACTICA EN LABORATORIO', 200]]
+				nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 335], ['QUIMICA GENERAL I', 250], ['PARASITOLOGIA', 350], ['QUIMICA INORGANICA', 250], ['BIOQUIMICA GENERAL', 410], ['HEMATOLOGIA BASICA', 390], ['HEMATOLOGIA CLINICA', 390], ['MICROBIOLOGIA CLINICA AVANZADA', 320], ['BANCO DE SANGRE', 400], ['MICROBIOLOGIA APLICADA II', 355]]
+				nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 365], ['PRACTICA EN LABORATORIO', 250]]
 				manualeslbcq = []
 				manualestlcq = []
 				manualesindlbcq = []
 				manualesindtlcq = []
 				for i in numsmanualeslbcq:
-					print(i)
 					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITLBCQ{i}' and p.devuelto = 0"
 					cursor.execute(consulta)
 					manuales = cursor.fetchall()
