@@ -1057,6 +1057,8 @@ def confirmacionp(carnet, nombre, datames, pid, pcod, cantidad, lugar, fechainic
                     preciotoptq = 800
                 elif '9' in meses[i]:
                     preciotoptq = 1000
+                elif '9 Especial' in meses[i]:
+                    preciotoptq = 1200
                 else:
                     preciotoptq = precioasig
                     
