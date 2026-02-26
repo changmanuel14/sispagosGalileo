@@ -674,6 +674,97 @@
 			</table>
 		</center>
 		{% endif %}
+		{% if 7 in numeros %}
+		<div style="width: 35%; float: left;">
+			<img src="{{path}}static\logofacisasalud.jpg" width="100%">
+			<!--<img src="C:\Users\USUARIO\Documents\siscaja\flaskapp\static\logofacisasalud.jpg" width="100%">-->
+		</div>
+		<div style="text-align: right;width: 65%; float: left;">
+			<h5>Licenciatura en Optometria</h5>
+			<h5>Septimo Semestre</h5>
+			<h5>Práctica Supervisada</h5>
+			<h5>Nivel de Aprendizaje 21 al 24</h5>
+			<h5>Control de Pacientes Aprobados</h5>
+		</div>
+		<table class="tabla">
+			<th class="tabla" style="width: 70%;">Alumno: {{nombre}}</th>
+			<th class="tabla">No. Carnet: {{carnet}}</th>
+		</table>
+		<br>
+		<center>
+			<table class="tabla7">
+				<tr>
+					<th class="tabla4" style="background-color: #1300c0; width: 5%; color: white">No.</th>
+					<th class="tabla4" style="background-color: #1300c0; width: 20%; color: white">Fecha</th>
+					<th class="tabla4" style="background-color: #1300c0; width: 30%; color: white">CUI</th>
+					<th class="tabla4" style="background-color: #1300c0; width: 45%; color: white">Nombre</th>
+				</tr>
+				<tr>
+					<th class="tabla4" colspan="4">Nivel 21: Técnicas de retinoscopia</th>
+				</tr>
+				{% for i in range(5) %}
+				<tr>
+					<td style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<th class="tabla4" colspan="4">Nivel 22: Evaluación de la acomodación.</th>
+				</tr>
+				{% for i in range(5,10) %}
+				<tr>
+					<td style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<th class="tabla4" colspan="4">Nivel 23: Vergencias Funcionales</th>
+				</tr>
+				{% for i in range(10,15) %}
+				<tr>
+					<td style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<th class="tabla4" colspan="4">Nivel 24: Exploración motora.</th>
+				</tr>
+				{% for i in range(15,20) %}
+				<tr>
+					<td style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<th class="tabla4" colspan="4">Rotación en clínica de Terapia Visual.</th>
+				</tr>
+				<tr>
+					<td colspan="2" style="border: #000000 1px solid; color:white;">1</td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+				</tr>
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td class="tabla" style="width: 25%;"> <strong>
+							<center>Fecha de Adquisición:<br>{{fecha}}</center>
+						</strong></td>
+					<td class="tabla2" style="width: 25%;">Sello Universidad</td>
+					<td class="tabla2" style="width: 25%;">Sello de Supervisor</td>
+					<td class="tabla2" style="width: 25%;">Sello de Aprobación</td>
+				</tr>
+			</table>
+		</center>
+		{% endif %}
 		{% if 8 in numeros %}
 		<div style="width: 35%; float: left;">
 			<img src="{{path}}static\logofacisasalud.jpg" width="100%">
@@ -776,9 +867,8 @@
 		<div style="text-align: right;width: 65%; float: left;">
 			<h5>Licenciatura en Optometria</h5>
 			<h5>Noveno Semestre</h5>
-			<h5>Ejercicio Profesional Supervisado 3</h5>
-			<h5>Nivel de Aprendizaje 17 al 20</h5>
-			<h5>Control de Asistencia y Aprobación</h5>
+			<h5>Ejercicio Profesional Supervisado II</h5>
+			<h5>Control de Asistencia y Pacientes Aprobados</h5>
 		</div>
 		<table class="tabla">
 			<th class="tabla" style="width: 70%;">Alumno: {{nombre}}</th>
@@ -794,7 +884,7 @@
 					<th class="tabla4" style="background-color: #c00001; width: 45%;">Nombre</th>
 				</tr>
 				<tr>
-					<th class="tabla4" colspan="4">Nivel 17: Evaluación y tratamiento optométrico a pacientes niños con diferentes ametropías</th>
+					<th class="tabla4" colspan="4">Evaluación y tratamiento optométrico a pacientes niños con diferentes ametropías</th>
 				</tr>
 				{% for i in range(5) %}
 				<tr>
@@ -805,7 +895,7 @@
 				</tr>
 				{% endfor %}
 				<tr>
-					<th class="tabla4" colspan="4">Nivel 18: Evaluación y tratamiento optométrico a pacientes adolescentes con diferentes problemas binoculares</th>
+					<th class="tabla4" colspan="4">Evaluación y tratamiento optométrico a pacientes adolescentes con diferentes problemas binoculares</th>
 				</tr>
 				{% for i in range(5,10) %}
 				<tr>
@@ -816,7 +906,7 @@
 				</tr>
 				{% endfor %}
 				<tr>
-					<th class="tabla4" colspan="4">Nivel 19: Evaluación y manejo optométrico a pacientes con diferentes patologías oculares</th>
+					<th class="tabla4" colspan="4">Evaluación y manejo optométrico a pacientes geriátricos con diferentes patologías oculares</th>
 				</tr>
 				{% for i in range(10,15) %}
 				<tr>
@@ -827,9 +917,9 @@
 				</tr>
 				{% endfor %}
 				<tr>
-					<th class="tabla4" colspan="4">Nivel 20: Adaptación a pacientes de lentes de contacto blandos y RGP.</th>
+					<th class="tabla4" colspan="4">Tonometría ocular</th>
 				</tr>
-				{% for i in range(15,17) %}
+				{% for i in range(15,20) %}
 				<tr>
 					<td style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
 					<td style="border: #000000 1px solid;"></td>
@@ -838,9 +928,9 @@
 				</tr>
 				{% endfor %}
 				<tr>
-					<th class="tabla4" colspan="4">Nivel 21: Voluntariado como Jefe de Clínica en Clínica Optométrica.</th>
+					<th class="tabla4" colspan="4">Rotación en Centro de Salud Quetzaltenango en unidad móvil</th>
 				</tr>
-				{% for i in range(0,8) %}
+				{% for i in range(2) %}
 				<tr>
 					<td style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
 					<td style="border: #000000 1px solid;"></td>
@@ -849,13 +939,130 @@
 				</tr>
 				{% endfor %}
 				<tr>
-					<th class="tabla4" colspan="4">Nivel 22: Rotación en Centro de diagnóstico ocular.</th>
+					<th class="tabla4" colspan="4">Rotación en centro de diagnóstico ocular</th>
+				</tr>
+				{% for i in range(2) %}
+				<tr>
+					<td style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+					<td style="border: #000000 1px solid;"></td>
+				</tr>
+				{% endfor %}
+			</table>
+			<br>
+			<table>
+				<tr>
+					<td class="tabla" style="width: 25%;"> <strong>
+							<center>Fecha de Adquisición:<br>{{fecha}}</center>
+						</strong></td>
+					<td class="tabla2" style="width: 25%;">Sello Universidad</td>
+					<td class="tabla2" style="width: 25%;">Sello de Supervisor</td>
+					<td class="tabla2" style="width: 25%;">Sello de Aprobación</td>
+				</tr>
+			</table>
+		</center>
+		{% endif %}
+		{% if "9Especial" in numeros %}
+		<div style="width: 35%; float: left;">
+			<img src="{{path}}static\logofacisasalud.jpg" width="100%">
+			<!--<img src="C:\Users\USUARIO\Documents\siscaja\flaskapp\static\logofacisasalud.jpg" width="100%">-->
+		</div>
+		<div style="text-align: right;width: 65%; float: left;">
+			<h5>Licenciatura en Optometria</h5>
+			<h5>Noveno Semestre</h5>
+			<h5>Ejercicio Profesional Supervisado II</h5>
+			<h5>Control de Asistencia y Pacientes Aprobados</h5>
+		</div>
+		<table class="tabla">
+			<th class="tabla" style="width: 70%;">Alumno: {{nombre}}</th>
+			<th class="tabla">No. Carnet: {{carnet}}</th>
+		</table>
+		<br>
+		<center>
+			<table class="tabla7">
+				<tr>
+					<th class="tabla1" style="background-color: #c00001; width: 2.5%;">No.</th>
+					<th class="tabla1" style="background-color: #c00001; width: 10%;">Fecha</th>
+					<th class="tabla1" style="background-color: #c00001; width: 15%;">CUI</th>
+					<th class="tabla1" style="background-color: #c00001; width: 22.5%;">Nombre</th>
+					<th class="tabla1" style="background-color: #c00001; width: 2.5%;">No.</th>
+					<th class="tabla1" style="background-color: #c00001; width: 10%;">Fecha</th>
+					<th class="tabla1" style="background-color: #c00001; width: 15%;">CUI</th>
+					<th class="tabla1" style="background-color: #c00001; width: 22.5%;">Nombre</th>
 				</tr>
 				<tr>
-					<td style="border: #000000 1px solid;"><strong>1</strong></td>
-					<td style="border: #000000 1px solid;"></td>
-					<td style="border: #000000 1px solid;"></td>
-					<td style="border: #000000 1px solid;"></td>
+					<th class="tabla4" colspan="8">Evaluación y tratamiento optométrico a pacientes niños con diferentes ametropías</th>
+				</tr>
+				{% for i in range(5) %}
+				<tr>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>{{i + 6}}</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<th class="tabla4" colspan="8">Evaluación y tratamiento optométrico a pacientes adolescentes con diferentes problemas binoculares</th>
+				</tr>
+				{% for i in range(10,15) %}
+				<tr>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>{{i + 6}}</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<th class="tabla4" colspan="8">Evaluación y manejo optométrico a pacientes geriátricos con diferentes patologías oculares</th>
+				</tr>
+				{% for i in range(20,25) %}
+				<tr>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>{{i + 6}}</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<th class="tabla4" colspan="8">Tonometría ocular</th>
+				</tr>
+				{% for i in range(30,33) %}
+				<tr>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>{{i + 1}}</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>{{i + 4}}</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+				</tr>
+				{% endfor %}
+				<tr>
+					<th class="tabla4" colspan="8">Rotación en centro de diagnóstico ocular</th>
+				</tr>
+				<tr>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>1</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"><strong>2</strong></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
+					<td class="tabla1" style="border: #000000 1px solid;"></td>
 				</tr>
 			</table>
 			<br>
