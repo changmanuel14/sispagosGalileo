@@ -2219,29 +2219,32 @@ def repdiario():
 								cursor.execute(consulta)
 						except:
 							pass
-					regen = request.form["regen"]
-					if regen == '0' or len(regen) < 1:
-						for i in resumen:
-							aux = f"resumen{i[4]}"
-							varaux = str(request.form[aux])
-							if len(varaux) > 0:
-								aux = f"empresa{i[4]}"
-								empresa = request.form[aux]
-								consulta = f'UPDATE pagos SET recibo = "{varaux}", empresa = "{empresa}" WHERE idcod = {i[4]} and fecha = CURDATE() and recibo = 0;'
+					try:
+						regen = request.form["regen"]
+						if regen == '0' or len(regen) < 1:
+							for i in resumen:
+								aux = f"resumen{i[4]}"
+								varaux = str(request.form[aux])
+								if len(varaux) > 0:
+									aux = f"empresa{i[4]}"
+									empresa = request.form[aux]
+									consulta = f'UPDATE pagos SET recibo = "{varaux}", empresa = "{empresa}" WHERE idcod = {i[4]} and fecha = CURDATE() and recibo = 0;'
+									cursor.execute(consulta)
+							for i in data:
+								aux = f"re{i[6]}"
+								varaux = str(request.form[aux])
+								if len(varaux) > 0:
+									aux = f"empr{i[6]}"
+									empresa = request.form[aux]
+									consulta = f'UPDATE pagos SET recibo = "{varaux}", empresa = "{empresa}" WHERE idpagos = {i[6]};'
+									cursor.execute(consulta)
+						else:
+							empresa = request.form["empresagen"]
+							for i in data:
+								consulta = f'UPDATE pagos SET recibo = "{regen}", empresa = "{empresa}" WHERE idpagos = {i[6]};'
 								cursor.execute(consulta)
-						for i in data:
-							aux = f"re{i[6]}"
-							varaux = str(request.form[aux])
-							if len(varaux) > 0:
-								aux = f"empr{i[6]}"
-								empresa = request.form[aux]
-								consulta = f'UPDATE pagos SET recibo = "{varaux}", empresa = "{empresa}" WHERE idpagos = {i[6]};'
-								cursor.execute(consulta)
-					else:
-						empresa = request.form["empresagen"]
-						for i in data:
-							consulta = f'UPDATE pagos SET recibo = "{regen}", empresa = "{empresa}" WHERE idpagos = {i[6]};'
-							cursor.execute(consulta)
+					except:
+						pass
 				conexion.commit()
 			finally:
 				conexion.close()
