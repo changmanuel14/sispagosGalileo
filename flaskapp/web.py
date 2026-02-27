@@ -2208,14 +2208,17 @@ def repdiario():
 			try:
 				with conexion.cursor() as cursor:
 					for i in data:
-						aux = f"dte{i[6]}"
-						dte = request.form[aux]
-						if len(dte) > 0:
-							if int(dte) == 0:
-								consulta = f'UPDATE pagos SET dte = "" WHERE idpagos = {i[6]};'
-							else:
-								consulta = f'UPDATE pagos SET dte = "{dte}" WHERE idpagos = {i[6]};'
-							cursor.execute(consulta)
+						try:
+							aux = f"dte{i[6]}"
+							dte = request.form[aux]
+							if len(dte) > 0:
+								if int(dte) == 0:
+									consulta = f'UPDATE pagos SET dte = "" WHERE idpagos = {i[6]};'
+								else:
+									consulta = f'UPDATE pagos SET dte = "{dte}" WHERE idpagos = {i[6]};'
+								cursor.execute(consulta)
+						except:
+							pass
 					regen = request.form["regen"]
 					if regen == '0' or len(regen) < 1:
 						for i in resumen:
