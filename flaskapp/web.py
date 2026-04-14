@@ -2499,7 +2499,8 @@ def matriztlcq():
 	year = fechaact.year
 	fechainicio = date(year, 1,1)
 	fechafin = date(year, 12,31)
-	meses = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+	meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"]
+	#meses = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
 	try:
 		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
 		try:
