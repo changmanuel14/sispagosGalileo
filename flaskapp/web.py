@@ -1692,12 +1692,12 @@ def repm():
 		manuales = get_query_all(consulta, (fechainicio, i, ))
 		manualestlcq.append(manuales)
 	for i in nombremanualesindlbcq:
-		consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and p.extra like '%%s%' and c.concepto like '%Manual LBCQ%' and p.devuelto = 0"
-		manuales = get_query_all(consulta, (fechainicio, i[0], ))
+		consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and p.extra like '%{i[0]}%' and c.concepto like '%Manual LBCQ%' and p.devuelto = 0"
+		manuales = get_query_all(consulta, (fechainicio, ))
 		manualesindlbcq.append(manuales)
 	for i in nombremanualesindtlcq:
-		consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and p.extra like '%%s%' and c.concepto like '%Manual TLCQ%' and p.devuelto = 0"
-		manuales = get_query_all(consulta, (fechainicio, i[0], ))
+		consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and p.extra like '%{i[0]}%' and c.concepto like '%Manual TLCQ%' and p.devuelto = 0"
+		manuales = get_query_all(consulta, (fechainicio, ))
 		manualesindtlcq.append(manuales)
 	return render_template('repm.html', title="Reporte Manuales", numsmanualeslbcq = numsmanualeslbcq, numsmanualestlcq=numsmanualestlcq, manualeslbcq=manualeslbcq, manualestlcq=manualestlcq, manualesindlbcq=manualesindlbcq, manualesindtlcq=manualesindtlcq)
 
