@@ -1675,43 +1675,30 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 @app.route('/repm', methods=['GET', 'POST'])
 def repm():
 	fechainicio = '2026-01-01'
-	try:
-		conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-		try:
-			with conexion.cursor() as cursor:
-				numsmanualeslbcq = [1,3,5,7,9]
-				numsmanualestlcq = [1,3]
-				nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 335], ['QUIMICA GENERAL I', 250], ['PARASITOLOGIA', 350], ['QUIMICA INORGANICA', 250], ['BIOQUIMICA GENERAL', 410], ['HEMATOLOGIA BASICA', 390], ['HEMATOLOGIA CLINICA', 390], ['MICROBIOLOGIA CLINICA AVANZADA', 320], ['BANCO DE SANGRE', 400], ['MICROBIOLOGIA APLICADA II', 355]]
-				nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 365], ['PRACTICA EN LABORATORIO', 250]]
-				manualeslbcq = []
-				manualestlcq = []
-				manualesindlbcq = []
-				manualesindtlcq = []
-				for i in numsmanualeslbcq:
-					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITLBCQ{i}' and p.devuelto = 0"
-					cursor.execute(consulta)
-					manuales = cursor.fetchall()
-					manualeslbcq.append(manuales)
-				for i in numsmanualestlcq:
-					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like 'KITTLCQ{i}' and p.devuelto = 0"
-					cursor.execute(consulta)
-					manuales = cursor.fetchall()
-					manualestlcq.append(manuales)
-				for i in nombremanualesindlbcq:
-					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i[0]}%' and c.concepto like '%Manual LBCQ%' and p.devuelto = 0"
-					cursor.execute(consulta)
-					manuales = cursor.fetchall()
-					manualesindlbcq.append(manuales)
-				for i in nombremanualesindtlcq:
-					consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and p.extra like '%{i[0]}%' and c.concepto like '%Manual TLCQ%' and p.devuelto = 0"
-					cursor.execute(consulta)
-					manuales = cursor.fetchall()
-					manualesindtlcq.append(manuales)
-			# Con fetchall traemos todas las filas
-		finally:
-			conexion.close()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
+	numsmanualeslbcq = [1,3,5,7,9]
+	numsmanualestlcq = [1,3]
+	nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 335], ['QUIMICA GENERAL I', 250], ['PARASITOLOGIA', 350], ['QUIMICA INORGANICA', 250], ['BIOQUIMICA GENERAL', 410], ['HEMATOLOGIA BASICA', 390], ['HEMATOLOGIA CLINICA', 390], ['MICROBIOLOGIA CLINICA AVANZADA', 320], ['BANCO DE SANGRE', 400], ['MICROBIOLOGIA APLICADA II', 355]]
+	nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 365], ['PRACTICA EN LABORATORIO', 250]]
+	manualeslbcq = []
+	manualestlcq = []
+	manualesindlbcq = []
+	manualesindtlcq = []
+	for i in numsmanualeslbcq:
+		consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and c.cod like 'KITLBCQ%s' and p.devuelto = 0"
+		manuales = get_query_all(consulta, (fechainicio, i, ))
+		manualeslbcq.append(manuales)
+	for i in numsmanualestlcq:
+		consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and c.cod like 'KITTLCQ%s' and p.devuelto = 0"
+		manuales = get_query_all(consulta, (fechainicio, i, ))
+		manualestlcq.append(manuales)
+	for i in nombremanualesindlbcq:
+		consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and p.extra like '%%s%' and c.concepto like '%Manual LBCQ%' and p.devuelto = 0"
+		manuales = get_query_all(consulta, (fechainicio, i[0], ))
+		manualesindlbcq.append(manuales)
+	for i in nombremanualesindtlcq:
+		consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and p.extra like '%%s%' and c.concepto like '%Manual TLCQ%' and p.devuelto = 0"
+		manuales = get_query_all(consulta, (fechainicio, i[0], ))
+		manualesindtlcq.append(manuales)
 	return render_template('repm.html', title="Reporte Manuales", numsmanualeslbcq = numsmanualeslbcq, numsmanualestlcq=numsmanualestlcq, manualeslbcq=manualeslbcq, manualestlcq=manualestlcq, manualesindlbcq=manualesindlbcq, manualesindtlcq=manualesindtlcq)
 
 @app.route('/congreso', methods=['GET', 'POST'])
