@@ -60,14 +60,17 @@ def get_query_one(query, params=None):
 		return None
 
 def execute_query(query, params=None):
-	try:
-		with get_db_connection() as conexion:
-			with conexion.cursor() as cursor:
-				cursor.execute(query, params or ())
-				return conexion.commit()
-	except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-		print("Ocurrió un error al conectar: ", e)
-		return None
+    try:
+        with get_db_connection() as conexion:
+            with conexion.cursor() as cursor:
+                cursor.execute(query, params or ())
+                cursor.execute("SELECT LAST_INSERT_ID()")
+                result = cursor.fetchone()
+                conexion.commit()
+                return result[0] if result else None
+    except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
+        print("Ocurrió un error al conectar: ", e)
+        return None
 
 @app.route('/error')
 def error_page():
@@ -147,13 +150,14 @@ def confirmacionaca(nombre, carnet, datameses, carrera, insc):
 	if request.method == 'POST':
 		idpagos = []
 		if insc == 1:
-			execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
+			idaux = execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
 				(codins[0], nombre, carnet, codins[1], date.today(), f'Curso: {datacarrera[0]}', 0, session['idusercaja']))
-			idpagos.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+			idpagos.append(idaux)
 		for mes in meses:
-			execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
+			idaux = execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", 
 				(codmen[0], nombre, carnet, codmen[1], date.today(), f'Mes: {mes}', 0, session['idusercaja']))
-			idpagos.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+			idpagos.append(idaux)
+			print(idpagos)
 		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacionaca.html', title='Confirmación Academia', logeado=session['logeadocaja'], nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datacarrera=datacarrera, insc=insc, meses=meses, barranav=1)
 
@@ -213,9 +217,9 @@ def confirmacionauxenf(nombre, carnet, insc, datameses, mora, promocion):
 			execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
 				(cuotas[1][0], nombre, carnet, cuotas[1][1], date.today(), mes, 0, session['idusercaja']))
 		if mora > 0:
-			execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
+			idaux = execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
 				(cuotas[2][0], nombre, carnet, mora, date.today(), 'Mora Auxiliar de Enfermería', 0, session['idusercaja']))
-			idpago = get_query_one("SELECT MAX(idpagos) FROM pagos;")[0]
+			idpago = idaux
 			imprimir = True
 		else:
 			imprimir = False
@@ -484,13 +488,13 @@ def confirmacioningles(nombre, carnet, plan, insc, datameses, ciclo, ciclomen):
 	if request.method == 'POST':
 		idpagos = []
 		if insc == 1:
-			execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
+			idaux = execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
 				(datainsc[0], nombre, carnet, datainsc[1], date.today(), f'Ciclo: {ciclo}', 0, session['idusercaja']))
-			idpagos.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+			idpagos.append(idaux)
 		for mes in meses:
-			execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
+			idaux = execute_query("INSERT INTO pagos(idcod, nombre, carnet, total, fecha, extra, recibo, user) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);",
 				(datamen[0], nombre, carnet, datamen[1], date.today(), f'Mes: {mes}, Ciclo: {ciclomen}', 0, session['idusercaja']))
-			idpagos.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+			idpagos.append(idaux)
 		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacioningles.html', title='Confirmación Ingles', logeado=session['logeadocaja'], nombre=nombre, carnet=carnet, cantidad=cantidad, total = total, datainsc=datainsc, insc=insc, meses=meses, ciclo=ciclo, barranav=1)
 
@@ -650,10 +654,9 @@ def confirmacionlab(nombre, carnet, dataexamenes):
 			cod_lab = cod_lab[0]
 			idpagos = []
 			for examen in dataaux:
-				execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+				idaux = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 					(cod_lab, nombre, carnet, examen[3], date.today(), f"{examen[2]} - {examen[1]}", 0, session['idusercaja']))
-				max_id = get_query_one("SELECT MAX(idpagos) FROM pagos")
-				idpagos.append(max_id[0])
+				idpagos.append(idaux)
 		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacionlab.html', title='Confirmación Laboratorio', logeado=session['logeadocaja'],
 							dataaux=dataaux, nombre=nombre, carnet=carnet, cantidad=cantidad, total=total, barranav=1)
@@ -795,22 +798,22 @@ def confirmacionopt(carnet, nombre, aro, lente, exavis, exaviseps, exavisjornada
 		pagoexamen = None
 		if exavis not in ['0', 0]:
 			idexamen = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "EXAVIS"')[0]
-			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+			idaux = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 				(idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista", 0, session['idusercaja']))
 			examen = 1
-			pagoexamen = get_query_one("SELECT MAX(idpagos) FROM pagos")[0]
+			pagoexamen = idaux
 		elif exaviseps not in ['0', 0]:
 			idexamen = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "EXAVIS"')[0]
-			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+			idaux = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 				(idexamen, nombre, carnet, 40, date.today(), "Examen de la Vista EPS", 0, session['idusercaja']))
 			examen = 1
-			pagoexamen = get_query_one("SELECT MAX(idpagos) FROM pagos")[0]
+			pagoexamen = idaux
 		elif exavisjornada not in ['0', 0]:
 			idexamen = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "EXAVIS"')[0]
-			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+			idaux = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 				(idexamen, nombre, carnet, 25, date.today(), "Examen de la Vista Jornada", 0, session['idusercaja']))
 			examen = 1
-			pagoexamen = get_query_one("SELECT MAX(idpagos) FROM pagos")[0]
+			pagoexamen = idaux
 		if float(aro) > 0:
 			idaro = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "OPTARO"')[0]
 			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
@@ -861,25 +864,25 @@ def confirmacioni(carrera, carnet, nombre, rinsc, rint, rrein, mesextra, exavis)
 			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 						(1, nombre, carnet, data[1], date.today(), data[0], 0, session['idusercaja']))
 		if rint:
-			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+			idaux = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 						(2, nombre, carnet, data[2], date.today(), f"Internet {data[3]}", 0, session['idusercaja']))
 			imprimir = 1
-			pagoexamen.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+			pagoexamen.append(idaux)
 		if rrein:
-			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+			idaux = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 						(3, nombre, carnet, 100, date.today(), f"Internet Reinscripcion {data[3]}", 0, session['idusercaja']))
 			imprimir = 1
-			pagoexamen.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+			pagoexamen.append(idaux)
 		if mesextra:
 			idcodigo = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "MENE"')[0]
 			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 						(idcodigo, nombre, carnet, mesextra, date.today(), f"Mensualidad Extra{data[3]}", 0, session['idusercaja']))
 		if exavis:
 			idexamen = get_query_one('SELECT idcodigos FROM codigos WHERE cod = "EXAVIS"')[0]
-			execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+			idaux = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 					(idexamen, nombre, carnet, 50, date.today(), "Examen de la Vista", 0, session['idusercaja']))
 			imprimir = 1
-			pagoexamen.append(get_query_one("SELECT MAX(idpagos) FROM pagos")[0])
+			pagoexamen.append(idaux)
 		if imprimir == 0:
 			return redirect(url_for('i'))
 		else:
@@ -918,9 +921,9 @@ def confirmacionextra(carnet, nombre, idp, cod, descripcion):
 	carnet, nombre, cod, descripcion = map(str, (carnet, nombre, cod, descripcion))
 	if request.method == "POST":
 		precio = get_query_one('SELECT precio FROM codigos WHERE idcodigos = %s', (idp,))
-		execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
+		idaux = execute_query("INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
 			(idp, nombre, carnet, precio[0], date.today(), descripcion, 0, session['idusercaja']))
-		idpago = get_query_one("SELECT MAX(idpagos) FROM pagos")[0]
+		idpago = idaux
 		return redirect(url_for('imprimir', idpagos=idpago))
 	return render_template('confirmacionextra.html', title="Confirmación", carnet=carnet, nombre=nombre, idp=idp, cod=cod, logeado=session['logeadocaja'], descripcion=descripcion, barranav=1)
 
@@ -1023,32 +1026,20 @@ def confirmacionp(carnet, nombre, datames, pid, pcod, cantidad, lugar, fechainic
             elif 'LBCQ' in pcod:
                 if 'Banco' in pcod:
                     consulta = "INSERT INTO practicalbcq(nombre, carnet, idcodigo, fecha, descripcion, user) VALUES (%s,%s,%s,CURDATE(),%s,%s);"
-                    execute_query(consulta, (nombre, carnet, pid, meses[i], session['idusercaja']))
-                    
-                    consulta = "Select MAX(idpracticalbcq) from practicalbcq;"
-                    idpago = get_query_one(consulta)
-                    if idpago:
-                        idpagos.append(idpago[0])
+                    idaux = execute_query(consulta, (nombre, carnet, pid, meses[i], session['idusercaja']))
+                    idpagos.append(idaux)
                 else:
                     consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
                     execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
                     
                     consulta = "INSERT INTO practicalbcq(nombre, carnet, idcodigo, fecha, descripcion, user) VALUES (%s,%s,%s,CURDATE(),%s,%s);"
-                    execute_query(consulta, (nombre, carnet, pid, meses[i], session['idusercaja']))
-                    
-                    consulta = "Select MAX(idpracticalbcq) from practicalbcq;"
-                    idpago = get_query_one(consulta)
-                    if idpago:
-                        idpagos.append(idpago[0])
+                    idaux = execute_query(consulta, (nombre, carnet, pid, meses[i], session['idusercaja']))
+                    idpagos.append(idaux)
                         
             elif 'THDQ' in pcod or 'TLCQ' in pcod or 'Diálisis' in pcod:
                 consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-                execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
-                
-                consulta = "Select MAX(idpagos) from pagos;"
-                idpago = get_query_one(consulta)
-                if idpago:
-                    idpagos.append(idpago[0])
+                idaux = execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
+                idpagos.append(idaux)
                     
             elif 'TOPTQ' in pcod:
                 if '5 Especial' in meses[i]:
@@ -1063,24 +1054,14 @@ def confirmacionp(carnet, nombre, datames, pid, pcod, cantidad, lugar, fechainic
                     preciotoptq = precioasig
                     
                 consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-                execute_query(consulta, (precios1[0][0], nombre, carnet, preciotoptq, date.today(), meses[i], 0, session['idusercaja']))
-                
-                consulta = "Select MAX(idpagos) from pagos;"
-                idpago = get_query_one(consulta)
-                if idpago:
-                    idpagos.append(idpago[0])
+                idaux = execute_query(consulta, (precios1[0][0], nombre, carnet, preciotoptq, date.today(), meses[i], 0, session['idusercaja']))
+                idpagos.append(idaux)
                     
             elif 'TRADQ' in pcod and 'Prepractica' in pcod:
                 consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-                execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
-                
-                consulta = "Select MAX(idpagos) from pagos;"
-                idpago = get_query_one(consulta)
-                if idpago:
-                    idpagos.append(idpago[0])
-                    
+                idaux = execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
+                idpagos.append(idaux)
             else:
-                consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
                 if 'LENQ' in precios1[0][2] and 'Pago 3' in meses[i]:
                     precioasig = 200
                     if lugar == 0 or fechainicio == '0000-00-00' or fechafin == '0000-00-00':
@@ -1089,20 +1070,13 @@ def confirmacionp(carnet, nombre, datames, pid, pcod, cantidad, lugar, fechainic
                         imprimir = True
                 else:
                     imprimir = False
-                execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
+                consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra,recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+                idauxlenq = execute_query(consulta, (precios1[0][0], nombre, carnet, precioasig, date.today(), meses[i], 0, session['idusercaja']))
                 if 'LENQ' in precios1[0][2]:
                     consulta = "INSERT INTO practicalenq(nombre,carnet,practica,lugar,fechainicio,fechafin,fecha,lugar2,lugar3) VALUES (%s,%s,%s,%s,%s,%s,CURDATE(),%s,%s);"
-                    execute_query(consulta, (nombre, carnet, meses[i], lugar, fechainicio, fechafin, lugar2, lugar3))
-                    
-                    consulta = "Select MAX(idpracticalenq) from practicalenq;"
-                    idpractica = get_query_one(consulta)
-                    if idpractica:
-                        idpracticas = idpractica[0]
-                        
-                    consulta = "Select MAX(idpagos) from pagos;"
-                    idpago = get_query_one(consulta)
-                    if idpago:
-                        idpagos.append(idpago[0])
+                    idaux = execute_query(consulta, (nombre, carnet, meses[i], lugar, fechainicio, fechafin, lugar2, lugar3))
+                    idpracticas = idaux
+                    idpagos.append(idauxlenq)
         # Redirecciones según el tipo de práctica
         if 'LBCQ' in pcod:
             if 'EPS' in pcod:
@@ -1651,65 +1625,50 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 		except:
 			pass
 	if request.method == "POST":
-		try:
-			conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-			try:
-				with conexion.cursor() as cursor:
-					consulta = f'SELECT concepto FROM codigos WHERE idcodigos = "{mid}"'
-					cursor.execute(consulta)
-					concepto = cursor.fetchone()
-					kit = True
-					if "TLCQ" in concepto[0]:
-						carrera = "TLCQ"
-						if "Manual" in concepto[0]:
-							kit = False
-					elif "LBCQ" in concepto[0]:
-						carrera = "LBCQ"
-						if "Manual" in concepto[0]:
-							kit = False
-					consulta1 = f'SELECT idcodigos, precio FROM codigos WHERE idcodigos = "{mid}"'
-					cursor.execute(consulta1)
-					precios1 = cursor.fetchall()
-					idpagos = []
-					for i in range(cantidad):
-						if kit == False:
-							total = 200
-							if carrera == 'LBCQ':
-								for j in nombremanualesindlbcq:
-									print(unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip())
-									print(unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip())
-									if unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip() == unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip():
-										print("Si")
-										total = j[1]
-										if cursos[i] == j[0]:
-											pass
-										else:
-											cursos[i] = j[0]
-									else:
-										print("No")
-							elif carrera == "TLCQ":
-								for j in nombremanualesindtlcq:
-									if unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip() == unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip():
-										total = j[1]
-										if cursos[i] == j[0]:
-											pass
-										else:
-											cursos[i] = j[0]
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, total, date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
+		consulta = f'SELECT concepto FROM codigos WHERE idcodigos = %s'
+		concepto = get_query_one(consulta, (mid,))
+		kit = True
+		if "TLCQ" in concepto[0]:
+			carrera = "TLCQ"
+			if "Manual" in concepto[0]:
+				kit = False
+		elif "LBCQ" in concepto[0]:
+			carrera = "LBCQ"
+			if "Manual" in concepto[0]:
+				kit = False
+		consulta1 = f'SELECT idcodigos, precio FROM codigos WHERE idcodigos = %s'
+		precios1 = get_query_all(consulta1, (mid,))
+		idpagos = []
+		for i in range(cantidad):
+			if kit == False:
+				total = 200
+				if carrera == 'LBCQ':
+					for j in nombremanualesindlbcq:
+						print(unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip())
+						print(unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip())
+						if unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip() == unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip():
+							print("Si")
+							total = j[1]
+							if cursos[i] == j[0]:
+								pass
+							else:
+								cursos[i] = j[0]
 						else:
-							consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
-							cursor.execute(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
-						conexion.commit()
-						consulta = "Select MAX(idpagos) from pagos;"
-						cursor.execute(consulta)
-						idpago = cursor.fetchone()
-						idpago = idpago[0]
-						idpagos.append(idpago)
-			finally:
-				conexion.close()
-		except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-			print("Ocurrió un error al conectar: ", e)
+							print("No")
+				elif carrera == "TLCQ":
+					for j in nombremanualesindtlcq:
+						if unicodedata.normalize('NFKD', cursos[i]).encode('ASCII', 'ignore').strip() == unicodedata.normalize('NFKD', j[0]).encode('ASCII', 'ignore').strip():
+							total = j[1]
+							if cursos[i] == j[0]:
+								pass
+							else:
+								cursos[i] = j[0]
+				consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+				idaux = execute_query(consulta, (precios1[0][0], nombre, carnet, total, date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
+			else:
+				consulta = "INSERT INTO pagos(idcod,nombre,carnet,total,fecha,extra, recibo,user) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+				idaux = execute_query(consulta, (precios1[0][0], nombre, carnet, precios1[0][1], date.today(), "Curso: "+cursos[i], 0,session['idusercaja']))
+			idpagos.append(idaux)
 		return redirect(url_for('imprimir', idpagos=idpagos))
 	return render_template('confirmacionm.html', title="Confirmación", carnet = carnet, nombre = nombre, cursos = cursos, mid = mid, mcod = mcod, cantidad=cantidad, logeado=session['logeadocaja'], barranav=1)
 
