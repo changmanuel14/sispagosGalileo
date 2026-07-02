@@ -2259,6 +2259,7 @@ def matriztlcq():
     consulta_pagos = "SELECT p.carnet, p.extra, p.nombre, DATE_FORMAT(p.fecha, %s) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s ORDER BY p.carnet, p.extra"
     pagos_data = get_query_all(consulta_pagos, ('%d/%m/%Y',fechainicio, fechafin, '%Practica TLCQ%'))
     # Organizar los datos por carnet y mes
+    print(pagos_data)
     pagos_por_carnet = {}
     for p in pagos_data:
         carnet = p[0]
