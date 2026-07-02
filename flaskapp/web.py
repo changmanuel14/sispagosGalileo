@@ -2252,7 +2252,8 @@ def matriztlcq():
     meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"]
     #meses = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
     consulta_carnets = "SELECT DISTINCT p.carnet FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s AND (%s) ORDER BY p.nombre"
-    filtro_meses = " OR ".join([f"p.extra LIKE %s" for _ in meses])
+    filtro_meses = " OR ".join([f"p.extra LIKE '%{_}%'" for _ in meses])
+    print(filtro_meses)
     carnets = get_query_all(consulta_carnets, (fechainicio, fechafin, '%Practica TLCQ%', filtro_meses))
     
     # Obtener todos los registros de pagos de práctica TLCQ en una sola consulta
