@@ -2253,6 +2253,7 @@ def matriztlcq():
     #meses = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
     consulta_carnets = "SELECT DISTINCT p.carnet FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s AND (%s) ORDER BY p.nombre"
     filtro_meses = " OR ".join([f"p.extra LIKE '%{_}%'" for _ in meses])
+    print(filtro_meses)
     carnets = get_query_all(consulta_carnets, (fechainicio, fechafin, '%Practica TLCQ%', filtro_meses))
     
     # Obtener todos los registros de pagos de práctica TLCQ en una sola consulta
@@ -2262,26 +2263,23 @@ def matriztlcq():
     pagos_por_carnet = {}
     for p in pagos_data:
         carnet = p[0]
-        mes = p[1]
+        mes = p[1].split(': ')[1]
         if carnet not in pagos_por_carnet:
             pagos_por_carnet[carnet] = {'nombre': p[2], 'pagos': {}}
         if mes not in pagos_por_carnet[carnet]['pagos']:
             pagos_por_carnet[carnet]['pagos'][mes] = p[3]
-    
     # Construir la matriz final
     estudiantes = []
+    print(carnets)
     for i in carnets:
         carnet = i[0]
         if carnet in pagos_por_carnet:
+            print("Si encuentra")
             estudiante = pagos_por_carnet[carnet]
             aux = [estudiante['nombre'], carnet]
             for mes in meses:
-                if mes in estudiante['pagos']:
-                    aux.append(estudiante['pagos'][mes])
-                else:
-                    aux.append("Pend")
+                aux.append(estudiante['pagos'].get(mes, "Pend"))
             estudiantes.append(aux)
-    print(estudiantes)
     return render_template('matriztlcq.html',title="Matriz Práctica Laboratorio Clinico",logeado=session['logeadocaja'],estudiantes=estudiantes,meses=meses,barranav=2)
     
 @app.route('/matrizthdq', methods=['GET', 'POST'])
