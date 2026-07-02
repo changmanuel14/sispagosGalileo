@@ -2253,12 +2253,11 @@ def matriztlcq():
     #meses = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
     consulta_carnets = "SELECT DISTINCT p.carnet FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s AND (%s) ORDER BY p.nombre"
     filtro_meses = " OR ".join([f"p.extra LIKE %s" for _ in meses])
-    consulta_params = [fechainicio, fechafin, '%Practica TLCQ%'] + [f'%{mes}%' for mes in meses]
-    carnets = get_query_all(consulta_carnets, consulta_params)
+    carnets = get_query_all(consulta_carnets, (fechainicio, fechafin, '%Practica TLCQ%', filtro_meses))
     
     # Obtener todos los registros de pagos de práctica TLCQ en una sola consulta
-    consulta_pagos = "SELECT p.carnet, p.extra, p.nombre, DATE_FORMAT(p.fecha, '%d/%m/%Y') FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s ORDER BY p.carnet, p.extra"
-    pagos_data = get_query_all(consulta_pagos, (fechainicio, fechafin, '%Practica TLCQ%'))
+    consulta_pagos = "SELECT p.carnet, p.extra, p.nombre, DATE_FORMAT(p.fecha, %s) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s ORDER BY p.carnet, p.extra"
+    pagos_data = get_query_all(consulta_pagos, ('%d/%m/%Y',fechainicio, fechafin, '%Practica TLCQ%'))
     # Organizar los datos por carnet y mes
     pagos_por_carnet = {}
     for p in pagos_data:
