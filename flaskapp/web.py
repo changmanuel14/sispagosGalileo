@@ -2227,18 +2227,8 @@ def matrizlenq():
 def editarpracticalenq(carnet, semestre):
     practicas = ["1) Práctica Hospitalaria", "2) Práctica Enfermería Preventiva", "3) Práctica Médico Quirúrgica",
             "4) Práctica Enfermería Niños y Adolescentes", "5) Práctica Materno Infantil", "6) Práctica Administrativa"]
-    try:
-        conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-        try:
-            with conexion.cursor() as cursor:
-                consulta = f'SELECT idpracticalenq, nombre, carnet, fechainicio, fechafin, lugar, lugar2, lugar3 from practicalenq where carnet = "{carnet}" and practica like "{semestre})%";'
-                print(consulta)
-                cursor.execute(consulta)
-                datapractica = cursor.fetchall()
-        finally:
-            conexion.close()
-    except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-        print("Ocurrió un error al conectar: ", e)
+    consulta = 'SELECT idpracticalenq, nombre, carnet, fechainicio, fechafin, lugar, lugar2, lugar3 from practicalenq where carnet = %s and practica like %s;'
+    datapractica = get_query_all(consulta, (carnet, f"{semestre})%"))
     if request.method == 'POST':
         carnet = request.form["carnet"]
         nombre = request.form["nombre"]
@@ -2247,77 +2237,53 @@ def editarpracticalenq(carnet, semestre):
         lugar1 = request.form["lugar1"]
         lugar2 = request.form["lugar2"]
         lugar3 = request.form["lugar3"]
-
-        try:
-            conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-            try:
-                with conexion.cursor() as cursor:
-                    for i in datapractica:
-                        consulta = 'UPDATE practicalenq set nombre=%s, carnet=%s, fechainicio=%s, fechafin=%s, lugar=%s, lugar2=%s, lugar3=%s where idpracticalenq=%s;'
-                        cursor.execute(consulta, (nombre, carnet, fechainicio, fechafin, lugar1, lugar2, lugar3, i[0]))
-                conexion.commit()
-            finally:
-                conexion.close()
-        except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-            print("Ocurrió un error al conectar: ", e)
+        consulta = 'UPDATE practicalenq set nombre=%s, carnet=%s, fechainicio=%s, fechafin=%s, lugar=%s, lugar2=%s, lugar3=%s where idpracticalenq=%s;'
+        execute_query(consulta, (nombre, carnet, fechainicio, fechafin, lugar1, lugar2, lugar3, i[0]))
         return redirect(url_for('matrizlenq'))
     return render_template('editarpracticalenq.html', title='Editar Datos de Práctica Enfermeria', logeado=session['logeadocaja'], datapractica=datapractica, practicas=practicas, semestre=semestre, barranav=2)
-
+	
 @app.route('/matriztlcq', methods=['GET', 'POST'])
 @login_required
 def matriztlcq():
     fechaact = date.today()
     year = fechaact.year
-    fechainicio = date(year, 1,1)
-    fechafin = date(year, 12,31)
+    fechainicio = date(year, 1, 1)
+    fechafin = date(year, 12, 31)
     meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio"]
     #meses = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-    try:
-        conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-        try:
-            with conexion.cursor() as cursor:
-                estudiantes = []
-                filtro_meses = " OR ".join([f"p.extra LIKE '%{mes}%'" for mes in meses])
-                consulta = f"""
-                    SELECT p.carnet
-                    FROM pagos p
-                    INNER JOIN codigos c ON p.idcod = c.idcodigos
-                    WHERE p.fecha >= '{fechainicio}' 
-                    AND p.fecha <= '{fechafin}' 
-                    AND c.concepto LIKE '%Practica TLCQ%'
-                    AND ({filtro_meses})
-                    GROUP BY p.carnet
-                    ORDER BY p.nombre;
-                """
-                cursor.execute(consulta)
-        # Con fetchall traemos todas las filas
-                carnets = cursor.fetchall()
-                print(carnets)
-                for i in carnets:
-                    aux = ["",""]
-                    entra = 0
-                    for j in meses:
-                        consulta = f"SELECT nombre, carnet, DATE_FORMAT(p.fecha,'%d/%m/%Y') FROM pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha >= '{fechainicio}' and p.fecha <= '{fechafin}' and c.concepto like '%Practica TLCQ%' and p.extra like '%{j}%' and p.carnet like'%{i[0]}%' group by p.carnet order by p.nombre"
-                        cursor.execute(consulta)
-                    # Con fetchall traemos todas las filas
-                        data = cursor.fetchall()
-                        conteo = len(data)
-                        if conteo > 0:
-                            aux[0] = data[0][0]
-                            aux[1] = data[0][1]
-                            aux.append(data[0][2])
-                            entra = 1
-                        else:
-                            aux.append("Pend")
-                        print(aux)
-                    if entra == 1:
-                        estudiantes.append(aux)
-        finally:
-            conexion.close()
-    except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-        print("Ocurrió un error al conectar: ", e)
-    return render_template('matriztlcq.html', title="Matriz Práctica Laboratorio Clinico", logeado=session['logeadocaja'], estudiantes = estudiantes, meses = meses, barranav=2)
-
+    consulta_carnets = "SELECT DISTINCT p.carnet FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s AND (%s) ORDER BY p.nombre"
+    filtro_meses = " OR ".join([f"p.extra LIKE %s" for _ in meses])
+    consulta_params = [fechainicio, fechafin, '%Practica TLCQ%'] + [f'%{mes}%' for mes in meses]
+    carnets = get_query_all(consulta_carnets, consulta_params)
+    
+    # Obtener todos los registros de pagos de práctica TLCQ en una sola consulta
+    consulta_pagos = "SELECT p.carnet, p.extra, p.nombre, DATE_FORMAT(p.fecha, '%d/%m/%Y') FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s ORDER BY p.carnet, p.extra"
+    pagos_data = get_query_all(consulta_pagos, (fechainicio, fechafin, '%Practica TLCQ%'))
+    # Organizar los datos por carnet y mes
+    pagos_por_carnet = {}
+    for p in pagos_data:
+        carnet = p[0]
+        mes = p[1]
+        if carnet not in pagos_por_carnet:
+            pagos_por_carnet[carnet] = {'nombre': p[2], 'pagos': {}}
+        if mes not in pagos_por_carnet[carnet]['pagos']:
+            pagos_por_carnet[carnet]['pagos'][mes] = p[3]
+    
+    # Construir la matriz final
+    estudiantes = []
+    for i in carnets:
+        carnet = i[0]
+        if carnet in pagos_por_carnet:
+            estudiante = pagos_por_carnet[carnet]
+            aux = [estudiante['nombre'], carnet]
+            for mes in meses:
+                if mes in estudiante['pagos']:
+                    aux.append(estudiante['pagos'][mes])
+                else:
+                    aux.append("Pend")
+            estudiantes.append(aux)
+    return render_template('matriztlcq.html',title="Matriz Práctica Laboratorio Clinico",logeado=session['logeadocaja'],estudiantes=estudiantes,meses=meses,barranav=2)
+    
 @app.route('/matrizthdq', methods=['GET', 'POST'])
 @login_required
 def matrizthdq():
