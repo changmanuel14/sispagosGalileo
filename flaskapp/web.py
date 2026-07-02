@@ -2739,8 +2739,8 @@ def imprimir(idpagos):
     dataind = []
     suma = 0
     for i in range(numpagos):
-        consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.total, u.iniciales, p.idpagos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE p.idpagos = {newarray[i]};'
-        data = get_query_one(consulta)
+        consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,%s), c.concepto, p.extra, p.total, u.iniciales, p.idpagos FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos inner join user u on u.iduser = p.user WHERE p.idpagos = %s;'
+        data = get_query_one(consulta, ("%d/%m/%Y", newarray[i]))
         if 'Internet' in data[3]:
             dataind.append(data)
         else:
