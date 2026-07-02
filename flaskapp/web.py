@@ -2492,13 +2492,13 @@ def repgen():
         datarecibo = request.form["recibo"]
         dataempresa = request.form["empresa"]
         accion = request.form["accion"]
-        consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto, p.empresa FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like "%{datanombre1}%" and p.carnet like "%{datacarnet}%"'
+        consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,%s), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto, p.empresa FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like %s and p.carnet like %s'
         if len(datafechaini) != 0:
-            consulta = consulta + f' and p.fecha >= "{datafechaini}"'
+            consulta = consulta + ' and p.fecha >= %s'
         if len(datafechafin) != 0:
-            consulta = consulta + f' and p.fecha <= "{datafechafin}"'
-        consulta = consulta + f' and c.concepto like "%{dataconcepto}%" and p.extra like "%{datadescripcion}%" and p.recibo like "%{datarecibo}%" and p.empresa like "%{dataempresa}%" order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
-        data = get_query_all(consulta)
+            consulta = consulta + ' and p.fecha <= %s'
+        consulta = consulta + ' and c.concepto like %s and p.extra like %s and p.recibo like %s and p.empresa like %s order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
+        data = get_query_all(consulta, ("%d/%m/%Y", datanombre1, datacarnet, datafechaini, datafechafin, dataconcepto, datadescripcion, datarecibo, dataempresa))
         conteo = len(data)
         if int(accion) == 1:
             return render_template('repgen.html', title="Reporte general", data=data, logeado=session['logeadocaja'], conteo=conteo, datacarnet=datacarnet, datanombre=datanombre, datafechaini=datafechaini, datafechafin=datafechafin, dataconcepto=dataconcepto, datadescripcion=datadescripcion, datarecibo=datarecibo, dataempresa=dataempresa, barranav=2)
