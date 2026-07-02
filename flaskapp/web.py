@@ -2157,53 +2157,70 @@ def repdiariopdf():
 def matrizlenq():
     fechaact = date.today()
     year = fechaact.year
-    fechainicio = date(year-1, 1,1)
-    fechafin = date(year, 12,31)
+    fechainicio = date(year - 1, 1, 1)
+    fechafin = date(year, 12, 31)
+    # Obtener todos los carnets únicos que tienen prácticas en el rango de fechas
+    consulta_carnets = """
+        SELECT DISTINCT carnet 
+        FROM practicalenq 
+        WHERE fecha BETWEEN %s AND %s
+        ORDER BY carnet
+    """
+    carnets = get_query_all(consulta_carnets, (fechainicio, fechafin))
+    # Obtener todos los registros de prácticas en una sola consulta
+    consulta_practicas = """
+        SELECT carnet, practica, nombre, fecha, fechainicio, fechafin, lugar, lugar2, lugar3, idpracticalenq
+        FROM practicalenq
+        WHERE fecha BETWEEN %s AND %s
+        ORDER BY carnet, practica
+    """
+    practicas_data = get_query_all(consulta_practicas, (fechainicio, fechafin))
+    # Organizar los datos por carnet y tipo de práctica
+    practicas_por_carnet = {}
+    for p in practicas_data:
+        carnet = p[0]
+        if carnet not in practicas_por_carnet:
+            practicas_por_carnet[carnet] = {
+                'nombre': p[2],
+                'practicas': {i: [] for i in range(1, 4)}  # Practicas 1, 2, 3
+            }
+        practica_num = int(p[1].split(')')[0]) if ')' in p[1] else int(p[1])
+        if 1 <= practica_num <= 3:
+            practicas_por_carnet[carnet]['practicas'][practica_num].append(p)
+    # Construir la matriz final
     practicas = []
-    for i in range(6):
-        consulta = "Select carnet from practicalenq where fecha >= %s and fecha <= %s and practica like %s group by carnet order by nombre"
-        carnets = get_query_all(consulta, (fechainicio, fechafin, f'%{i+1})%'))
+    for i in range(1, 7):  # 6 prácticas (1 a 6)
         datapractica = []
         for j in carnets:
-            aux = []
-            aux1 = []
-            for k in range(3):
-                consulta = 'SELECT nombre, carnet, fecha, fechainicio, fechafin, lugar, lugar2, lugar3, idpracticalenq FROM practicalenq where carnet like %s and practica like %s and practica like %s and fecha >= %s and fecha <= %s'
-                data = get_query_all(consulta, (f"%{j[0]}%", f"%{i+1})%", f"%Pago {k+1}%", fechainicio, fechafin))
-                conteo = len(data)
-                if conteo > 0:
-                    if k == 0:
-                        aux.append(data[0][0])
-                        aux.append(data[0][1])
+            carnet = j[0]
+            if carnet in practicas_por_carnet:
+                estudiante = practicas_por_carnet[carnet]
+                aux = [estudiante['nombre'], carnet]
+                aux1 = []
+                for k in range(1, 4):  # 3 pagos por práctica
+                    pagos = estudiante['practicas'].get(k, [])
+                    if pagos:
+                        pago = pagos[0]  # Tomar el primer registro (puedes ajustar lógica si hay múltiples)
+                        aux.append(pago[3])  # fecha
+                        aux1.append(pago[9])  # idpracticalenq
+                        if k == 3:  # Último pago
+                            aux.extend([pago[4], pago[5], pago[6], pago[7], pago[8]])  # fechainicio, fechafin, lugares
                     else:
-                        aux[0] = data[0][0]
-                        aux[1] = data[0][1]
-                    aux.append(data[0][2])
-                    aux1.append(data[0][8])
-                    if k == 2:
-                        aux.append(data[0][3])
-                        aux.append(data[0][4])
-                        aux.append(data[0][5])
-                        aux.append(data[0][6])
-                        aux.append(data[0][7])
-                else:
-                    if k == 0:
                         aux.append("Pend")
-                        aux.append("Pend")
-                    aux.append("Pend")
-                    aux1.append(0)
-                    if k == 2:
-                        aux.append("Pend")
-                        aux.append("Pend")
-                        aux.append("Pend")
-                        aux.append("Pend")
-                        aux.append("Pend")
-            aux.append(aux1[0])
-            aux.append(aux1[1])    
-            aux.append(aux1[2])
-            datapractica.append(aux)
+                        aux1.append(0)
+                        if k == 3:
+                            aux.extend(["Pend", "Pend", "Pend", "Pend", "Pend"])
+                
+                aux.extend(aux1)
+                datapractica.append(aux)
+            else:
+                # Si no tiene prácticas, llenar con "Pend"
+                datapractica.extend([
+                    "Pend", carnet, "Pend", "Pend", "Pend",
+                    "Pend", "Pend", "Pend", "Pend", "Pend", "Pend"
+                ])
         practicas.append(datapractica)
-    return render_template('matrizlenq.html', title="Matriz Práctica Enfermeria", logeado=session['logeadocaja'], practicas = practicas, barranav=2)
+    return render_template('matrizlenq.html', title="Matriz Práctica Enfermeria", logeado=session['logeadocaja'], practicas=practicas, barranav=2)
 
 @app.route("/editarpracticalenq/<carnet>&<semestre>", methods=['GET', 'POST'])
 @login_required
