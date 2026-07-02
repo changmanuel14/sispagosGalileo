@@ -2253,14 +2253,12 @@ def matriztlcq():
     #meses = ["Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
     consulta_carnets = "SELECT DISTINCT p.carnet FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s AND (%s) ORDER BY p.nombre"
     filtro_meses = " OR ".join([f"p.extra LIKE '%{_}%'" for _ in meses])
-    print(filtro_meses)
     carnets = get_query_all(consulta_carnets, (fechainicio, fechafin, '%Practica TLCQ%', filtro_meses))
     
     # Obtener todos los registros de pagos de práctica TLCQ en una sola consulta
     consulta_pagos = "SELECT p.carnet, p.extra, p.nombre, DATE_FORMAT(p.fecha, %s) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE p.fecha BETWEEN %s AND %s AND c.concepto LIKE %s ORDER BY p.carnet, p.extra"
     pagos_data = get_query_all(consulta_pagos, ('%d/%m/%Y',fechainicio, fechafin, '%Practica TLCQ%'))
     # Organizar los datos por carnet y mes
-    print(pagos_data)
     pagos_por_carnet = {}
     for p in pagos_data:
         carnet = p[0]
@@ -2283,6 +2281,7 @@ def matriztlcq():
                 else:
                     aux.append("Pend")
             estudiantes.append(aux)
+    print(estudiantes)
     return render_template('matriztlcq.html',title="Matriz Práctica Laboratorio Clinico",logeado=session['logeadocaja'],estudiantes=estudiantes,meses=meses,barranav=2)
     
 @app.route('/matrizthdq', methods=['GET', 'POST'])
