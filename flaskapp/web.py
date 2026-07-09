@@ -1616,8 +1616,10 @@ def m():
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
 @login_required
 def confirmacionm(carnet, nombre, curso, mid, mcod):
-    nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 335], ['QUIMICA GENERAL I', 250], ['PARASITOLOGIA', 350], ['QUIMICA INORGANICA', 250], ['BIOQUIMICA GENERAL', 410], ['HEMATOLOGIA BASICA', 390], ['HEMATOLOGIA CLINICA', 390], ['MICROBIOLOGIA CLINICA AVANZADA', 320], ['BANCO DE SANGRE', 400], ['MICROBIOLOGIA APLICADA II', 355]]
-    nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 365], ['PRACTICA EN LABORATORIO', 250]]
+    #nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 335], ['QUIMICA GENERAL I', 250], ['PARASITOLOGIA', 350], ['QUIMICA INORGANICA', 250], ['BIOQUIMICA GENERAL', 410], ['HEMATOLOGIA BASICA', 390], ['HEMATOLOGIA CLINICA', 390], ['MICROBIOLOGIA CLINICA AVANZADA', 320], ['BANCO DE SANGRE', 400], ['MICROBIOLOGIA APLICADA II', 355]]
+    #nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 365], ['PRACTICA EN LABORATORIO', 250]]
+    nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 360], ['QUIMICA GENERAL II', 250], ['MICROBIOLOGIA GENERAL', 640], ['QUIMICA ORGANICA', 200], ['BACTERIOLOGIA', 620], ['BIOQUIMICA CLINICA', 320], ['INMUNOLOGIA BASICA', 390], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 395], ['MICROBIOLOGIA APLICADA I', 300], ['MICOLOGIA', 305]]
+    nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 425], ['INMUNOLOGIA Y BANCO DE SANGRE', 415], ['MICROBIOLOGIA', 385], ['PRUEBAS ESPECIALES', 420]]
     carnet = str(carnet)
     nombre = str(nombre)
     mid = str(mid)
@@ -1680,11 +1682,15 @@ def confirmacionm(carnet, nombre, curso, mid, mcod):
 
 @app.route('/repm', methods=['GET', 'POST'])
 def repm():
-    fechainicio = '2026-01-01'
-    numsmanualeslbcq = [1,3,5,7,9]
-    numsmanualestlcq = [1,3]
-    nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 335], ['QUIMICA GENERAL I', 250], ['PARASITOLOGIA', 350], ['QUIMICA INORGANICA', 250], ['BIOQUIMICA GENERAL', 410], ['HEMATOLOGIA BASICA', 390], ['HEMATOLOGIA CLINICA', 390], ['MICROBIOLOGIA CLINICA AVANZADA', 320], ['BANCO DE SANGRE', 400], ['MICROBIOLOGIA APLICADA II', 355]]
-    nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 365], ['PRACTICA EN LABORATORIO', 250]]
+    fechainicio = '2026-07-01'
+    #numsmanualeslbcq = [1,3,5,7,9]
+    #numsmanualestlcq = [1,3]
+    #nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 335], ['QUIMICA GENERAL I', 250], ['PARASITOLOGIA', 350], ['QUIMICA INORGANICA', 250], ['BIOQUIMICA GENERAL', 410], ['HEMATOLOGIA BASICA', 390], ['HEMATOLOGIA CLINICA', 390], ['MICROBIOLOGIA CLINICA AVANZADA', 320], ['BANCO DE SANGRE', 400], ['MICROBIOLOGIA APLICADA II', 355]]
+    #nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 365], ['PRACTICA EN LABORATORIO', 250]]
+    numsmanualeslbcq = [2,4,6,8]
+    numsmanualestlcq = [2,4]
+    nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 360], ['QUIMICA GENERAL II', 250], ['MICROBIOLOGIA GENERAL', 640], ['QUIMICA ORGANICA', 200], ['BACTERIOLOGIA', 620], ['BIOQUIMICA CLINICA', 320], ['INMUNOLOGIA BASICA', 390], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 395], ['MICROBIOLOGIA APLICADA I', 300], ['MICOLOGIA', 305]]
+    nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 425], ['INMUNOLOGIA Y BANCO DE SANGRE', 415], ['MICROBIOLOGIA', 385], ['PRUEBAS ESPECIALES', 420]]
     manualeslbcq = []
     manualestlcq = []
     manualesindlbcq = []
@@ -2485,11 +2491,8 @@ def replbcq():
         datadescripcion = request.form["descripcion"]
         datafechapago = request.form["fechapago"]
         dataconcepto = request.form["concepto"]
-        consulta = f'SELECT q.nombre, q.carnet, q.fecha, q.descripcion, q.idpracticalbcq, c.concepto FROM practicalbcq q inner join codigos c on q.idcodigo = c.idcodigos where q.nombre like "%{datanombre}%" and q.carnet like "%{datacarnet}%"'
-        if len(datafechapago) != 0:
-            consulta = consulta + f' and q.fecha = "{datafechapago}"'
-        consulta = consulta + f' and q.descripcion like "%{datadescripcion}%" and c.concepto like "%{dataconcepto}%" order by fecha desc, nombre asc;'
-        data = get_query_all(consulta)
+        consulta = 'SELECT q.nombre, q.carnet, q.fecha, q.descripcion, q.idpracticalbcq, c.concepto FROM practicalbcq q inner join codigos c on q.idcodigo = c.idcodigos where q.nombre like %s and q.carnet like %s and q.fecha like %s and q.descripcion like %s and c.concepto like %s order by fecha desc, nombre asc;'
+        data = get_query_all(consulta, (f"%{datanombre}%", f"%{datacarnet}%", f"%{datafechapago}%", f"%{datadescripcion}%", f"%{dataconcepto}%"))
         conteo = len(data)
         return render_template('replbcq.html', title="Reporte Práctica Química Biológica", data = data, logeado=session['logeadocaja'], conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechapago = datafechapago, datadescripcion = datadescripcion, barranav=2)
     return render_template('replbcq.html', title="Reporte Práctica  Química Biológica", data = data, logeado=session['logeadocaja'], conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechapago = datafechapago, datadescripcion = datadescripcion, barranav=2)
