@@ -36,12 +36,9 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-def get_db_connection():
-    return pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-
 def get_query_all(query, params=None):
     try:
-        with get_db_connection() as conexion:
+        with pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb) as conexion:
             with conexion.cursor() as cursor:
                 cursor.execute(query, params or ())
                 return cursor.fetchall()
@@ -51,7 +48,7 @@ def get_query_all(query, params=None):
 
 def get_query_one(query, params=None):
     try:
-        with get_db_connection() as conexion:
+        with pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb) as conexion:
             with conexion.cursor() as cursor:
                 cursor.execute(query, params or ())
                 return cursor.fetchone()
@@ -61,15 +58,24 @@ def get_query_one(query, params=None):
 
 def execute_query(query, params=None):
     try:
-        with get_db_connection() as conexion:
+        with pymysql.connect(host=Conhost,user=Conuser,password=Conpassword,db=Condb) as conexion:
             with conexion.cursor() as cursor:
-                cursor.execute(query, params or ())
-                cursor.execute("SELECT LAST_INSERT_ID()")
-                result = cursor.fetchone()
+                # Si el primer argumento es una lista de consultas
+                if isinstance(query, list):
+                    for q, p in query:
+                        cursor.execute(q, p or ())
+                    cursor.execute("SELECT LAST_INSERT_ID()")
+                    result = cursor.fetchone()
+                # Si es una sola consulta
+                else:
+                    cursor.execute(query, params or ())
+                    cursor.execute("SELECT LAST_INSERT_ID()")
+                    result = cursor.fetchone()
                 conexion.commit()
                 return result[0] if result else None
+
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-        print("Ocurrió un error al conectar: ", e)
+        print("Ocurrió un error al conectar:", e)
         return None
 
 @app.route('/error')
@@ -1998,43 +2004,64 @@ def repdiario():
     consulta = 'SELECT p.fechadevuelto, c.cod, c.concepto, round(p.total,2) FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos WHERE fechadevuelto = CURDATE() order by c.cod asc, p.nombre asc;'
     datadev = get_query_all(consulta)
     if request.method == 'POST':
+        arr_dtes = []
         for i in data:
             try:
                 aux = f"dte{i[6]}"
                 dte = request.form[aux]
                 if len(dte) > 0:
+                    arr_dte = []
                     if int(dte) == 0:
                         consulta = 'UPDATE pagos SET dte = "" WHERE idpagos = %s;'
-                        execute_query(consulta, (i[6]))
+                        arr_dte.append(consulta)
+                        arr_dte.append((i[6]))
                     else:
                         consulta = 'UPDATE pagos SET dte = %s WHERE idpagos = %s;'
-                        execute_query(consulta, (dte, i[6]))
+                        arr_dte.append(consulta)
+                        arr_dte.append((dte, i[6]))
+                arr_dtes.append(arr_dte)
             except:
                 pass
+        execute_query(arr_dtes)
         try:
             regen = request.form["regen"]
             if regen == '0' or len(regen) < 1:
+                arr_resumenes = []
                 for i in resumen:
                     aux = f"resumen{i[4]}"
                     varaux = str(request.form[aux])
                     if len(varaux) > 0:
+                        arr_resumen = []
                         aux = f"empresa{i[4]}"
                         empresa = request.form[aux]
                         consulta = 'UPDATE pagos SET recibo = %s, empresa = %s WHERE idcod = %s and fecha = CURDATE() and recibo = 0;'
-                        execute_query(consulta, (varaux, empresa, i[4]))
+                        arr_resumen.append(consulta)
+                        arr_resumen.append((varaux, empresa, i[4]))
+                        arr_resumenes.append(arr_resumen)
+                execute_query(arr_resumenes)
+                arr_datas = []
                 for i in data:
                     aux = f"re{i[6]}"
                     varaux = str(request.form[aux])
                     if len(varaux) > 0:
+                        arr_data = []
                         aux = f"empr{i[6]}"
                         empresa = request.form[aux]
                         consulta = 'UPDATE pagos SET recibo = %s, empresa = %s WHERE idpagos = %s;'
-                        execute_query(consulta, (varaux, empresa, i[6]))
+                        arr_data.append(consulta)
+                        arr_data.append((varaux, empresa, i[6]))
+                        arr_datas.append(arr_data)
+                execute_query(arr_datas)
             else:
+                arr_generals = []
                 empresa = request.form["empresagen"]
                 for i in data:
+                    arr_general = []
                     consulta = 'UPDATE pagos SET recibo = %s, empresa = %s WHERE idpagos = %s;'
-                    execute_query(consulta, (regen, empresa, i[6]))
+                    arr_general.append(consulta)
+                    arr_general.append((regen, empresa, i[6]))
+                    arr_generals.append(arr_general)
+                execute_query(arr_generals)
         except:
             pass
         return redirect(url_for('repdiario'))
