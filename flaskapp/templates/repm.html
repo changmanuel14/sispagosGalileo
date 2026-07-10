@@ -179,6 +179,9 @@
 								<li class="nav-item">
 									<a class="nav-link" data-toggle="tab" href="#tlcq4">TLCQ IV</a>
 								</li>
+								<li class="nav-item">
+									<a class="nav-link" data-toggle="tab" href="#tlcq5">TLCQ V-B</a>
+								</li>
 							</ul>
 							<div class="tab-content">
 								<div id="lbcq2" class="tab-pane fade">
@@ -695,6 +698,35 @@
 										</tbody>
 									</table>
 								</div>
+								<div id="tlcq5" class="tab-pane fade">
+									<br>
+									<h3>TLCQ V-B</h3>
+									<br>
+									<hr>
+									<h4>Práctica en Laboratorio</h4>
+									<table class="table table-striped sortable table-responsive" id="ttlcq5">
+										<thead>
+											<th>No.</th>
+											<th>Nombre</th>
+											<th>Carnet</th>
+											<th>Fecha</th>
+											<th>Codigo</th>
+											<th>Descripción</th>
+										</thead>
+										<tbody>
+											{% for i in manualesindtlcq[4] %}
+											<tr>
+												<td>{{ loop.index }}</td>
+												<td>{{ i[0] }}</td>
+												<td>{{ i[1] }}</td>
+												<td>{{ i[2] }}</td>
+												<td>{{ i[3] }}</td>
+												<td>{{ i[4] }}</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
 							</div>
 					</main>
 					<!-- page-content" -->
@@ -820,6 +852,12 @@
 		});
 		$(document).ready(function () {
 			$("#ttlcq4d").fancyTable({
+				inputPlaceholder: 'Buscar',
+				pagination: false
+			});
+		});
+		$(document).ready(function () {
+			$("#ttlcq5").fancyTable({
 				inputPlaceholder: 'Buscar',
 				pagination: false
 			});
