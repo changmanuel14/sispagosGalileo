@@ -1711,8 +1711,8 @@ def repm():
         consulta = "select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and p.extra like %s and c.concepto like %s and p.devuelto = 0"
         manuales = get_query_all(consulta, (fechainicio, f"%{i[0]}%", "%Manual TLCQ%"))
         manualesindtlcq.append(manuales)
-    consulta = f"select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > '{fechainicio}' and c.cod like '%KITESPTLCQ' and p.devuelto = 0"
-    kitespecial = get_query_all(consulta, ())
+    consulta = "select p.nombre, p.carnet, p.fecha, c.cod, p.extra from pagos p inner join codigos c on p.idcod = c.idcodigos where p.fecha > %s and c.cod like %s and p.devuelto = 0"
+    kitespecial = get_query_all(consulta, (fechainicio, "%KITESPTLCQ%"))
     return render_template('repm.html', title="Reporte Manuales", numsmanualeslbcq = numsmanualeslbcq, numsmanualestlcq=numsmanualestlcq, manualeslbcq=manualeslbcq, manualestlcq=manualestlcq, manualesindlbcq=manualesindlbcq, manualesindtlcq=manualesindtlcq, kitespecial=kitespecial)
 
 @app.route('/congreso', methods=['GET', 'POST'])
