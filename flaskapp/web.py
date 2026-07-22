@@ -2648,13 +2648,12 @@ def auditoria():
         datarecibo = request.form["recibo"]
         dataempresa = request.form["empresa"]
         accion = request.form["accion"]
-        consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto, p.empresa FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like "%{datanombre1}%" and p.carnet like "%{datacarnet}%"'
-        if len(datafechaini) != 0:
-            consulta = consulta + f' and p.fecha >= "{datafechaini}"'
-        if len(datafechafin) != 0:
-            consulta = consulta + f' and p.fecha <= "{datafechafin}"'
-        consulta = consulta + f' and c.concepto like "%{dataconcepto}%" and p.extra like "%{datadescripcion}%" and p.recibo like "%{datarecibo}%" and p.empresa like "%{dataempresa}%" order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
-        data = get_query_all(consulta)
+        if len(datafechaini) == 0:
+            datafechaini = '0000-00-00'
+        if len(datafechafin) == 0:
+            datafechafin = date.today()
+        consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,%s), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto, p.empresa FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like %s and p.carnet like %s and p.fecha >= %s  and p.fecha <= %s and c.concepto like %s and p.extra like %s and p.recibo like %s and p.empresa like %s order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
+        data = get_query_all(consulta, ("%d/%m/%Y", f"%{datanombre1}%", f"%{datacarnet}%",datafechaini, datafechafin, f"%{dataconcepto}%", f"%{datadescripcion}%", f"%{datarecibo}%", f"%{dataempresa}%"))
         conteo = len(data)
         if int(accion) == 1:
             return render_template('auditoria.html', title="Reporte general", data=data, logeado=0, conteo=conteo, datacarnet=datacarnet, datanombre=datanombre, datafechaini=datafechaini, datafechafin=datafechafin, dataconcepto=dataconcepto, datadescripcion=datadescripcion, datarecibo=datarecibo, dataempresa=dataempresa)
