@@ -1521,9 +1521,9 @@ def prepracticatradq(idpagos):
     year = fechaact.year
     
     # Se genera PDF
-    rendered = render_template('prepracticatradq.html', title="Pre-Práctica TRADQ ", cantidad=cantidad, nombre=nombre, carnet=carnet, year=year, numeros=numeros, path=PATH_FILELOGO)
-    options = {'enable-local-file-access': None, 'page-size': 'Letter', 'margin-bottom': '35mm', 'margin-right': '10mm'}
-    config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+    rendered = render_template('prepracticatradq.html', title="Pre-Práctica TRADQ ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros, path=PATH_FILELOGO)
+    options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-bottom': '35mm','margin-right': '10mm'}
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
