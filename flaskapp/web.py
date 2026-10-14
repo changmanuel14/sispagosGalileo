@@ -1434,9 +1434,9 @@ def hojadialisis(idpagos):
     year = fechaact.year
     
     # Se genera el PDF
-    rendered = render_template('hojadialisis.html', title="Hoja de Práctica Dialisis Peritoneal", cantidad=cantidad, nombre=nombre, carnet=carnet, year=year, path=PATH_FILELOGO)
-    options = {'enable-local-file-access': None, 'page-size': 'Letter', 'margin-right': '10mm'}
-    config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+    rendered = render_template('hojadialisis.html', title="Hoja de Práctica Dialisis Peritoneal", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, path=PATH_FILELOGO)
+    options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
@@ -1570,9 +1570,9 @@ def practicatoptq(idpagos):
     year = fechaact.year
     
     # Se genera PDF
-    rendered = render_template('practicatoptq.html', title="Práctica TOPTQ ", cantidad=cantidad, nombre=nombre, carnet=carnet, year=year, numeros=numeros, fecha=fecha, path=PATH_FILELOGO)
-    options = {'enable-local-file-access': None, 'page-size': 'Letter', 'margin-bottom': '35mm', 'margin-right': '10mm'}
-    config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+    rendered = render_template('practicatoptq.html', title="Práctica TOPTQ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros, fecha =fecha, path=PATH_FILELOGO)
+    options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-bottom': '35mm','margin-right': '10mm'}
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
