@@ -18,6 +18,7 @@ import requests
 from functools import wraps
 from pymysql.cursors import DictCursor
 from unicodedata import normalize
+from dbutils.pooled_db import PooledDB
 #from flask_weasyprint import HTML, render_pdf
 
 app = Flask(__name__)
@@ -36,46 +37,55 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+pool = PooledDB(
+    creator=pymysql,
+    maxconnections=20,
+    mincached=5,
+    maxcached=10,
+    blocking=True,
+    host=Conhost,
+    user=Conuser,
+    password=Conpassword,
+    db=Condb,
+    charset='utf8mb4',
+    cursorclass=pymysql.cursors.DictCursor
+)
+
 def get_query_all(query, params=None):
     try:
-        with pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb) as conexion:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
                 cursor.execute(query, params or ())
                 return cursor.fetchall()
-    except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-        print("Ocurrió un error al conectar: ", e)
+    except Exception as e:
+        print("Error:", e)
         return None
 
 def get_query_one(query, params=None):
     try:
-        with pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb) as conexion:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
                 cursor.execute(query, params or ())
                 return cursor.fetchone()
-    except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-        print("Ocurrió un error al conectar: ", e)
+    except Exception as e:
+        print("Error:", e)
         return None
 
 def execute_query(query, params=None):
     try:
-        with pymysql.connect(host=Conhost,user=Conuser,password=Conpassword,db=Condb) as conexion:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
-                # Si el primer argumento es una lista de consultas
                 if isinstance(query, list):
                     for q, p in query:
                         cursor.execute(q, p or ())
-                    cursor.execute("SELECT LAST_INSERT_ID()")
-                    result = cursor.fetchone()
-                # Si es una sola consulta
                 else:
                     cursor.execute(query, params or ())
-                    cursor.execute("SELECT LAST_INSERT_ID()")
-                    result = cursor.fetchone()
+                cursor.execute("SELECT LAST_INSERT_ID()")
+                result = cursor.fetchone()
                 conexion.commit()
                 return result[0] if result else None
-
-    except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
-        print("Ocurrió un error al conectar:", e)
+    except Exception as e:
+        print("Error:", e)
         return None
 
 @app.route('/error')
@@ -1325,16 +1335,13 @@ def hojalenq(idpagos):
                 varaux = varaux + str(j)
         newarray.append(varaux)
     try:
-        conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-        try:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
                 meses = []
                 consulta = f'SELECT nombre, carnet, practica, lugar, DATE_FORMAT(fechainicio,"%d/%m/%Y"), DATE_FORMAT(fechafin,"%d/%m/%Y"), lugar2, lugar3 FROM practicalenq WHERE idpracticalenq = {newarray[0]};'
                 cursor.execute(consulta)
             # Con fetchall traemos todas las filas
                 practica = cursor.fetchone()
-        finally:
-            conexion.close()
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
         print("Ocurrió un error al conectar: ", e)
     fechaact = date.today()
@@ -1374,26 +1381,24 @@ def hojathdq(idpagos):
             if j.isdigit():
                 varaux = varaux + str(j)
         newarray.append(varaux)
-
+    
     try:
-        conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-        try:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
                 consulta = f'SELECT nombre, carnet FROM pagos WHERE idpagos = {newarray[0]};'
                 cursor.execute(consulta)
-            # Con fetchall traemos todas las filas
                 data = cursor.fetchone()
                 nombre = data[0]
                 carnet = data[1]
-        finally:
-            conexion.close()
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
         print("Ocurrió un error al conectar: ", e)
+    
     fechaact = date.today()
     year = fechaact.year
-    #Se genera el PDF
-    rendered = render_template('hojathdq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, path = PATH_FILELOGO)
-    options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
+    
+    # Se genera el PDF
+    rendered = render_template('hojathdq.html', title="Hoja de Práctica ", cantidad=cantidad, nombre=nombre, carnet=carnet, year=year, path=PATH_FILELOGO)
+    options = {'enable-local-file-access': None, 'page-size': 'Letter', 'margin-right': '10mm'}
     config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
     response = make_response(pdf)
@@ -1414,26 +1419,25 @@ def hojadialisis(idpagos):
             if j.isdigit():
                 varaux = varaux + str(j)
         newarray.append(varaux)
+    
     try:
-        conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-        try:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
                 consulta = f'SELECT nombre, carnet FROM pagos WHERE idpagos = {newarray[0]};'
                 cursor.execute(consulta)
-            # Con fetchall traemos todas las filas
                 data = cursor.fetchone()
                 nombre = data[0]
                 carnet = data[1]
-        finally:
-            conexion.close()
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
         print("Ocurrió un error al conectar: ", e)
+    
     fechaact = date.today()
     year = fechaact.year
-    #Se genera el PDF
-    rendered = render_template('hojadialisis.html', title="Hoja de Práctica Dialisis Peritoneal", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, path=PATH_FILELOGO)
-    options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-right': '10mm'}
-    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+    
+    # Se genera el PDF
+    rendered = render_template('hojadialisis.html', title="Hoja de Práctica Dialisis Peritoneal", cantidad=cantidad, nombre=nombre, carnet=carnet, year=year, path=PATH_FILELOGO)
+    options = {'enable-local-file-access': None, 'page-size': 'Letter', 'margin-right': '10mm'}
+    config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
@@ -1453,16 +1457,15 @@ def hojatlcq(idpagos):
             if j.isdigit():
                 varaux = varaux + str(j)
         newarray.append(varaux)
+    
     try:
-        conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-        try:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
                 meses = []
                 idhojas = []
                 for i in range(cantidad):
                     consulta = f'SELECT nombre, carnet, extra, idpagos FROM pagos WHERE idpagos = {newarray[i]};'
                     cursor.execute(consulta)
-                # Con fetchall traemos todas las filas
                     data = cursor.fetchone()
                     nombre = data[0]
                     carnet = data[1]
@@ -1470,16 +1473,16 @@ def hojatlcq(idpagos):
                     aux = str(aux).split(':')
                     meses.append(aux[1])
                     idhojas.append(data[3])
-        finally:
-            conexion.close()
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
         print("Ocurrió un error al conectar: ", e)
+    
     fechaact = date.today()
     year = fechaact.year
-    #Se Genera el PDF
-    rendered = render_template('hojatlcq.html', title="Hoja de Práctica ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, idhojas = idhojas, meses = meses, path = PATH_FILELOGO)
+    
+    # Se Genera el PDF
+    rendered = render_template('hojatlcq.html', title="Hoja de Práctica ", cantidad=cantidad, nombre=nombre, carnet=carnet, year=year, idhojas=idhojas, meses=meses, path=PATH_FILELOGO)
     options = {'enable-local-file-access': None, 'page-size': 'Legal', 'margin-bottom': '35mm'}
-    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+    config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
@@ -1498,31 +1501,30 @@ def prepracticatradq(idpagos):
             if j.isdigit():
                 varaux = varaux + str(j)
         newarray.append(varaux)
+    
     try:
-        conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-        try:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
                 numeros = []
                 for i in range(cantidad):
                     consulta = f'SELECT nombre, carnet, extra FROM pagos WHERE idpagos = {newarray[i]};'
                     cursor.execute(consulta)
-                # Con fetchall traemos todas las filas
                     data = cursor.fetchone()
                     nombre = data[0]
                     carnet = data[1]
                     aux = data[2]
                     aux = str(aux).split(':')
                     numeros.append(int(aux[1]))
-        finally:
-            conexion.close()
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
         print("Ocurrió un error al conectar: ", e)
+    
     fechaact = date.today()
     year = fechaact.year
-    #Se genera PDF
-    rendered = render_template('prepracticatradq.html', title="Pre-Práctica TRADQ ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros, path=PATH_FILELOGO)
-    options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-bottom': '35mm','margin-right': '10mm'}
-    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+    
+    # Se genera PDF
+    rendered = render_template('prepracticatradq.html', title="Pre-Práctica TRADQ ", cantidad=cantidad, nombre=nombre, carnet=carnet, year=year, numeros=numeros, path=PATH_FILELOGO)
+    options = {'enable-local-file-access': None, 'page-size': 'Letter', 'margin-bottom': '35mm', 'margin-right': '10mm'}
+    config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
@@ -1542,15 +1544,14 @@ def practicatoptq(idpagos):
             if j.isdigit():
                 varaux = varaux + str(j)
         newarray.append(varaux)
-        id = newarray[0]
+    
+    id = newarray[0]
     try:
-        conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-        try:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
                 numeros = []
-                consulta = f'SELECT nombre, carnet, extra, DATE_FORMAT(fecha,"%d/%m/%Y") FROM pagos WHERE idpagos = {id};'
+                consulta = f'SELECT nombre, carnet, extra, DATE_FORMAT(fecha, "%d/%m/%Y ") FROM pagos WHERE idpagos = {id};'
                 cursor.execute(consulta)
-            # Con fetchall traemos todas las filas
                 data = cursor.fetchone()
                 nombre = data[0]
                 carnet = data[1]
@@ -1560,19 +1561,19 @@ def practicatoptq(idpagos):
                 try:
                     numeros.append(int(aux[1]))
                 except:
-                    aux[1] =  aux[1].replace(" ", "")
+                    aux[1] = aux[1].replace("  ", " ")
                     numeros.append(aux[1])
                 print(numeros)
-        finally:
-            conexion.close()
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
         print("Ocurrió un error al conectar: ", e)
+    
     fechaact = date.today()
     year = fechaact.year
-    #Se genera PDF
-    rendered = render_template('practicatoptq.html', title="Práctica TOPTQ", cantidad = cantidad, nombre = nombre, carnet = carnet, year = year, numeros = numeros, fecha =fecha, path=PATH_FILELOGO)
-    options = {'enable-local-file-access': None, 'page-size': 'Letter','margin-bottom': '35mm','margin-right': '10mm'}
-    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+    
+    # Se genera PDF
+    rendered = render_template('practicatoptq.html', title="Práctica TOPTQ ", cantidad=cantidad, nombre=nombre, carnet=carnet, year=year, numeros=numeros, fecha=fecha, path=PATH_FILELOGO)
+    options = {'enable-local-file-access': None, 'page-size': 'Letter', 'margin-bottom': '35mm', 'margin-right': '10mm'}
+    config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
@@ -1584,16 +1585,13 @@ def practicatoptq(idpagos):
 @login_required
 def m():
     try:
-        conexion = pymysql.connect(host=Conhost, user=Conuser, password=Conpassword, db=Condb)
-        try:
+        with pool.connection() as conexion:
             with conexion.cursor() as cursor:
                 cursor.execute("SELECT idcodigos, cod, concepto FROM codigos WHERE manual = 1 ORDER BY cod asc;")
-            # Con fetchall traemos todas las filas
                 carreras = cursor.fetchall()
-        finally:
-            conexion.close()
     except (pymysql.err.OperationalError, pymysql.err.InternalError) as e:
         print("Ocurrió un error al conectar: ", e)
+    
     if request.method == 'POST':
         datacarnet = request.form["carnet"]
         datanombre = request.form["nombre"]
@@ -1610,8 +1608,9 @@ def m():
             if(len(aux) > 0):
                 datacurso.append(aux)
             aux1 = f'kit{i+1}'
-        return redirect(url_for('confirmacionm', carnet = datacarnet, nombre = datanombre, curso= datacurso, mid = mid, mcod = mcod))
-    return render_template('manuales.html', title="Manuales",  carreras=carreras, logeado=session['logeadocaja'], barranav=1)
+        return redirect(url_for('confirmacionm', carnet=datacarnet, nombre=datanombre, curso=datacurso, mid=mid, mcod=mcod))
+    
+    return render_template('manuales.html', title="Manuales", carreras=carreras, logeado=session['logeadocaja'], barranav=1)
 
 @app.route('/confirmacionm/<carnet>&<nombre>&<curso>&<mid>&<mcod>', methods=['GET', 'POST'])
 @login_required
