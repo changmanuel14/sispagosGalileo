@@ -47,8 +47,7 @@ pool = PooledDB(
     user=Conuser,
     password=Conpassword,
     db=Condb,
-    charset='utf8mb4',
-    cursorclass=pymysql.cursors.DictCursor
+    charset='utf8mb4'
 )
 
 def get_query_all(query, params=None):
@@ -2494,6 +2493,7 @@ def replbcq():
         consulta = 'SELECT q.nombre, q.carnet, q.fecha, q.descripcion, q.idpracticalbcq, c.concepto FROM practicalbcq q inner join codigos c on q.idcodigo = c.idcodigos where q.nombre like %s and q.carnet like %s and q.fecha like %s and q.descripcion like %s and c.concepto like %s order by fecha desc, nombre asc;'
         data = get_query_all(consulta, (f"%{datanombre}%", f"%{datacarnet}%", f"%{datafechapago}%", f"%{datadescripcion}%", f"%{dataconcepto}%"))
         conteo = len(data)
+        print(conteo)
         return render_template('replbcq.html', title="Reporte Práctica Química Biológica", data = data, logeado=session['logeadocaja'], conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechapago = datafechapago, datadescripcion = datadescripcion, barranav=2)
     return render_template('replbcq.html', title="Reporte Práctica  Química Biológica", data = data, logeado=session['logeadocaja'], conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechapago = datafechapago, datadescripcion = datadescripcion, barranav=2)
 
