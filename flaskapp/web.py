@@ -1617,8 +1617,8 @@ def m():
 def confirmacionm(carnet, nombre, curso, mid, mcod):
     #nombremanualesindlbcq = [['BIOLOGIA GENERAL I', 335], ['QUIMICA GENERAL I', 250], ['PARASITOLOGIA', 350], ['QUIMICA INORGANICA', 250], ['BIOQUIMICA GENERAL', 410], ['HEMATOLOGIA BASICA', 390], ['HEMATOLOGIA CLINICA', 390], ['MICROBIOLOGIA CLINICA AVANZADA', 320], ['BANCO DE SANGRE', 400], ['MICROBIOLOGIA APLICADA II', 355]]
     #nombremanualesindtlcq = [['BACTERIOLOGIA', 560], ['QUIMICA CLINICA', 365], ['PRACTICA EN LABORATORIO', 250]]
-    nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 360], ['QUIMICA GENERAL II', 200], ['MICROBIOLOGIA GENERAL', 640], ['QUIMICA ORGANICA', 200], ['BACTERIOLOGIA', 620], ['BIOQUIMICA CLINICA', 320], ['INMUNOLOGIA BASICA', 380], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 395], ['MICROBIOLOGIA APLICADA I', 300], ['MICOLOGIA', 305]]
-    nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 425], ['INMUNOLOGIA Y BANCO DE SANGRE', 415], ['MICROBIOLOGIA', 385], ['PRUEBAS ESPECIALES', 420], ['PRACTICA EN LABORATORIO', 200]]
+    nombremanualesindlbcq = [['BIOLOGIA GENERAL II', 410], ['QUIMICA GENERAL II', 250], ['MICROBIOLOGIA GENERAL', 690], ['QUIMICA ORGANICA', 250], ['BACTERIOLOGIA', 670], ['BIOQUIMICA CLINICA', 370], ['INMUNOLOGIA BASICA', 430], ['INTERPRETACION DE PRUEBAS BIOQUIMICAS', 445], ['MICROBIOLOGIA APLICADA I', 350], ['MICOLOGIA', 355]]
+    nombremanualesindtlcq = [['HEMATOLOGIA Y COAGULACION', 475], ['INMUNOLOGIA Y BANCO DE SANGRE', 465], ['MICROBIOLOGIA', 435], ['PRUEBAS ESPECIALES', 470], ['PRACTICA EN LABORATORIO', 250]]
     carnet = str(carnet)
     nombre = str(nombre)
     mid = str(mid)
@@ -2446,10 +2446,10 @@ def replenq():
     data = []
     conteo = 0
     datacarnet = ""
-    datafechapagoinicio = ""
-    datafechapagofin = ""
-    datafechaini = ""
-    datafechafin = ""
+    datafechapagoinicio = "0000-00-00"
+    datafechapagofin = date.today()
+    datafechaini = "0000-00-00"
+    datafechafin = date.today()
     datanombre = ""
     datadescripcion = ""
     if request.method == "POST":
@@ -2461,17 +2461,16 @@ def replenq():
         datadescripcion = request.form["descripcion"]
         datafechapagoinicio = request.form["fechapagoinicio"]
         datafechapagofin = request.form["fechapagofin"]
-        consulta = f'SELECT nombre, carnet, fecha, practica, lugar, fechainicio, fechafin, idpracticalenq FROM practicalenq where nombre like "%{datanombre}%" and carnet like "%{datacarnet}%"'
-        if len(datafechaini) != 0:
-            consulta = consulta + f' and fechainicio = "{datafechaini}"'
-        if len(datafechafin) != 0:
-            consulta = consulta + f' and fechafin = "{datafechafin}"'
-        if len(datafechapagoinicio) != 0:
-            consulta = consulta + f' and fecha >= "{datafechapagoinicio}"'
-        if len(datafechapagofin) != 0:
-            consulta = consulta + f' and fecha <= "{datafechapagofin}"'
-        consulta = consulta + f' and lugar like "%{datalugar}%" and practica like "%{datadescripcion}%" order by fecha desc, practica asc, nombre asc;'
-        data = get_query_all(consulta)
+        consulta = 'SELECT nombre, carnet, fecha, practica, lugar, fechainicio, fechafin, idpracticalenq FROM practicalenq where nombre like %s and carnet like %s and fecha >= %s and fecha <= %s and lugar like %s and practica like %s order by fecha desc, practica asc, nombre asc;'
+        if len(datafechaini) == 0:
+            datafechaini = "0000-00-00"
+        if len(datafechafin) == 0:
+            datafechafin = date.today()
+        if len(datafechapagoinicio) == 0:
+            datafechapagoinicio = "0000-00-00"
+        if len(datafechapagofin) == 0:
+            datafechapagofin = date.today()
+        data = get_query_all(consulta, (f"%{datanombre}%", f"%{datacarnet}%", f"{datafechapagoinicio}", f"{datafechapagofin}", f"%{datalugar}%", f"%{datadescripcion}%"))
         conteo = len(data)
         return render_template('replenq.html', title="Reporte Práctica Enfermeria", data = data, logeado=session['logeadocaja'], conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, datafechapagoinicio = datafechapagoinicio, datadescripcion = datadescripcion, datafechapagofin = datafechapagofin, barranav=2)
     return render_template('replenq.html', title="Reporte Práctica Enfermeria", data = data, logeado=session['logeadocaja'], conteo=conteo, datacarnet = datacarnet, datanombre = datanombre, datafechaini = datafechaini, datafechafin = datafechafin, datafechapagoinicio = datafechapagoinicio, datadescripcion = datadescripcion, datafechapagofin = datafechapagofin, barranav=2)
@@ -2647,13 +2646,12 @@ def auditoria():
         datarecibo = request.form["recibo"]
         dataempresa = request.form["empresa"]
         accion = request.form["accion"]
-        consulta = f'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,"%d/%m/%Y"), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto, p.empresa FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like "%{datanombre1}%" and p.carnet like "%{datacarnet}%"'
-        if len(datafechaini) != 0:
-            consulta = consulta + f' and p.fecha >= "{datafechaini}"'
-        if len(datafechafin) != 0:
-            consulta = consulta + f' and p.fecha <= "{datafechafin}"'
-        consulta = consulta + f' and c.concepto like "%{dataconcepto}%" and p.extra like "%{datadescripcion}%" and p.recibo like "%{datarecibo}%" and p.empresa like "%{dataempresa}%" order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
-        data = get_query_all(consulta)
+        if len(datafechaini) == 0:
+            datafechaini = '0000-00-00'
+        if len(datafechafin) == 0:
+            datafechafin = date.today()
+        consulta = 'SELECT p.nombre, p.carnet, DATE_FORMAT(p.fecha,%s), c.concepto, p.extra, p.recibo, p.total, p.idpagos, p.devuelto, p.empresa FROM pagos p INNER JOIN codigos c ON p.idcod = c.idcodigos where p.nombre like %s and p.carnet like %s and p.fecha >= %s  and p.fecha <= %s and c.concepto like %s and p.extra like %s and p.recibo like %s and p.empresa like %s order by p.fecha desc, c.concepto asc, p.extra asc, p.nombre asc;'
+        data = get_query_all(consulta, ("%d/%m/%Y", f"%{datanombre1}%", f"%{datacarnet}%",datafechaini, datafechafin, f"%{dataconcepto}%", f"%{datadescripcion}%", f"%{datarecibo}%", f"%{dataempresa}%"))
         conteo = len(data)
         if int(accion) == 1:
             return render_template('auditoria.html', title="Reporte general", data=data, logeado=0, conteo=conteo, datacarnet=datacarnet, datanombre=datanombre, datafechaini=datafechaini, datafechafin=datafechafin, dataconcepto=dataconcepto, datadescripcion=datadescripcion, datarecibo=datarecibo, dataempresa=dataempresa)
