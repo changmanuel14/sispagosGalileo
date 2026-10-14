@@ -1481,7 +1481,7 @@ def hojatlcq(idpagos):
     # Se Genera el PDF
     rendered = render_template('hojatlcq.html', title="Hoja de Práctica ", cantidad=cantidad, nombre=nombre, carnet=carnet, year=year, idhojas=idhojas, meses=meses, path=PATH_FILELOGO)
     options = {'enable-local-file-access': None, 'page-size': 'Legal', 'margin-bottom': '35mm'}
-    config = pdfkit.configuration(wkhtmltopdf="C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe")
+    config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(rendered, False, configuration=config, options=options)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
